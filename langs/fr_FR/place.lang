@@ -1,0 +1,40 @@
+# Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
+# Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Module label 'ModuleXXXName'
+# (where XXX is value of numeric property 'numero' of module)
+Module110110Name = Getion de lieux
+# Module description 'ModuleXXXDesc'
+# (where XXX is value of numeric property 'numero' of module)
+Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
+
+#
+# Page d'administration
+#
+PlaceSetup = Configuration du module Place
+Settings = Réglages
+PlaceSetupPage = Page de réglage du modules Place
+
+#
+# Page À propos
+#
+About = À propos
+PlaceAbout = À propos du module Place
+PlaceAboutPage = Page à propos du module Place
