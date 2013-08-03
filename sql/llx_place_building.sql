@@ -17,6 +17,7 @@
 CREATE TABLE llx_place_building
 (
   rowid           integer AUTO_INCREMENT PRIMARY KEY,
+  entity          integer,
   ref             varchar(255),
   label           varchar(255),
   fk_place        integer NOT NULL,

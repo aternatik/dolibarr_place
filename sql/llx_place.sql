@@ -17,6 +17,7 @@
 CREATE TABLE llx_place
 (
   rowid           integer AUTO_INCREMENT PRIMARY KEY,
+  entity          integer,
   ref             varchar(255),
   fk_soc          integer,
   fk_socpeople    integer NOT NULL,

@@ -17,6 +17,7 @@
 CREATE TABLE llx_place_floor
 (
   rowid           integer AUTO_INCREMENT PRIMARY KEY,
+  entity          integer,
   ref             varchar(255),
   fk_building     integer NOT NULL,
   fk_user_creat   integer,
