@@ -38,3 +38,23 @@ PlaceSetupPage = Page de réglage du modules Place
 About = À propos
 PlaceAbout = À propos du module Place
 PlaceAboutPage = Page à propos du module Place
+
+#
+# Page Place
+#
+PlacePageName=Gestion des lieux
+PlacePageIndex=Gestion des lieux
+NoPlaceInDatabase=Aucun lieu en base de données
+AddPlace=Ajouter un lieu
+PlaceFormLabel_ref=Référence / libellé
+PlaceFormLabel_description=Description
+PlaceFormLabel_fk_socpeople=Contact/adresse à associer
+PlaceCreatedWithSuccess=Lieu ajouté
+FichePlace=Fiche d'un lieu
+PlaceSingular=Lieu
+SocPeopleAssociated=Contact/adresse associé
+
+#
+# Bâtiments
+#
+Buildings=Bâtiments
