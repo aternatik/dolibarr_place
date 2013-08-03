@@ -53,6 +53,8 @@ PlaceCreatedWithSuccess=Lieu ajouté
 FichePlace=Fiche d'un lieu
 PlaceSingular=Lieu
 SocPeopleAssociated=Contact/adresse associé
+OSMLink=Lien Open Street Map
+ShowInOSM=Afficher le point sur OSM
 
 #
 # Bâtiments

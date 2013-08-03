@@ -225,6 +225,15 @@ if($object->fetch($id) > 0)
 		print '</td>';
 		print '</tr>';
 
+		// Link to OSM
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
+		print '<td   width="30%">';
+		print '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom=17" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
+		print '</td>';
+		print '</tr>';
+
+
 		print '</table>';
 
 	}
