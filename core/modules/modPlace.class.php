@@ -219,6 +219,25 @@ class modPlace extends DolibarrModules
 		$this->rights = array(); // Permission array used by this module
 		$r = 0;
 
+		$this->rights[$r][0] = 1101101;
+		$this->rights[$r][1] = 'See places';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'read';
+		$r++;
+
+		$this->rights[$r][0] = 1101102;
+		$this->rights[$r][1] = 'Modify places';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'write';
+		$r++;
+
+		$this->rights[$r][0] = 1101103;
+		$this->rights[$r][1] = 'Delete places';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'delete';
+		$r++;
+
+
 		// Add here list of permission defined by
 		// an id, a label, a boolean and two constant strings.
 		// Example:
@@ -250,8 +269,7 @@ class modPlace extends DolibarrModules
 			'langs'=> 'place@place',
 			'position'=> 100,
 			'enabled'=> '1',
-			//'perms'=> '$user->rights->place->read',
-			'perms'=> 1,
+			'perms'=> '$user->rights->place->read',
 			'user'=> 0
 		);
 		$r++;
@@ -266,8 +284,7 @@ class modPlace extends DolibarrModules
 			'langs'=> 'place@place',
 			'position'=> 101,
 			'enabled'=> '1',
-			//'perms'=> '$user->rights->place->read',
-			'perms'=> 1,
+			'perms'=> '$user->rights->place->read',
 			'target'=> '',
 			'user'=> 0
 		);

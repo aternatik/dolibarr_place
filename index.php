@@ -61,6 +61,9 @@ $offset = $limit * $page ;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
+if( ! $user->rights->place->read)
+	accessforbidden();
+
 /***************************************************
  * VIEW
 *
@@ -69,6 +72,8 @@ $pagenext = $page + 1;
 
 $pagetitle=$langs->trans('PlacePageIndex');
 llxHeader('',$pagetitle,'');
+
+
 
 $form=new Form($db);
 $object = new Place($db);

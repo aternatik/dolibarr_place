@@ -47,10 +47,13 @@ $lat		= GETPOST('lat','alpha');
 $lng		= GETPOST('lng','alpha');
 
 // Protection if external user
-if ($user->societe_id > 0)
-{
+//if ($user->societe_id > 0)
+//{
 	//accessforbidden();
-}
+//}
+
+if( ! $user->rights->place->read)
+	accessforbidden();
 
 $object = new Place($db);
 
@@ -61,7 +64,7 @@ $object = new Place($db);
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
 
-if ($action == 'update' && ! $_POST["cancel"] /* && $user->rights->place->write */ )
+if ($action == 'update' && ! $_POST["cancel"]  && $user->rights->place->write )
 {
 	$error=0;
 
@@ -123,6 +126,9 @@ if($object->fetch($id) > 0)
 
 	if ($action == 'edit' )
 	{
+
+		if(!$user->rights->place->write)
+			accessforbidden('',0);
 
 		/*---------------------------------------
 		 * Edit object

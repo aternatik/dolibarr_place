@@ -26,6 +26,10 @@ Module110110Name = Getion de lieux
 Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
 Menu110110PlaceIndex=Gestion des lieux
 Menu110110PlaceAdd=Ajouter un lieu
+Permission1101101=Voir les lieux
+Permission1101101=Modifier les lieux
+Permission1101101=Effacer les lieux
+
 #
 # Page d'administration
 #
