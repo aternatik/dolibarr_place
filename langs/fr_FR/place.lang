@@ -24,7 +24,8 @@ Module110110Name = Getion de lieux
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
-
+Menu110110PlaceIndex=Gestion des lieux
+Menu110110PlaceAdd=Ajouter un lieu
 #
 # Page d'administration
 #
@@ -49,6 +50,8 @@ AddPlace=Ajouter un lieu
 PlaceFormLabel_ref=Référence / libellé
 PlaceFormLabel_description=Description
 PlaceFormLabel_fk_socpeople=Contact/adresse à associer
+PlaceFormLabel_lat=Latitude
+PlaceFormLabel_lng=Longitude
 PlaceCreatedWithSuccess=Lieu ajouté
 FichePlace=Fiche d'un lieu
 PlaceSingular=Lieu
