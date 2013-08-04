@@ -100,8 +100,8 @@ class Place extends CommonObject
 		$sql.= "lng,";
 		$sql.= "note_public,";
 		$sql.= "note_private,";
-		$sql.= "fk_user_creat";
-
+		$sql.= "fk_user_creat,";
+		$sql.= " entity";
 
         $sql.= ") VALUES (";
 
@@ -114,7 +114,7 @@ class Place extends CommonObject
 		$sql.= " ".(! isset($this->note_public)?'NULL':"'".$this->db->escape($this->note_public)."'").",";
 		$sql.= " ".(! isset($this->note_private)?'NULL':"'".$this->db->escape($this->note_private)."'").",";
 		$sql.= " ".(! isset($this->fk_user_creat)?'NULL':"'".$user->id."'")."";
-
+		$sql.= ", ".$conf->entity;
 
 		$sql.= ")";
 
@@ -277,7 +277,8 @@ class Place extends CommonObject
    				{
    					$obj = $this->db->fetch_object($resql);
    					$line = new Place($this->db);
-   					$line->rowid			=	$obj->rowid;
+   					$line->id			=	$obj->rowid;
+   					$line->ref				=	$obj->ref;
    					$line->fk_soc			=	$obj->fk_soc;
    					$line->fk_socpeople		=	$obj->fk_socpeople;
    					$line->description		=	$obj->description;
