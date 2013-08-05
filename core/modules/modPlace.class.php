@@ -255,7 +255,7 @@ class modPlace extends DolibarrModules
 		//$this->rights[$r][5] = 'level2';
 		//$r++;
 		// Main menu entries
-		$this->menus = array(); // List of menus to add
+		$this->menu = array(); // List of menus to add
 		$r = 0;
 
 		// Menus declaration
@@ -274,15 +274,31 @@ class modPlace extends DolibarrModules
 		);
 		$r++;
 
+
 		$this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=companies,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
 			'type'=> 'left', // Toujours un menu gauche
 			'titre'=> 'Menu110110PlaceAdd',
 			'mainmenu'=> 'companies',
-			'leftmenu'=> 'place', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
+			'leftmenu'=> '', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
 			'url'=> '/place/add.php',
 			'langs'=> 'place@place',
 			'position'=> 101,
+			'enabled'=> '1',
+			'perms'=> '$user->rights->place->read',
+			'target'=> '',
+			'user'=> 0
+		);
+
+		$this->menu[$r++]=array(
+			'fk_menu'=>'fk_mainmenu=companies,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
+			'type'=> 'left', // Toujours un menu gauche
+			'titre'=> 'Menu110110BuildingsList',
+			'mainmenu'=> 'companies',
+			'leftmenu'=> '', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
+			'url'=> '/place/building/list.php',
+			'langs'=> 'place@place',
+			'position'=> 102,
 			'enabled'=> '1',
 			'perms'=> '$user->rights->place->read',
 			'target'=> '',
