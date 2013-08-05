@@ -63,6 +63,7 @@ SocPeopleAssociated=Contact/adresse associé
 OSMLink=Lien Open Street Map
 ShowInOSM=Afficher le point sur OSM
 SeeOrEdit=Voir/éditer
+NameOfThePlace=Nom du lieu
 
 
 #
@@ -78,3 +79,4 @@ BuildingFormLabel_lat=Latitude
 BuildingFormLabel_lng=Longitude
 BuildingCreatedWithSuccess=Bâtiment ajouté
 BuildingPlaceName=Nom du lieu
+BuildingList=Liste des bâtiments

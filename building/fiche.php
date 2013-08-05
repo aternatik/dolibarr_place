@@ -128,7 +128,14 @@ if($object->fetch($id) > 0)
 {
 
 	$head=placePrepareHead($object->place);
-	dol_fiche_head($head, 'buildings', $langs->trans("BuildingSingular"),0,'building@place');
+	dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+
+	$ret = $object->place->printInfoTable();
+
+	print '</div>';
+	//Second tabs list for building
+	$head=buildingPrepareHead($object);
+	dol_fiche_head($head, 'building', $langs->trans("BuildingSingular"),1,'building@place');
 
 	if ($action == 'edit' )
 	{
@@ -204,13 +211,14 @@ if($object->fetch($id) > 0)
 		print '</td>';
 		print '</tr>';
 
-		// Place
+		/* Place
 		print '<tr>';
 		print '<td  width="20%">' . $langs->trans("BuildingPlaceName") . '</td>';
 		print '<td   width="30%">';
 		print $object->place->getNomUrl(1);
 		print '</td>';
 		print '</tr>';
+		*/
 
 
 		// Description
