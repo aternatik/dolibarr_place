@@ -90,14 +90,13 @@ function buildingPrepareHead($object)
 	$head[$h][2] = 'building';
 	$h++;
 
-	/*
-	 *
-	 $head[$h][0] = dol_buildpath('/place/building/list.php',1).'?id='.$object->id;
-	$head[$h][1] = $langs->trans("Buildings");
-	$head[$h][2] = 'buildings';
+
+	$head[$h][0] = dol_buildpath('/place/building/floors.php',1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Floors");
+	$head[$h][2] = 'floors';
 	$h++;
 
-	*/
+
 
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line

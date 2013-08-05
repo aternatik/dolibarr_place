@@ -1,6 +1,5 @@
 <?php
-/* Copyright (C) 2007-2010	Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2013		Jean-François Ferry	<jfefe@aternatik.fr>
+/* Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +16,9 @@
  */
 
 /**
- *   	\file       dev/Placebuildings/Placebuilding_page.php
- *		\ingroup    mymodule othermodule1 othermodule2
- *		\brief      This file is an example of a php page
- *					Initialy built by build_class_from_table on 2013-08-04 18:47
+ *   	\file       place/building/floors.php
+ *		\ingroup    place
+ *		\brief      This file is to manage building floors
  */
 
 //if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
@@ -60,6 +58,8 @@ $ref		= GETPOST('ref','alpha');
 $lat		= GETPOST('lat','alpha');
 $lng		= GETPOST('lng','alpha');
 
+$mode		= GETPOST('mode','alpha');
+
 if( ! $user->rights->place->read)
 	accessforbidden();
 
@@ -70,44 +70,56 @@ $object=new Building($db);
 *
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
-if ($action == 'update' && ! $_POST["cancel"]  && $user->rights->place->write )
+if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->write )
 {
-	$error=0;
 
-	if (empty($ref))
+	$floor_ref	= GETPOST('floor_ref');
+	$floor_pos		= GETPOST('floor_pos');
+
+
+	// Assemblage du tableau des enfants
+	$i=0;
+	while(isset($floor_ref[$i]))
 	{
-		$error++;
-		$mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("Ref")).'</div>';
+		$floors[$i]['ref'] 			= $db->escape($floor_ref[$i]);
+		$floors[$i]['pos'] 			= $db->escape($floor_pos[$i]);
+		$floors[$i]['fk_building'] 	= $db->escape($id);
+
+		$i++;
 	}
+	// Datas are added in object and saved with trigger after object creation
+	$object->floors = $floors;
 
-	if (! $error)
+	$result = $object->insertFloors($user);
+
+	if ( $result > 0)
 	{
-		$object->fetch($id);
-
-		$object->ref          		= $ref;
-		$object->lat          		= $lat;
-		$object->lng          		= $lng;
-		$object->description  		= $_POST["description"];
-		$object->note_public       	= $_POST["note_public"];
-		$object->note_private       = $_POST["note_private"];
-
-		$result=$object->update($user);
-		if ($result > 0)
-		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
-			exit;
-		}
-		else
-		{
-			$mesg='<div class="error">'.$object->error.'</div>';
-
-			$action='edit';
-		}
+		setEventMessage($langs->trans('FloorsUpdated'));
 	}
 	else
 	{
-		$action='edit';
+		$action="add_floors";
+		$mode='edit';
 	}
+}
+/*
+ * Delete child
+*/
+else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->place->delete)
+{
+	$id = GETPOST('id');
+	$id_floor = GETPOST('id_floor');
+
+	$result = $object->deleteFloor($id_floor);
+	if ($result > 0)
+	{
+		setEventMessage($langs->trans('FloorDeletedWithSuccess'));
+		Header("Location: floors.php?action=show_floor_form&id=".$id);
+		exit();
+	}
+	else
+		dol_print_error($db);
+
 }
 
 
@@ -119,12 +131,12 @@ if ($action == 'update' && ! $_POST["cancel"]  && $user->rights->place->write )
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('','Buildings','');
+llxHeader('',$langs->trans('FloorManagment'),'','','','',array('/place/js/place.js.php'));
 
 $form=new Form($db);
 
 
-if($object->fetch($id) > 0)
+if($object->fetch($id) > 0 )
 {
 
 	$head=placePrepareHead($object->place);
@@ -133,102 +145,69 @@ if($object->fetch($id) > 0)
 	$ret = $object->place->printInfoTable();
 
 	print '</div>';
+
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'building', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),1,'building@place');
 
-	if ($action == 'edit' )
+
+
+
+	/*---------------------------------------
+	 * View building info
+	*/
+	$ret_html = $object->printInfoTable();
+
+
+	/*
+	 * Floors managment
+	 */
+
+	print '<br />';
+	print_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
+
+	if($action == 'show_floor_form')
 	{
 
-		if(!$user->rights->place->write)
-			accessforbidden('',0);
+		$out .= '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
+		$out .='<input type="hidden" name="action" value="update_floors" />';
+		$out .='<input type="hidden" name="id" value="'.$id.'" />';
+		$out .= $object->show_floor_form($id,$user->rights->place->delete);
 
-		/*---------------------------------------
-		 * Edit object
-		*/
-		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<input type="hidden" name="action" value="update">';
-		print '<input type="hidden" name="id" value="'.$object->id.'">';
+		$out .='<div style="text-align: center" >
+				<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
+				<input type="submit"  class="button" name="cancel" value="'.$langs->trans('Cancel').'" />
+		</div>';
 
-		print '<table class="border" width="100%">';
+		$out .= '</form>';
 
-		// Ref
-		print '<tr><td width="20%">'.$langs->trans("BuildingFormLabel_ref").'</td>';
-		print '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object->ref).'"></td></tr>';
-
-
-		// Description
-		print '<tr><td valign="top">'.$langs->trans("BuildingFormLabel_description").'</td>';
-		print '<td>';
-		print '<textarea name="description" cols="80" rows="'.ROWS_3.'">'.($_POST['description'] ? GETPOST('description','alpha') : $object->description).'</textarea>';
-		print '</td></tr>';
-
-		// Lat
-		print '<tr><td width="20%">'.$langs->trans("Latitude").'</td>';
-		print '<td><input size="12" name="lat" value="'.(GETPOST('lat') ? GETPOST('lat') : $object->lat).'"></td></tr>';
-
-		// Long
-		print '<tr><td width="20%">'.$langs->trans("Longitude").'</td>';
-		print '<td><input size="12" name="lng" value="'.(GETPOST('lng') ? GETPOST('lng') : $object->lng).'"></td></tr>';
-
-		// Public note
-		print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
-		print '<td>';
-		print '<textarea name="note_public" cols="80" rows="'.ROWS_3.'">'.($_POST['note_public'] ? GETPOST('note_public','alpha') : $object->note_public)."</textarea><br>";
-		print "</td></tr>";
-
-		// Private note
-		if (! $user->societe_id)
-		{
-			print '<tr><td valign="top">'.$langs->trans("NotePrivate").'</td>';
-			print '<td>';
-			print '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object->note_private)."</textarea><br>";
-			print "</td></tr>";
-		}
-
-		print '<tr><td align="center" colspan="2">';
-		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'"> &nbsp; ';
-		print '<input type="submit" class="button" name="cancel" Value="'.$langs->trans("Cancel").'"></td></tr>';
-		print '</table>';
-		print '</form>';
 	}
-	else
-	{
+	else {
 
+		$out .= $object->show_floor_list($id);
 
-		/*---------------------------------------
-		 * View object
-		*/
-		$ret_html = $object->printInfoTable();
 	}
 
-	print '</div>';
+	print $out;
+
 
 	/*
 	 * Boutons actions
 	*/
 	print '<div class="tabsAction">';
 
-	if ($action != "edit" )
+	if ($action != "show_floor_form" )
 	{
 
-		// Edit building
+		// Add floor
 		if($user->rights->place->write)
 		{
 			print '<div class="inline-block divButAction">';
-			print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&amp;action=edit" class="butAction">'.$langs->trans('Edit').'</a>';
-			print '</div>';
-		}
-
-		// Floor managment
-		if($user->rights->place->write)
-		{
-			print '<div class="inline-block divButAction">';
-			print '<a href="floors.php?id='.$id.'" class="butAction">'.$langs->trans('FloorManagment').'</a>';
+			print '<a href="floors.php?id='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('FloorEdition').'</a>';
 			print '</div>';
 		}
 	}
+	print '</div>';
 
 }
 

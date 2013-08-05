@@ -80,3 +80,16 @@ BuildingFormLabel_lng=Longitude
 BuildingCreatedWithSuccess=Bâtiment ajouté
 BuildingPlaceName=Nom du lieu
 BuildingList=Liste des bâtiments
+
+#
+# Etages 
+#
+Floors=Étages
+FloorManagment=Gestion des étages
+AddFloor=Ajouter un étage
+FloorNumber=Nom/repère de l'étage
+FloorOrder=Numéro de l'étage
+FloorsUpdated=Étages mis à jour
+FloorEdition=Éditer les étages
+FloorDeletedWithSuccess=Étage supprimé avec succès
+NoFloorFoundForThisBuilding=Aucun étage pour ce bâtiment.

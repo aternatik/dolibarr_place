@@ -479,6 +479,403 @@ print $sql;
 	}
 
 
+	/**
+	 *  Show html array with short informations of object
+	 *
+	 *  @return	void
+	 */
+	function printInfoTable()
+	{
+		global $conf,$langs;
+		print '<table width="100%" class="border">';
+
+
+		// Ref
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Ref") . '</td>';
+		print '<td   width="30%">';
+		print $this->ref;
+		print '</td>';
+		print '</tr>';
+
+		/* Place
+		 print '<tr>';
+		print '<td  width="20%">' . $langs->trans("BuildingPlaceName") . '</td>';
+		print '<td   width="30%">';
+		print $object->place->getNomUrl(1);
+		print '</td>';
+		print '</tr>';
+		*/
+
+
+		// Description
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Description") . '</td>';
+		print '<td   width="30%">';
+		print $this->description;
+		print '</td>';
+		print '</tr>';
+
+		// Latitude
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Latitude") . '</td>';
+		print '<td   width="30%">';
+		print $this->lat;
+		print '</td>';
+		print '</tr>';
+
+		// Longitude
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Longitude") . '</td>';
+		print '<td   width="30%">';
+		print $this->lng;
+		print '</td>';
+		print '</tr>';
+
+		// Link to OSM
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
+		print '<td   width="30%">';
+		print '<a href="http://openstreetmap.org/?lat='.$this->lat.'&amp;lon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
+		print '</td>';
+		print '</tr>';
+
+
+		print '</table>';
+
+		return '';
+	}
+
+	/**
+	 * Function to show floor list from database read
+	 */
+	function show_floor_list($fk_building)
+	{
+		global $langs;
+
+		if ( ! $fk_building > 0)
+		{
+			return '';
+		}
+		$out = '';
+		$langs->load('place@place');
+
+		$list_floor = $this->getFloorList($fk_building);
+
+		if( is_array($list_floor) && sizeof($list_floor) > 0)
+		{
+			$out .= '<table width="100%;" class="noborder">';
+			//$out .=  '<table class="noborder">'."\n";
+		    $out .=  '<tr class="liste_titre">';
+		    $out .= '<th class="liste_titre">'.$langs->trans('FloorNumber').'</th>';
+		    $out .= '<th class="liste_titre">'.$langs->trans('FloorOrder').'</th>';
+		    $out .=  '</tr>';
+
+			foreach ($list_floor as $key => $floor)
+			{
+			    $out .= '<tr>';
+			    $out .= '<td>';
+			    $out .= $floor->ref;
+				$out .= '</td>';
+				$out .= '<td>';
+				$out .= $floor->pos;
+				$out .= '</td>';
+
+				$out .= '</tr>';
+			}
+
+			$out .= '</table>';
+
+		}
+		else if($list_floor < 0)
+			setEventMessage($this->error);
+		else {
+			$out.='<div class="info">'.$langs->trans('NoFloorFoundForThisBuilding').'</div>';
+		}
+
+		return $out;
+
+	}
+
+
+	/**
+	 *	Return list of floors for fk_building
+	 *
+	 *	@param		int		$socid		To filter on a particular third party
+	 * 	@return		array				Business list array
+	 */
+	function getFloorList($fk_building)
+	{
+		global $conf;
+
+		$error='';
+		if(! $fk_building>0)
+		{
+			$error++;
+			$this->error = '$fk_building must be provided';
+		}
+
+		if(!$error)
+		{
+			$floor = array();
+
+			$sql = 'SELECT rowid, ref, pos, fk_building';
+			$sql.= ' FROM '.MAIN_DB_PREFIX .'place_floor';
+			$sql.= " WHERE entity = ".$conf->entity;
+			$sql.= " AND fk_building = ".$fk_building;
+
+			dol_syslog(get_class($this)."::getFloorList sql=".$sql, LOG_DEBUG);
+			$resql=$this->db->query($sql);
+			if ($resql)
+			{
+				$num = $this->db->num_rows($resql);
+				if ($num)
+				{
+					$i = 0;
+					while ($i < $num)
+					{
+						$obj = $this->db->fetch_object($resql);
+
+						$floorstatic = new stdClass($this->db);
+						$floorstatic->id				=	$obj->rowid;
+						$floorstatic->ref				=	$obj->ref;
+						$floorstatic->pos				=	$obj->pos;
+						$floorstatic->fk_building		=	$obj->fk_building;
+
+						$floor[$i] = $floorstatic;
+						$i++;
+					}
+				}
+				return $floor;
+			}
+			else
+			{
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+
+		}
+		else
+		{
+			return -1;
+		}
+
+	}
+
+	/**
+	 * Function to show floors form to add/edit database
+	 */
+	function show_floor_form($fk_building,$show_link_delete=0)
+	{
+		global $langs;
+
+		$formstatic = new Form($this->db);
+
+		$langs->load('place@place');
+
+		$list_floor = $this->getFloorList($fk_building);
+
+		if( is_array($list_floor) && count($list_floor) > 0)
+		{
+			foreach ($list_floor as $key => $floor)
+			{
+				$floor_id[]			= $floor->id;
+				$floor_ref[] 		= $floor->ref;
+				$floor_pos[] 		= $floor->pos;
+			}
+		}
+		else
+		{
+			$floor_ref		= GETPOST('floor_ref');
+			$floor_pos		= GETPOST('floor_pos');
+		}
+
+		$out .= '<div id="form_floor" class="dol_form">';
+
+
+		// Show existent
+		$i=0;
+		while(isset($floor_ref[$i]))
+		{
+			$out .= '<ul class="edit_floor">';
+			$out .= '<li class="edit">';
+			$out .= '<label>'.$langs->trans("FloorNumber");
+			$out .= '</label>';
+			$out .= '<input type="text" name="floor_ref[]" value="'.$floor_ref[$i].'"/>';
+			if($show_link_delete)
+				$out .= '<a href="'.$_SERVER['PHP_SELF'].'?action=delete_floor&amp;id='.$fk_building.'&amp;id_floor='. $floor_id[$i].'">'.img_picto($langs->trans('Delete'),'delete').'</a> ';
+			$out .= '</li>';
+
+
+			$out .= '<li class="edit">';
+			$out .= '<label for="carac">'.$langs->trans("FloorOrder").'</label>';
+			$out .= '<input type="text" name="floor_pos[]"  size="6" value="'.$floor_pos[$i].'"/>';
+			$out .= '</li>';
+
+			$out .= '</ul>';
+
+			$i++;
+		}
+
+		$out .= '</div>';
+		$out .= '<p><a href="#" id="addfloor">'.img_picto('','edit_add').' '.$langs->trans('AddFloor').'</a></p>';
+		//$out .= '</form>';
+
+		return $out;
+
+	}
+
+	/**
+	 *	Add/Update floors data by $this->floors
+	 *
+	 *	@return	void
+	 */
+	function insertFloors($user)
+	{
+		global $conf, $langs;
+
+		if (sizeof($this->floors) > 0)
+		{
+			dol_syslog(get_class($this)."::insertFloors id=".$this->id, LOG_DEBUG);
+
+			$result=$this->deleteFloorsForBuilding();
+
+			$error=0;
+			$created=array();
+
+
+			$this->db->begin();
+
+			foreach($this->floors as $key => $floor)
+			{
+				// Insert request
+				$sql = "INSERT INTO ".MAIN_DB_PREFIX."place_floor (";
+				$sql.= " ref,";
+				$sql.= " fk_user_create,";
+				$sql.= " entity,";
+				$sql.= " pos,";
+				$sql.= " fk_building";
+				$sql.= ") VALUES (";
+				$sql.= " '".$floor['ref']."',";
+				$sql.= " '".$user->id."',";
+				$sql.= " '".$conf->entity."',";
+				$sql.= " '".$floor['pos']."',";
+				$sql.= " '".$floor['fk_building']."'";
+				//...
+				$sql.= ")";
+
+				dol_syslog(get_class($this)."::insertFloors sql=".$sql, LOG_DEBUG);
+				$resql=$this->db->query($sql);
+				if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+
+				if (! $error)
+				{
+					$created[] = $this->db->last_insert_id(MAIN_DB_PREFIX."place_floor");
+				}
+			}
+
+			// Commit or rollback
+			if ($error)
+			{
+				foreach($this->errors as $errmsg)
+				{
+					dol_syslog(get_class($this)."::insertFloors ".$errmsg, LOG_ERR);
+					$this->error.=($this->error?', '.$errmsg:$errmsg);
+				}
+				$this->db->rollback();
+				return -1*$error;
+			}
+			else
+			{
+				$this->db->commit();
+				$result = sizeof($created);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 *  Delete floors for object in database
+	 *
+	 *  @return	int					 <0 if KO, >0 if OK
+	 */
+	function deleteFloorsForBuilding()
+	{
+		global $conf, $langs;
+		$error=0;
+
+		$this->db->begin();
+
+		if (! $error)
+		{
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_floor";
+			$sql.= " WHERE fk_building=".$this->id;
+
+			dol_syslog(get_class($this)."::deleteFloorsForBuilding sql=".$sql);
+			$resql = $this->db->query($sql);
+			if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+		}
+
+		// Commit or rollback
+		if ($error)
+		{
+			foreach($this->errors as $errmsg)
+			{
+				dol_syslog(get_class($this)."::deleteFloorsForBuilding ".$errmsg, LOG_ERR);
+				$this->error.=($this->error?', '.$errmsg:$errmsg);
+			}
+			$this->db->rollback();
+			return -1*$error;
+		}
+		else
+		{
+			$this->db->commit();
+			return 1;
+		}
+	}
+
+	/**
+	 *  Delete unique floor in database
+	 *
+	 *  @param  int		$id	 		id of floor to delete
+	 *  @return	int					<0 if KO, >0 if OK
+	 */
+	function deleteFloor($id)
+	{
+		global $conf, $langs;
+		$error=0;
+
+		$this->db->begin();
+
+		if (! $error)
+		{
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_floor";
+			$sql.= " WHERE rowid=".$id;
+
+			dol_syslog(get_class($this)."::deleteFloor sql=".$sql);
+			$resql = $this->db->query($sql);
+			if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+		}
+
+		// Commit or rollback
+		if ($error)
+		{
+			foreach($this->errors as $errmsg)
+			{
+				dol_syslog(get_class($this)."::deleteFloor ".$errmsg, LOG_ERR);
+				$this->error.=($this->error?', '.$errmsg:$errmsg);
+			}
+			$this->db->rollback();
+			return -1*$error;
+		}
+		else
+		{
+			$this->db->commit();
+			return 1;
+		}
+	}
+
 
 	/**
 	 *	Load an object from its id and create a new one in database
