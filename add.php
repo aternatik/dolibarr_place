@@ -30,6 +30,8 @@ if (! $res) $res=@include("../../../main.inc.php");	// For "custom" directory
 if (! $res) die("Include of main fails");
 
 require 'class/place.class.php';
+require 'class/building.class.php';
+require 'lib/place.lib.php';
 
 
 // Load traductions files requiredby by page
@@ -67,9 +69,8 @@ if ($user->societe_id > 0)
 /*******************************************************************
 * ACTIONS
 *
-* Put here all code to do according to value of "action" parameter
 ********************************************************************/
-if ($action == 'confirm_add')
+if ($action == 'confirm_add_place')
 {
 	$error='';
 
@@ -124,6 +125,61 @@ if ($action == 'confirm_add')
 		$action = '';
 	}
 }
+elseif ($action == 'confirm_add_building')
+{
+	$error='';
+
+	$ref=GETPOST('ref','alpha');
+	$fk_place=GETPOST('id','int');
+	$description=GETPOST('description','alpha');
+	$lat=GETPOST('lat','alpha');
+	$lng=GETPOST('lng','alpha');
+
+	if (empty($ref))
+	{
+		$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Ref"));
+		setEventMessage($mesg, 'errors');
+		$error++;
+	}
+
+	if (!$fk_place || $fk_place < 0)
+	{
+		$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Place"));
+		setEventMessage($mesg, 'errors');
+		$error++;
+	}
+
+
+	if (! $error)
+	{
+		$object=new Building($db);
+		$object->ref=GETPOST('ref','alpha');
+		$object->fk_place=$fk_place;
+		$object->description=GETPOST('description','alpha');
+		$object->lat=GETPOST('lat','alpha');
+		$object->lng=GETPOST('lng','alpha');
+
+		$result=$object->create($user);
+		if ($result > 0)
+		{
+			// Creation OK
+			$db->commit();
+			setEventMessage($langs->trans('BuildingCreatedWithSuccess'));
+			Header("Location: building/fiche.php?id=" . $object->id);
+			return;
+		}
+		else
+		{
+			// Creation KO
+			setEventMessage($object->error, 'errors');
+			$action = 'add_building';
+		}
+	}
+	else
+	{
+		$action = 'add_building';
+	}
+}
 
 
 
@@ -133,114 +189,195 @@ if ($action == 'confirm_add')
 *
 * Put here all code to build page
 ****************************************************/
-$pagetitle=$langs->trans('AddPlace');
-llxHeader('',$pagetitle,'');
 
 $form=new Form($db);
-
 $object = new Place($db);
 
-// Put here content of your page
+if(!$action) {
 
-// Example 1 : Adding jquery code
-print '<script type="text/javascript" language="javascript">
-jQuery(document).ready(function() {
-	function init_myfunc()
+	$pagetitle=$langs->trans('AddPlace');
+	llxHeader('',$pagetitle,'');
+	print_fiche_titre($pagetitle,'','place_32.png@place');
+
+
+	print '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_place">';
+	print '<input type="hidden" name="action" value="confirm_add_place" />';
+
+	print '<table class="border" width="100%">';
+
+	// Ref / label
+	$field = 'ref';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'" class="fieldrequired">';
+	print $langs->trans('PlaceFormLabel_'.$field);
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'" />';
+	print '</td>';
+	print '</tr>';
+
+	// Associated socpeople
+	$field = 'fk_socpeople';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'" class="fieldrequired">';
+	print $langs->trans('PlaceFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	// Contact list with company name
+	$ret = $form->select_contacts($socid,$$field,$field,1,'','','','',1);
+	//$form->select_contacts(  $forcecombo=0, $event=array(), $options_only=false)
+	print '</td>';
+	print '</tr>';
+
+	// Description
+	$field = 'description';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('PlaceFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	require_once (DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+	$doleditor = new DolEditor($field, $$field, 160, '', '', false);
+	$doleditor->Create();
+	print '</td>';
+	print '</tr>';
+
+	// Latitude
+	$field = 'lat';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('PlaceFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'">';
+	print '</td>';
+	print '</tr>';
+
+	// Longitude
+	$field = 'lng';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('PlaceFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'">';
+	print '</td>';
+	print '</tr>';
+
+	print '</table>';
+
+	print '<div style="text-align: center">
+		<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
+		</div>';
+
+	print '</form>';
+}
+else if($action == 'add_building' && $user->rights->place->write)
+{
+
+	$pagetitle=$langs->trans('AddBuilding');
+	llxHeader('',$pagetitle,'');
+
+	if($object->fetch($id) > 0)
 	{
-		jQuery("#myid").removeAttr(\'disabled\');
-		jQuery("#myid").attr(\'disabled\',\'disabled\');
+		$head=placePrepareHead($object);
+		dol_fiche_head($head, 'place', $langs->trans("PlaceSingular"),0,'place@place');
 	}
-	init_myfunc();
-	jQuery("#mybutton").click(function() {
-		init_needroot();
-	});
-});
-</script>';
+	print_fiche_titre($pagetitle,'','building_32.png@place');
 
 
-print_fiche_titre($pagetitle,'','place_32.png@place');
+	print '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
+	print '<input type="hidden" name="action" value="confirm_add_building" />';
+	print '<input type="hidden" name="id" value="'.$id.'" />';
 
+	print '<table class="border" width="100%">';
 
-print '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_place">';
-print '<input type="hidden" name="action" value="confirm_add" />';
+	// Ref / label
+	$field = 'ref';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'" class="fieldrequired">';
+	print $langs->trans('BuildingFormLabel_'.$field);
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'" />';
+	print '</td>';
+	print '</tr>';
 
-print '<table class="border" width="100%">';
+	// Associated place
+	$field = 'fk_place';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'" class="fieldrequired">';
+	print $langs->trans('BuildingFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	// Contact list with company name
+	print $object->getElementUrl($id, 'place',1);
+	//$ret = $form->select_places($socid,$$field,$field,1,'','','','',1);
+	//$form->select_contacts(  $forcecombo=0, $event=array(), $options_only=false)
+	print '</td>';
+	print '</tr>';
 
-// Ref / label
-$field = 'ref';
-print '<tr>';
-print '<td>';
-print '<label for="'.$field.'" class="fieldrequired">';
-print $langs->trans('PlaceFormLabel_'.$field);
-print '</td>';
-print '<td>';
-print '<input type="text" name="'.$field.'" value="'.$$field.'" />';
-print '</td>';
-print '</tr>';
+	// Description
+	$field = 'description';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('BuildingFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	require_once (DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+	$doleditor = new DolEditor($field, $$field, 160, '', '', false);
+	$doleditor->Create();
+	print '</td>';
+	print '</tr>';
 
-// Associated socpeople
-$field = 'fk_socpeople';
-print '<tr>';
-print '<td>';
-print '<label for="'.$field.'" class="fieldrequired">';
-print $langs->trans('PlaceFormLabel_'.$field);
-print '</label>';
-print '</td>';
-print '<td>';
-// Contact list with company name
-$ret = $form->select_contacts($socid,$$field,$field,1,'','','','',1);
-//$form->select_contacts(  $forcecombo=0, $event=array(), $options_only=false)
-print '</td>';
-print '</tr>';
+	// Latitude
+	$field = 'lat';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('BuildingFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'">';
+	print '</td>';
+	print '</tr>';
 
-// Description
-$field = 'description';
-print '<tr>';
-print '<td>';
-print '<label for="'.$field.'">';
-print $langs->trans('PlaceFormLabel_'.$field);
-print '</label>';
-print '</td>';
-print '<td>';
-require_once (DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
-$doleditor = new DolEditor($field, $$field, 160, '', '', false);
-$doleditor->Create();
-print '</td>';
-print '</tr>';
+	// Longitude
+	$field = 'lng';
+	print '<tr>';
+	print '<td>';
+	print '<label for="'.$field.'">';
+	print $langs->trans('BuildingFormLabel_'.$field);
+	print '</label>';
+	print '</td>';
+	print '<td>';
+	print '<input type="text" name="'.$field.'" value="'.$$field.'">';
+	print '</td>';
+	print '</tr>';
 
-// Latitude
-$field = 'lat';
-print '<tr>';
-print '<td>';
-print '<label for="'.$field.'">';
-print $langs->trans('PlaceFormLabel_'.$field);
-print '</label>';
-print '</td>';
-print '<td>';
-print '<input type="text" name="'.$field.'" value="'.$$field.'">';
-print '</td>';
-print '</tr>';
+	print '</table>';
 
-// Longitude
-$field = 'lng';
-print '<tr>';
-print '<td>';
-print '<label for="'.$field.'">';
-print $langs->trans('PlaceFormLabel_'.$field);
-print '</label>';
-print '</td>';
-print '<td>';
-print '<input type="text" name="'.$field.'" value="'.$$field.'">';
-print '</td>';
-print '</tr>';
-
-print '</table>';
-
-print '<div style="text-align: center">
+	print '<div style="text-align: center">
 	<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
 	</div>';
 
-print '</form>';
+	print '</form>';
+}
 
 
 // End of page

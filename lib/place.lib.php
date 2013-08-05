@@ -64,7 +64,7 @@ function placePrepareHead($object)
     $head[$h][2] = 'place';
 	$h++;
 
-	$head[$h][0] = dol_buildpath('/place/building/fiche.php',1).'?id='.$object->id;
+	$head[$h][0] = dol_buildpath('/place/building/list.php',1).'?id='.$object->id;
 	$head[$h][1] = $langs->trans("Buildings");
     $head[$h][2] = 'buildings';
 	$h++;

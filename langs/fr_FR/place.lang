@@ -27,8 +27,8 @@ Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
 Menu110110PlaceIndex=Gestion des lieux
 Menu110110PlaceAdd=Ajouter un lieu
 Permission1101101=Voir les lieux
-Permission1101101=Modifier les lieux
-Permission1101101=Effacer les lieux
+Permission1101102=Modifier les lieux
+Permission1101103=Effacer les lieux
 
 #
 # Page d'administration
@@ -64,7 +64,17 @@ OSMLink=Lien Open Street Map
 ShowInOSM=Afficher le point sur OSM
 SeeOrEdit=Voir/éditer
 
+
 #
 # Bâtiments
 #
 Buildings=Bâtiments
+BuildingSingular=Bâtiment
+AddBuilding=Ajouter un bâtiment
+BuildingFormLabel_ref=Repère / nom du bâtiment
+BuildingFormLabel_fk_place=Lieu du bâtiment
+BuildingFormLabel_description=Description du bâtiment
+BuildingFormLabel_lat=Latitude
+BuildingFormLabel_lng=Longitude
+BuildingCreatedWithSuccess=Bâtiment ajouté
+BuildingPlaceName=Nom du lieu
