@@ -237,6 +237,82 @@ print $sql;
     }
 
     /**
+     *	Load all objects into $this->lines
+     *
+     *  @param	string		$sortorder    sort order
+     *  @param	string		$sortfield    sort field
+     *  @param	int			$limit		  limit page
+     *  @param	int			$offset    	  page
+     *  @param	array		$filter    	  filter output
+     *  @return int          	<0 if KO, >0 if OK
+     */
+    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter='')
+    {
+    	global $conf;
+    	$sql="SELECT ";
+    	$sql.= " t.rowid,";
+    	$sql.= " t.ref,";
+    	//$sql.= " t.fk_soc,";
+    	$sql.= " t.fk_place,";
+    	$sql.= " t.description,";
+    	$sql.= " t.lat,";
+    	$sql.= " t.lng,";
+    	$sql.= " t.note_public,";
+    	$sql.= " t.note_private,";
+    	$sql.= " t.fk_user_creat,";
+    	$sql.= " t.tms";
+    	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_building as t ';
+    	$sql.= " WHERE t.entity IN (".getEntity('place').")";
+
+    	//Manage filter
+    	if (!empty($filter)){
+    		foreach($filter as $key => $value) {
+    			if (strpos($key,'date')) {
+    				$sql.= ' AND '.$key.' = \''.$this->db->idate($value).'\'';
+    			}
+    			else {
+    				$sql.= ' AND '.$key.' LIKE \'%'.$value.'%\'';
+    			}
+    		}
+    	}
+    	$sql.= " GROUP BY t.rowid, t.ref";
+    	$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit( $limit + 1 ,$offset);
+    	dol_syslog(get_class($this)."::fetch_all sql=".$sql, LOG_DEBUG);
+    	$resql=$this->db->query($sql);
+    	if ($resql)
+    	{
+    		$num = $this->db->num_rows($resql);
+    		if ($num)
+    		{
+    			$i = 0;
+    			while ($i < $num)
+    			{
+    				$obj = $this->db->fetch_object($resql);
+    				$line = new Place($this->db);
+    				$line->id			=	$obj->rowid;
+    				$line->ref				=	$obj->ref;
+    				//$line->fk_soc			=	$obj->fk_soc;
+    				$line->fk_place			=	$obj->fk_place;
+    				$line->description		=	$obj->description;
+    				$line->lat				=	$obj->lat;
+    				$line->lng				=	$obj->lng;
+    				$line->fk_user_create	=	$obj->fk_user_create;
+
+    				$this->lines[$i] = $line;
+    				$i++;
+    			}
+    			$this->db->free($resql);
+    		}
+    		return $num;
+    	}
+    	else
+    	{
+    		$this->error = $this->db->lasterror();
+    		return -1;
+    	}
+    }
+
+    /**
      *    	Load the place of object from id $this->fk_place into this->place
      *
      *		@return		int					<0 if KO, >0 if OK

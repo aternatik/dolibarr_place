@@ -225,7 +225,7 @@ class Place extends CommonObject
     }
 
     /**
-     *	Load all objects into $this->line
+     *	Load all objects into $this->lines
      *
      *  @param	string		$sortorder    sort order
 	 *  @param	string		$sortfield    sort field
@@ -479,6 +479,22 @@ class Place extends CommonObject
 		if ($withpicto && $withpicto != 2) $result.=' ';
 		$result.=$lien.$this->ref.$lienfin;
 		return $result;
+	}
+
+	function printInfoTable()
+	{
+		global $langs;
+		print '<table width="100%" class="border">';
+
+		// Ref / label
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("NameOfThePlace") . '</td>';
+		print '<td   width="30%">';
+		print $this->getNomUrl(1);
+		print '</td>';
+		print '</tr>';
+
+		print '</table>';
 	}
 
 
