@@ -446,6 +446,40 @@ class Place extends CommonObject
 		}
 	}
 
+	/**
+	 *	Return clicable link of object (with eventually picto)
+	 *
+	 *	@param      int		$withpicto		Add picto into link
+	 *	@param      string	$option			Where point the link ('compta', 'expedition', 'document', ...)
+	 *	@param      string	$get_params    	Parametres added to url
+	 *	@return     string          		String with URL
+	 */
+	function getNomUrl($withpicto=0,$option='', $get_params='')
+	{
+		global $langs;
+
+		$result='';
+		if ($option == '')
+		{
+			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
+			$picto='place@place';
+		}
+		if ($option == 'building@place')   // deprecated
+		{
+			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
+			$picto='building';
+		}
+
+		$lienfin='</a>';
+
+
+		$label=$langs->trans("ShowPlace").': '.$this->ref;
+
+		if ($withpicto) $result.=($lien.img_object($label,$picto).$lienfin);
+		if ($withpicto && $withpicto != 2) $result.=' ';
+		$result.=$lien.$this->ref.$lienfin;
+		return $result;
+	}
 
 
 	/**

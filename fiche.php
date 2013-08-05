@@ -235,7 +235,7 @@ if($object->fetch($id) > 0)
 		print '<tr>';
 		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
 		print '<td   width="30%">';
-		print '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom=17" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
+		print '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
 		print '</td>';
 		print '</tr>';
 
@@ -255,9 +255,20 @@ if($object->fetch($id) > 0)
 	{
 
 		// Edit place
-		print '<div class="inline-block divButAction">';
-		print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&amp;action=edit" class="butAction">'.$langs->trans('Edit').'</a>';
-		print '</div>';
+		if($user->rights->place->write)
+		{
+			print '<div class="inline-block divButAction">';
+			print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&amp;action=edit" class="butAction">'.$langs->trans('Edit').'</a>';
+			print '</div>';
+		}
+
+		// Add building
+		if($user->rights->place->write)
+		{
+			print '<div class="inline-block divButAction">';
+			print '<a href="add.php?id='.$id.'&amp;action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
+			print '</div>';
+		}
 	}
 
 
