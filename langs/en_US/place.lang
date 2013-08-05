@@ -23,6 +23,12 @@ Module110110Name = Place managment
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module110110Desc = manage locations, buildings, floors and rooms
+Menu110110PlaceIndex=Place management
+Menu110110PlaceAdd=Add new place
+Menu110110BuildingsList=Buildings list
+Permission1101101=See places
+Permission1101102=Modify places
+Permission1101103=Delete places
 
 #
 # Admin page
@@ -37,3 +43,53 @@ PlaceSetupPage = Place module setup page
 About = About
 PlaceAbout = About Place module
 PlaceAboutPage = Place module about page
+
+#
+# Page Place
+#
+PlacePageName=Place management
+PlacePageIndex=Place management
+NoPlaceInDatabase=No place in databas
+AddPlace=Add place
+PlaceFormLabel_ref=Reference / label
+PlaceFormLabel_description=Description
+PlaceFormLabel_fk_socpeople=People to use for address
+PlaceFormLabel_lat=Latitude
+PlaceFormLabel_lng=Longitude
+PlaceCreatedWithSuccess=Place added successfully
+FichePlace=Place card
+PlaceSingular=Place
+SocPeopleAssociated=Contact/address associated
+OSMLink=Link to Open Street Map
+ShowInOSM=See location into OSM
+SeeOrEdit=Edit/see
+NameOfThePlace=Location name
+
+
+#
+# Bâtiments
+#
+Buildings=Buildings
+BuildingSingular=Building
+AddBuilding=Add building
+BuildingFormLabel_ref=Landmark / label
+BuildingFormLabel_fk_place=Place
+BuildingFormLabel_description=Building description
+BuildingFormLabel_lat=Latitude
+BuildingFormLabel_lng=Longitude
+BuildingCreatedWithSuccess=Building sucessfully added
+BuildingPlaceName=Location
+BuildingList=Buildings list
+
+#
+# Etages 
+#
+Floors=Floors
+FloorManagment=Floor management
+AddFloor=Add floor
+FloorNumber=Landmark / name
+FloorOrder=Floor number / position
+FloorsUpdated=Floors updated
+FloorEdition=Edit floors
+FloorDeletedWithSuccess=Floor successfully deleted
+NoFloorFoundForThisBuilding=No floor for this building
