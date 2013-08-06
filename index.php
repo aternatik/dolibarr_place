@@ -56,7 +56,7 @@ if ($page == -1) {
 	$page = 0 ;
 }
 
-$limit = $conf->global->limit;
+$limit = $conf->liste_limit;
 $offset = $limit * $page ;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
