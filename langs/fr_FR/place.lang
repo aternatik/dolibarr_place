@@ -46,6 +46,13 @@ PlaceAbout = À propos du module Place
 PlaceAboutPage = Page à propos du module Place
 
 #
+# Divers
+#
+BackToBuildingList=Retour à la liste des bâtiments
+PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
+
+
+#
 # Page Place
 #
 PlacePageName=Gestion des lieux

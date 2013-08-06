@@ -290,9 +290,16 @@ else if($action == 'add_building' && $user->rights->place->write)
 	if($object->fetch($id) > 0)
 	{
 		$head=placePrepareHead($object);
-		dol_fiche_head($head, 'place', $langs->trans("PlaceSingular"),0,'place@place');
+		dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+
+		$object->printInfoTable();
+
+		print '</div>';
+
+		$link_back = '<a href="building/list.php?id='.$id.'">'.$langs->trans('BackToBuildingList').'</a>';
 	}
-	print_fiche_titre($pagetitle,'','building_32.png@place');
+
+	print_fiche_titre($pagetitle,$link_back,'building_32.png@place');
 
 
 	print '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
@@ -314,20 +321,25 @@ else if($action == 'add_building' && $user->rights->place->write)
 	print '</tr>';
 
 	// Associated place
-	$field = 'fk_place';
-	print '<tr>';
-	print '<td>';
-	print '<label for="'.$field.'" class="fieldrequired">';
-	print $langs->trans('BuildingFormLabel_'.$field);
-	print '</label>';
-	print '</td>';
-	print '<td>';
-	// Contact list with company name
-	print $object->getElementUrl($id, 'place',1);
-	//$ret = $form->select_places($socid,$$field,$field,1,'','','','',1);
-	//$form->select_contacts(  $forcecombo=0, $event=array(), $options_only=false)
-	print '</td>';
-	print '</tr>';
+	if(!$id)
+	{
+		$field = 'fk_place';
+		print '<tr>';
+		print '<td>';
+		print '<label for="'.$field.'" class="fieldrequired">';
+		print $langs->trans('BuildingFormLabel_'.$field);
+		print '</label>';
+		print '</td>';
+		print '<td>';
+
+		print '<a href="index.php">';
+		print $langs->trans('PleaseSelectPlaceFirst');
+		print '</a>';
+
+		//$ret = $form->select_places($socid,$$field,$field,1,'','','','',1);
+		print '</td>';
+		print '</tr>';
+	}
 
 	// Description
 	$field = 'description';

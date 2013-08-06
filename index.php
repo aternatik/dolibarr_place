@@ -94,22 +94,24 @@ else
 {
 	print '<table class="noborder" width="100%">'."\n";
 	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans('SocPeopleAssociated'),$_SERVER['PHP_SELF'],'t.fk_socpeople','',$param,'',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans('PlaceSingular'),$_SERVER['PHP_SELF'],'t.ref','',$param,'',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans('SocPeopleAssociated'),$_SERVER['PHP_SELF'],'t.fk_socpeople','',$param,'',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans('Description'),$_SERVER['PHP_SELF'],'t.description','',$param,'',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans('Edit'));
 	print '</tr>';
 
 	foreach ($object->lines as $place)
 	{
+
 		print '<tr><td>';
+		print $object->getElementUrl($place->id, 'place',1);
+		print '</td>';
+
+
+		print '<td>';
 		$contactstat = new Contact($db);
 		if($contactstat->fetch($place->fk_socpeople))
 			print $contactstat->getNomUrl(1);
-		print '</td>';
-
-		print '<td>';
-		print $place->ref;
 		print '</td>';
 
 		print '<td>';

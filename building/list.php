@@ -153,7 +153,7 @@ print '<div class="tabsAction">';
 
 // Add place
 print '<div class="inline-block divButAction">';
-print '<a href="../add.php?action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
+print '<a href="../add.php?action=add_building'.($id?'&amp;id='.$id:'').'" class="butAction">'.$langs->trans('AddBuilding').'</a>';
 print '</div>';
 
 

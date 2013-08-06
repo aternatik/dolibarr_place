@@ -45,6 +45,12 @@ PlaceAbout = About Place module
 PlaceAboutPage = Place module about page
 
 #
+# miscellaneous
+#
+BackToBuildingList=Back to building list
+PleaseSelectPlaceFirst=Please first select a place
+
+#
 # Page Place
 #
 PlacePageName=Place management
