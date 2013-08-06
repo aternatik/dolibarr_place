@@ -260,10 +260,10 @@ class modPlace extends DolibarrModules
 
 		// Menus declaration
 		$this->menu[$r]=array(
-			'fk_menu'=>'fk_mainmenu=companies',
+			'fk_menu'=>'fk_mainmenu=tools',
 			'type'=>'left',
 			'titre'=> 'Menu110110PlaceIndex',
-			'mainmenu'=>'companies',
+			'mainmenu'=>'tools',
 			'leftmenu'=> 'place',
 			'url'=> '/place/index.php',
 			'langs'=> 'place@place',
@@ -276,10 +276,10 @@ class modPlace extends DolibarrModules
 
 
 		$this->menu[$r++]=array(
-			'fk_menu'=>'fk_mainmenu=companies,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
+			'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
 			'type'=> 'left', // Toujours un menu gauche
 			'titre'=> 'Menu110110PlaceAdd',
-			'mainmenu'=> 'companies',
+			'mainmenu'=> 'tools',
 			'leftmenu'=> '', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
 			'url'=> '/place/add.php',
 			'langs'=> 'place@place',
@@ -291,10 +291,10 @@ class modPlace extends DolibarrModules
 		);
 
 		$this->menu[$r++]=array(
-			'fk_menu'=>'fk_mainmenu=companies,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
+			'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
 			'type'=> 'left', // Toujours un menu gauche
 			'titre'=> 'Menu110110BuildingsList',
-			'mainmenu'=> 'companies',
+			'mainmenu'=> 'tools',
 			'leftmenu'=> '', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
 			'url'=> '/place/building/list.php',
 			'langs'=> 'place@place',
