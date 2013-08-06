@@ -107,7 +107,6 @@ else
 		print $object->getElementUrl($place->id, 'place',1);
 		print '</td>';
 
-
 		print '<td>';
 		$contactstat = new Contact($db);
 		if($contactstat->fetch($place->fk_socpeople))
@@ -119,10 +118,7 @@ else
 		print '</td>';
 
 		print '<td>';
-
-		print '<a href="fiche.php?id='.$place->id.'">'.$langs->trans('SeeOrEdit').'</a>';
-
-
+		print ' <a href="building/list.php?id='.$place->id.'">'.img_object('', 'building@place').' '.$langs->trans('Buildings').'</a>';
 		print '</td></tr>';
 	}
 
