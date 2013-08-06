@@ -155,7 +155,7 @@ if($object->fetch($id) > 0 )
 	/*---------------------------------------
 	 * View building info
 	*/
-	$ret_html = $object->printInfoTable();
+	$ret_html = $object->printShortInfoTable();
 
 
 	/*

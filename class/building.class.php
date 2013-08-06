@@ -480,7 +480,7 @@ print $sql;
 
 
 	/**
-	 *  Show html array with short informations of object
+	 *  Show html array with informations of object
 	 *
 	 *  @return	void
 	 */
@@ -489,24 +489,13 @@ print $sql;
 		global $conf,$langs;
 		print '<table width="100%" class="border">';
 
-
 		// Ref
 		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("Ref") . '</td>';
+		print '<td  width="20%">' . $langs->trans("BuildingFormLabel_ref") . '</td>';
 		print '<td   width="30%">';
 		print $this->ref;
 		print '</td>';
 		print '</tr>';
-
-		/* Place
-		 print '<tr>';
-		print '<td  width="20%">' . $langs->trans("BuildingPlaceName") . '</td>';
-		print '<td   width="30%">';
-		print $object->place->getNomUrl(1);
-		print '</td>';
-		print '</tr>';
-		*/
-
 
 		// Description
 		print '<tr>';
@@ -540,6 +529,30 @@ print $sql;
 		print '</td>';
 		print '</tr>';
 
+
+		print '</table>';
+
+		return '';
+	}
+
+	/**
+	 *  Show html array with informations of object
+	 *
+	 *  @return	void
+	 */
+	function printShortInfoTable()
+	{
+		global $conf,$langs;
+		print '<table width="100%" class="border">';
+
+
+		// Ref
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("BuildingFormLabel_ref") . '</td>';
+		print '<td   width="30%">';
+		print $this->ref;
+		print '</td>';
+		print '</tr>';
 
 		print '</table>';
 
