@@ -266,6 +266,7 @@ class Place extends CommonObject
    		$sql.= " GROUP BY t.rowid,t.ref";
    		$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit( $limit + 1 ,$offset);
    		dol_syslog(get_class($this)."::fetch_all sql=".$sql, LOG_DEBUG);
+
    		$resql=$this->db->query($sql);
    		if ($resql)
    		{
@@ -461,13 +462,13 @@ class Place extends CommonObject
 		$result='';
 		if ($option == '')
 		{
-			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
+			$lien = '<a href="'.dol_buildpath('/place/fiche.php',1).'?id='.$this->id. $get_params .'">';
 			$picto='place@place';
 		}
-		if ($option == 'building@place')   // deprecated
+		if ($option == 'building@place')
 		{
-			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
-			$picto='building';
+			$lien = '<a href="'.dol_buildpath('/place/building/fiche.php',1).'?id='.$this->id. $get_params .'">';
+			$picto='building@place';
 		}
 
 		$lienfin='</a>';

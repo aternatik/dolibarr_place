@@ -125,10 +125,9 @@ else
 	foreach ($object->lines as $building)
 	{
 		print '<tr><td>';
-
-
-
-		print $building->ref;
+		$object->ref = $building->ref;
+		$object->id = $building->id;
+		print $object->getNomUrl(1,'building@place');
 		print '</td>';
 
 		print '<td>';
@@ -136,10 +135,7 @@ else
 		print '</td>';
 
 		print '<td>';
-
-		print '<a href="fiche.php?id='.$building->id.'">'.$langs->trans('SeeOrEdit').'</a>';
-
-
+		//print '<a href="fiche.php?id='.$building->id.'">'.$langs->trans('SeeOrEdit').'</a>';
 		print '</td></tr>';
 	}
 

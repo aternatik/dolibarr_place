@@ -41,9 +41,9 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main
 if (! $res) die("Include of main fails");
 
 // Change this following line to use the correct relative path from htdocs
-require '../class/building.class.php';
-require '../class/place.class.php';
-require '../lib/place.lib.php';
+require_once '../class/building.class.php';
+require_once '../class/place.class.php';
+require_once '../lib/place.lib.php';
 
 // Load traductions files requiredby by page
 $langs->load("place@place");

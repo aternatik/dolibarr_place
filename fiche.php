@@ -191,7 +191,7 @@ if($object->fetch($id) > 0)
 
 		// Ref
 		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("Ref") . '</td>';
+		print '<td  width="20%">' . $langs->trans("NameOfThePlace") . '</td>';
 		print '<td   width="30%">';
 		print $object->ref;
 		print '</td>';
