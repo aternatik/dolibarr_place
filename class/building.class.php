@@ -116,10 +116,10 @@ class Building extends CommonObject
 		$sql.= " ".getEntity('building').",";
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
 		$sql.= " ".(! isset($this->label)?'NULL':"'".$this->db->escape($this->label)."'").",";
-		$sql.= " ".(! isset($this->fk_place)?'NULL':"'".$this->fk_place."'").",";
+		$sql.= " ".(empty($this->fk_place)?'0':$this->fk_place).",";
 		$sql.= " ".(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").",";
-		$sql.= " ".(! isset($this->lat)?'NULL':"'".$this->lat."'").",";
-		$sql.= " ".(! isset($this->lng)?'NULL':"'".$this->lng."'").",";
+		$sql.= " ".(empty($this->lat)?'NULL':"'".$this->lat."'").",";
+		$sql.= " ".(empty($this->lng)?'NULL':"'".$this->lng."'").",";
 		$sql.= " ".(! isset($this->note_public)?'NULL':"'".$this->db->escape($this->note_public)."'").",";
 		$sql.= " ".(! isset($this->note_private)?'NULL':"'".$this->db->escape($this->note_private)."'").",";
 		$sql.= " ".$user->id."";
@@ -128,7 +128,7 @@ class Building extends CommonObject
 		$sql.= ")";
 
 		$this->db->begin();
-print $sql;
+
 	   	dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
     	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }

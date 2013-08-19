@@ -36,6 +36,7 @@ Permission1101103=Delete places
 PlaceSetup = Place module setup
 Settings = Settings
 PlaceSetupPage = Place module setup page
+PlaceNothingToSet=Nothing to setup
 
 #
 # About page

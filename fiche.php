@@ -25,8 +25,8 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res=0;
-$res=@include("../../main.inc.php");				// For root directory
-if (! $res) $res=@include("../../../main.inc.php");	// For "custom" directory
+$res=@include("../main.inc.php");				// For root directory
+if (! $res) $res=@include("../../main.inc.php");	// For "custom" directory
 if (! $res) die("Include of main fails");
 
 require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
