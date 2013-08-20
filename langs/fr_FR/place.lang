@@ -101,3 +101,20 @@ FloorsUpdated=Étages mis à jour
 FloorEdition=Éditer les étages
 FloorDeletedWithSuccess=Étage supprimé avec succès
 NoFloorFoundForThisBuilding=Aucun étage pour ce bâtiment.
+FloorManagmentForBuilding=Gestion des étages du bâtiment
+
+#
+# Salles
+#
+Room=Salle
+Rooms=Salles
+AddRoom=Ajouter une salle
+RoomsManagment=Gestion des salles
+NoRoomFoundForThisBuilding=Pas de salle pour ce bâtiment
+AddNewRoomToThisBuilding=Ajouter une salle à ce bâtiment
+RoomFormLabel_ref=Repère de la salle
+RoomFormLabel_fk_building=Bâtiment
+RoomFormLabel_floor=Étage de la salle
+RoomCreatedWithSuccess=Salle ajoutée avec succès
+RoomNumber=Numéro/repère de salle
+RoomOrder=Ordre/position

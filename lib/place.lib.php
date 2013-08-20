@@ -96,6 +96,11 @@ function buildingPrepareHead($object)
 	$head[$h][2] = 'floors';
 	$h++;
 
+	$head[$h][0] = dol_buildpath('/place/building/rooms.php',1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Rooms");
+	$head[$h][2] = 'rooms';
+	$h++;
+
 
 
 	// Show more tabs from modules

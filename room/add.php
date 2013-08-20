@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+/* Copyright (C) 2007-2010	Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2013		Jean-François Ferry	<jfefe@aternatik.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +17,9 @@
  */
 
 /**
- *   	\file       place/building/floors.php
+ *   	\file       place/room/add.php
  *		\ingroup    place
- *		\brief      This file is to manage building floors
+ *		\brief      Page to add a room into place management
  */
 
 //if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
@@ -42,6 +43,7 @@ if (! $res) die("Include of main fails");
 
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
+require_once '../class/room.class.php';
 require_once '../lib/place.lib.php';
 
 // Load traductions files requiredby by page
@@ -53,16 +55,12 @@ $langs->load("other");
 $id			= GETPOST('id','int');
 $action		= GETPOST('action','alpha');
 $fk_place	= GETPOST('fk_place','int');
+$fk_building	= GETPOST('fk_building','int');
 $ref		= GETPOST('ref','alpha');
-$lat		= GETPOST('lat','alpha');
-$lng		= GETPOST('lng','alpha');
 
-$mode		= GETPOST('mode','alpha');
 
 if( ! $user->rights->place->read)
 	accessforbidden();
-
-$object=new Building($db);
 
 
 
@@ -71,59 +69,52 @@ $object=new Building($db);
 *
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
-if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->write )
+if ($action == 'create' && ! $_POST['cancel'])
 {
+	$error='';
 
-	$res = $object->fetch($id);
+	$ref=GETPOST('ref','alpha');
+	$label=GETPOST('label','alpha');
+	$fk_building=GETPOST('fk_building','int');
+	$fk_floor=GETPOST('fk_floor','int');
 
-	$floor_ref	= GETPOST('floor_ref');
-	$floor_pos		= GETPOST('floor_pos');
-
-
-	// Assemblage du tableau des enfants
-	$i=0;
-	while(isset($floor_ref[$i]) && !empty($floor_ref[$i]))
+	if (empty($ref))
 	{
-		$floors[$i]['ref'] 			= $db->escape($floor_ref[$i]);
-		$floors[$i]['pos'] 			= $db->escape($floor_pos[$i]);
-		$floors[$i]['fk_building'] 	= $db->escape($id);
-
-		$i++;
+		$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("RoomFormLabel_ref"));
+		setEventMessage($mesg, 'errors');
+		$error++;
 	}
-	// Datas are added in object and saved with trigger after object creation
-	$object->floors = $floors;
 
-	$result = $object->insertFloors($user);
-	if ( $result > 0)
+
+	if (! $error)
 	{
-		setEventMessage($langs->trans('FloorsUpdated'));
+		$object=new Room($db);
+		$object->ref=GETPOST('ref','alpha');
+		$object->label=GETPOST('label','alpha');
+		$object->fk_building=$fk_building;
+		$object->fk_floor=$fk_floor;
+
+		$result=$object->create($user);
+		if ($result > 0)
+		{
+			// Creation OK
+			$db->commit();
+			setEventMessage($langs->trans('RoomCreatedWithSuccess'));
+			Header("Location: ../building/rooms.php?id=" . $fk_building);
+			return;
+		}
+		else
+		{
+			// Creation KO
+			setEventMessage($object->error, 'errors');
+			$action = 'add_building';
+		}
 	}
 	else
 	{
-		$action="add_floors";
-		$mode='edit';
+		$action = 'add_building';
 	}
 }
-/*
- * Delete child
-*/
-else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->place->delete)
-{
-	$id = GETPOST('id');
-	$id_floor = GETPOST('id_floor');
-
-	$result = $object->deleteFloor($id_floor);
-	if ($result > 0)
-	{
-		setEventMessage($langs->trans('FloorDeletedWithSuccess'));
-		Header("Location: floors.php?action=show_floor_form&id=".$id);
-		exit();
-	}
-	else
-		dol_print_error($db);
-
-}
-
 
 
 
@@ -133,12 +124,15 @@ else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->pla
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('',$langs->trans('FloorManagment'),'','','','',array('/place/js/place.js.php'));
+$pagetitle=$langs->trans('AddRoom');
+llxHeader('',$pagetitle,'');
 
 $form=new Form($db);
+$object=new Building($db);
+$object_room=new Room($db);
 
-
-if($object->fetch($id) > 0 )
+// If we know building
+if($object->fetch($fk_building) > 0)
 {
 
 	$head=placePrepareHead($object->place);
@@ -147,71 +141,92 @@ if($object->fetch($id) > 0 )
 	$ret = $object->place->printInfoTable();
 
 	print '</div>';
-
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),1,'building@place');
-
-
-
+	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
 
 	/*---------------------------------------
 	 * View building info
 	*/
 	$ret_html = $object->printShortInfoTable();
-
-
-	/*
-	 * Floors managment
-	 */
-
 	print '<br />';
-	print_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
 
-	if($action == 'show_floor_form')
+
+}
+
+		if(!$user->rights->place->write)
+			accessforbidden('',0);
+
+	/*---------------------------------------
+	 * Add object
+	*/
+
+	print_fiche_titre($pagetitle,'','room_32.png@place');
+
+	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="action" value="create">';
+	print '<input type="hidden" name="id" value="'.$object_room->id.'">';
+
+	if($fk_building > 0)
+		print '<input type="hidden" name="fk_building" value="'.$fk_building.'">';
+
+	print '<table class="border" width="100%">';
+
+	// Ref
+	print '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans("RoomFormLabel_ref").'</span></td>';
+	print '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object_room->ref).'"></td></tr>';
+
+	// Building
+	if(!$fk_building)
 	{
-
-		$out .= '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
-		$out .='<input type="hidden" name="action" value="update_floors" />';
-		$out .='<input type="hidden" name="id" value="'.$id.'" />';
-		$out .= $object->show_floor_form($id,$user->rights->place->delete);
-
-		$out .='<div style="text-align: center" >
-				<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
-				<input type="submit"  class="button" name="cancel" value="'.$langs->trans('Cancel').'" />
-		</div>';
-
-		$out .= '</form>';
-
-	}
-	else {
-
-		$out .= $object->show_floor_list($id);
+		print '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans("RoomFormLabel_fk_building").'</span></td>';
+		print '<td><input size="12" name="fk_building" value="'.(GETPOST('fk_building') ? GETPOST('fk_building') : $object_room->fk_building).'"></td></tr>';
 
 	}
 
-	print $out;
+	// Floor
+	print '<tr><td width="20%">'.$langs->trans("RoomFormLabel_floor").'</td>';
+	print '<td>';
+	print $object->show_select_floor($fk_building, 'fk_floor');
+	//<input size="12" name="fk_floor" value="'.(GETPOST('fk_floor') ? GETPOST('fk_floor') : $object_room->fk_floor).'">';
+	print ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagmentForBuilding').'</a>';
+	print '</td></tr>';
 
+	// Public note
+	print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
+	print '<td>';
+	print '<textarea name="note_public" cols="80" rows="'.ROWS_3.'">'.($_POST['note_public'] ? GETPOST('note_public','alpha') : $object_room->note_public)."</textarea><br>";
+	print "</td></tr>";
+
+	// Private note
+	if (! $user->societe_id)
+	{
+		print '<tr><td valign="top">'.$langs->trans("NotePrivate").'</td>';
+		print '<td>';
+		print '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object_room->note_private)."</textarea><br>";
+		print "</td></tr>";
+	}
+
+	print '<tr><td align="center" colspan="2">';
+	print '<input name="add" class="button" type="submit" value="'.$langs->trans("Add").'"> &nbsp; ';
+	print '<input type="submit" class="button" name="cancel" Value="'.$langs->trans("Cancel").'"></td></tr>';
+	print '</table>';
+	print '</form>';
+
+
+	print '</div>';
 
 	/*
 	 * Boutons actions
 	*/
 	print '<div class="tabsAction">';
 
-	if ($action != "show_floor_form" )
-	{
 
-		// Add floor
-		if($user->rights->place->write)
-		{
-			print '<div class="inline-block divButAction">';
-			print '<a href="floors.php?id='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('FloorEdition').'</a>';
-			print '</div>';
-		}
-	}
 	print '</div>';
 
-}
+
+
 
 
 

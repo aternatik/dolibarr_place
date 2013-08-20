@@ -574,7 +574,6 @@ print $sql;
 		$langs->load('place@place');
 
 		$list_floor = $this->getFloorList($fk_building);
-
 		if( is_array($list_floor) && sizeof($list_floor) > 0)
 		{
 			$out .= '<table width="100%;" class="noborder">';
@@ -598,6 +597,50 @@ print $sql;
 			}
 
 			$out .= '</table>';
+
+		}
+		else if($list_floor < 0)
+			setEventMessage($this->error);
+		else {
+			$out.='<div class="info">'.$langs->trans('NoFloorFoundForThisBuilding').'</div>';
+		}
+
+		return $out;
+
+	}
+
+	/**
+	 * Function to show floor select list from database read
+	 */
+	function show_select_floor($fk_building,$htmlname)
+	{
+		global $langs;
+
+		if ( ! $fk_building > 0)
+		{
+			return '';
+		}
+		$out = '';
+		$langs->load('place@place');
+
+		$list_floor = $this->getFloorList($fk_building);
+
+		if( is_array($list_floor) && sizeof($list_floor) > 0)
+		{
+			$out .= '<select name="'.$htmlname.'">';
+
+
+			foreach ($list_floor as $key => $floor)
+			{
+				$out .= '<option value="'.$floor->id.'">';
+
+
+				$out .= $floor->pos.' - '.$floor->ref;
+
+				$out .= '</option>';
+			}
+
+			$out .= '</select>';
 
 		}
 		else if($list_floor < 0)
@@ -636,7 +679,7 @@ print $sql;
 			$sql.= ' FROM '.MAIN_DB_PREFIX .'place_floor';
 			$sql.= " WHERE entity = ".$conf->entity;
 			$sql.= " AND fk_building = ".$fk_building;
-
+			$sql.= " ORDER BY pos ASC";
 			dol_syslog(get_class($this)."::getFloorList sql=".$sql, LOG_DEBUG);
 			$resql=$this->db->query($sql);
 			if ($resql)
@@ -751,11 +794,14 @@ print $sql;
 		{
 			dol_syslog(get_class($this)."::insertFloors id=".$this->id, LOG_DEBUG);
 
-			$result=$this->deleteFloorsForBuilding();
-
 			$error=0;
 			$created=array();
 
+			$result=$this->deleteFloorsForBuilding();
+			if(!result)
+			{
+				$error++;
+			}
 
 			$this->db->begin();
 

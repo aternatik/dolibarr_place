@@ -16,9 +16,9 @@
  */
 
 /**
- *   	\file       place/building/floors.php
+ *   	\file       place/building/rooms.php
  *		\ingroup    place
- *		\brief      This file is to manage building floors
+ *		\brief      This file is to manage building rooms
  */
 
 //if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
@@ -42,6 +42,7 @@ if (! $res) die("Include of main fails");
 
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
+require_once '../class/room.class.php';
 require_once '../lib/place.lib.php';
 
 // Load traductions files requiredby by page
@@ -64,65 +65,12 @@ if( ! $user->rights->place->read)
 
 $object=new Building($db);
 
-
-
 /*******************************************************************
 * ACTIONS
 *
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
-if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->write )
-{
 
-	$res = $object->fetch($id);
-
-	$floor_ref	= GETPOST('floor_ref');
-	$floor_pos		= GETPOST('floor_pos');
-
-
-	// Assemblage du tableau des enfants
-	$i=0;
-	while(isset($floor_ref[$i]) && !empty($floor_ref[$i]))
-	{
-		$floors[$i]['ref'] 			= $db->escape($floor_ref[$i]);
-		$floors[$i]['pos'] 			= $db->escape($floor_pos[$i]);
-		$floors[$i]['fk_building'] 	= $db->escape($id);
-
-		$i++;
-	}
-	// Datas are added in object and saved with trigger after object creation
-	$object->floors = $floors;
-
-	$result = $object->insertFloors($user);
-	if ( $result > 0)
-	{
-		setEventMessage($langs->trans('FloorsUpdated'));
-	}
-	else
-	{
-		$action="add_floors";
-		$mode='edit';
-	}
-}
-/*
- * Delete child
-*/
-else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->place->delete)
-{
-	$id = GETPOST('id');
-	$id_floor = GETPOST('id_floor');
-
-	$result = $object->deleteFloor($id_floor);
-	if ($result > 0)
-	{
-		setEventMessage($langs->trans('FloorDeletedWithSuccess'));
-		Header("Location: floors.php?action=show_floor_form&id=".$id);
-		exit();
-	}
-	else
-		dol_print_error($db);
-
-}
 
 
 
@@ -133,7 +81,7 @@ else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->pla
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('',$langs->trans('FloorManagment'),'','','','',array('/place/js/place.js.php'));
+llxHeader('',$langs->trans('RoomManagment'),'','','','',array('/place/js/place.js.php'));
 
 $form=new Form($db);
 
@@ -150,7 +98,7 @@ if($object->fetch($id) > 0 )
 
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
 
 
 
@@ -162,33 +110,71 @@ if($object->fetch($id) > 0 )
 
 
 	/*
-	 * Floors managment
+	 * Floors management
 	 */
 
 	print '<br />';
-	print_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
+	print_fiche_titre($langs->trans('RoomsManagment'),'','room_32.png@place');
 
-	if($action == 'show_floor_form')
-	{
 
-		$out .= '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
-		$out .='<input type="hidden" name="action" value="update_floors" />';
-		$out .='<input type="hidden" name="id" value="'.$id.'" />';
-		$out .= $object->show_floor_form($id,$user->rights->place->delete);
+		$obj_room = new Room($db);
+		// Show room for fk_building
 
-		$out .='<div style="text-align: center" >
-				<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
-				<input type="submit"  class="button" name="cancel" value="'.$langs->trans('Cancel').'" />
-		</div>';
+		$sortorder	= GETPOST('sortorder','alpha');
+		$sortfield	= GETPOST('sortfield','alpha');
+		$page		= GETPOST('page','int');
 
-		$out .= '</form>';
 
-	}
-	else {
+		if (empty($sortorder)) $sortorder="DESC";
+		if (empty($sortfield)) $sortfield="t.rowid";
+		if (empty($arch)) $arch = 0;
 
-		$out .= $object->show_floor_list($id);
+		if ($page == -1) {
+			$page = 0 ;
+		}
 
-	}
+		$limit = $conf->liste_limit;
+		$offset = $limit * $page ;
+		$pageprev = $page - 1;
+		$pagenext = $page + 1;
+
+		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('fk_building'=>$id));
+
+		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
+		{
+			$out .= '<table width="100%;" class="noborder">';
+			//$out .=  '<table class="noborder">'."\n";
+			$out .=  '<tr class="liste_titre">';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomNumber').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomOrder').'</th>';
+			$out .=  '</tr>';
+
+			foreach ($obj_room->lines as $key => $room)
+			{
+				$out .= '<tr>';
+				$out .= '<td>';
+				$out .= $room->ref;
+				$out .= '</td>';
+				$out .= '<td>';
+				$out .= $room->fk_floor;
+				$out .= '</td>';
+
+				$out .= '</tr>';
+			}
+
+			$out .= '</table>';
+
+		}
+		elseif(!sizeof($obj_room->lines)) {
+
+			$out.='<div class="info">'.$langs->trans('NoRoomFoundForThisBuilding').'</div>';
+		}
+		else {
+
+			setEventMessage($obj_room->error);
+		}
+
+
 
 	print $out;
 
@@ -205,7 +191,7 @@ if($object->fetch($id) > 0 )
 		if($user->rights->place->write)
 		{
 			print '<div class="inline-block divButAction">';
-			print '<a href="floors.php?id='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('FloorEdition').'</a>';
+			print '<a href="../room/add.php?fk_building='.$id.'" class="butAction">'.$langs->trans('AddNewRoomToThisBuilding').'</a>';
 			print '</div>';
 		}
 	}
