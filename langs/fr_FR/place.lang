@@ -37,6 +37,7 @@ Permission1101103=Effacer les lieux
 PlaceSetup = Configuration du module Place
 Settings = Réglages
 PlaceSetupPage = Page de réglage du modules Place
+PlaceNothingToSet=Pas de réglages spécifiques pour ce module
 
 #
 # Page À propos

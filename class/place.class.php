@@ -106,14 +106,14 @@ class Place extends CommonObject
         $sql.= ") VALUES (";
 
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
-		$sql.= " ".(! isset($this->fk_soc)?'NULL':"'".$this->fk_soc."'").",";
-		$sql.= " ".(! isset($this->fk_socpeople)?'NULL':"'".$this->fk_socpeople."'").",";
+		$sql.= " ".(empty($this->fk_soc)?'NULL':$this->fk_soc).",";
+		$sql.= " ".(empty($this->fk_socpeople)?'NULL':$this->fk_socpeople).",";
 		$sql.= " ".(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").",";
-		$sql.= " ".(! isset($this->lat)?'NULL':"'".$this->lat."'").",";
-		$sql.= " ".(! isset($this->lng)?'NULL':"'".$this->lng."'").",";
+		$sql.= " ".(empty($this->lat)?'NULL':"'".$this->lat."'").",";
+		$sql.= " ".(empty($this->lng)?'NULL':"'".$this->lng."'").",";
 		$sql.= " ".(! isset($this->note_public)?'NULL':"'".$this->db->escape($this->note_public)."'").",";
 		$sql.= " ".(! isset($this->note_private)?'NULL':"'".$this->db->escape($this->note_private)."'").",";
-		$sql.= " ".(! isset($this->fk_user_creat)?'NULL':"'".$user->id."'")."";
+		$sql.= " ".$user->id;
 		$sql.= ", ".$conf->entity;
 
 		$sql.= ")";
