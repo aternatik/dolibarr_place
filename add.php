@@ -25,13 +25,13 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res=0;
-$res=@include("../../main.inc.php");				// For root directory
-if (! $res) $res=@include("../../../main.inc.php");	// For "custom" directory
+$res=@include("../main.inc.php");				// For root directory
+if (! $res) $res=@include("../../main.inc.php");	// For "custom" directory
 if (! $res) die("Include of main fails");
 
-require 'class/place.class.php';
-require 'class/building.class.php';
-require 'lib/place.lib.php';
+require_once 'class/place.class.php';
+require_once 'class/building.class.php';
+require_once 'lib/place.lib.php';
 
 
 // Load traductions files requiredby by page
