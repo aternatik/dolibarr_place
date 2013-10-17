@@ -47,6 +47,7 @@ class Room extends Place
 	var $fk_building;
 	var $fk_floor;
 	var $type_code;
+	var $capacity;
 	var $note_public;
 	var $note_private;
 	var $fk_user_creat;
@@ -89,6 +90,7 @@ class Room extends Place
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
 		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
+		if (isset($this->capacity)) $this->capacity=trim($this->capacity);
 		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
 		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
 		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
@@ -107,6 +109,7 @@ class Room extends Place
 		$sql.= "fk_building,";
 		$sql.= "fk_floor,";
 		$sql.= "type_code,";
+		$sql.= "capacity,";
 		$sql.= "note_public,";
 		$sql.= "note_private,";
 		$sql.= "fk_user_creat";
@@ -120,6 +123,7 @@ class Room extends Place
 		$sql.= " ".(! isset($this->fk_building)?'NULL':"'".$this->fk_building."'").",";
 		$sql.= " ".(! isset($this->fk_floor)?'NULL':"'".$this->fk_floor."'").",";
 		$sql.= " ".(! isset($this->type_code)?'NULL':"'".$this->type_code."'").",";
+		$sql.= " ".(! isset($this->capacity)?'NULL':"'".$this->capacity."'").",";
 		$sql.= " ".(! isset($this->note_public)?'NULL':"'".$this->db->escape($this->note_public)."'").",";
 		$sql.= " ".(! isset($this->note_private)?'NULL':"'".$this->db->escape($this->note_private)."'").",";
 		$sql.= " ".$user->id;
@@ -187,6 +191,7 @@ class Room extends Place
 		$sql.= " t.label,";
 		$sql.= " t.fk_building,";
 		$sql.= " t.fk_floor,";
+		$sql.= " t.capacity,";
 		$sql.= " t.type_code,";
 		$sql.= " t.note_public,";
 		$sql.= " t.note_private,";
@@ -212,6 +217,7 @@ class Room extends Place
 				$this->label = $obj->label;
 				$this->fk_building = $obj->fk_building;
 				$this->fk_floor = $obj->fk_floor;
+				$this->capacity = $obj->capacity;
 				$this->type_code = $obj->type_code;
 				$this->note_public = $obj->note_public;
 				$this->note_private = $obj->note_private;
@@ -251,12 +257,17 @@ class Room extends Place
     	//$sql.= " t.fk_soc,";
     	$sql.= " t.fk_building,";
     	$sql.= " t.fk_floor,";
+    	$sql.= " t.capacity,";
     	$sql.= " t.type_code,";
     	$sql.= " t.note_public,";
     	$sql.= " t.note_private,";
     	$sql.= " t.fk_user_creat,";
-    	$sql.= " t.tms";
+    	$sql.= " t.tms,";
+    	$sql.= " f.ref as floor_ref, ";
+    	$sql.= " ty.label as type_label";
     	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_room as t ';
+    	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."place_floor as f ON t.fk_floor=f.rowid";
+    	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
     	$sql.= " WHERE t.entity IN (".getEntity('place').")";
 
     	//Manage filter
@@ -289,6 +300,10 @@ class Room extends Place
     				//$line->fk_soc			=	$obj->fk_soc;
     				$line->fk_building		=	$obj->fk_building;
     				$line->fk_floor 		= 	$obj->fk_floor;
+    				$line->floor_ref 		= 	$obj->floor_ref;
+    				$line->type_code 		= 	$obj->type_code;
+    				$line->type_label 		= 	$obj->type_label;
+    				$line->capacity 		= 	$obj->capacity;
     				$line->fk_user_create	=	$obj->fk_user_create;
 
     				$this->lines[$i] = $line;
@@ -325,7 +340,8 @@ class Room extends Place
 		if (isset($this->label)) $this->label=trim($this->label);
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
-		if (isset($this->type_code)) $this->fk_floor=trim($this->type_code);
+		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
+		if (isset($this->capacity)) $this->type_code=trim($this->capacity);
 		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
 		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
 		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
@@ -344,6 +360,7 @@ class Room extends Place
 		$sql.= " fk_building=".(isset($this->fk_building)?$this->fk_building:"null").",";
 		$sql.= " fk_floor=".(isset($this->fk_floor)?$this->fk_floor:"null").",";
 		$sql.= " type_code=".(isset($this->type_code)?$this->type_code:"null").",";
+		$sql.= " capacity=".(isset($this->capacity)?$this->capacity:"null").",";
 		$sql.= " note_public=".(isset($this->note_public)?"'".$this->db->escape($this->note_public)."'":"null").",";
 		$sql.= " note_private=".(isset($this->note_private)?"'".$this->db->escape($this->note_private)."'":"null").",";
 		$sql.= " fk_user_creat=".(isset($this->fk_user_creat)?$this->fk_user_creat:"null").",";
@@ -565,6 +582,7 @@ class Room extends Place
 		$this->fk_building='';
 		$this->fk_floor='';
 		$this->type_code='';
+		$this->capacity='';
 		$this->note_public='';
 		$this->note_private='';
 		$this->fk_user_creat='';

@@ -138,7 +138,7 @@ if($object->fetch($id) > 0 )
 		$pageprev = $page - 1;
 		$pagenext = $page + 1;
 
-		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('fk_building'=>$id));
+		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('t.fk_building'=>$id));
 
 		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
 		{
@@ -146,7 +146,9 @@ if($object->fetch($id) > 0 )
 			//$out .=  '<table class="noborder">'."\n";
 			$out .=  '<tr class="liste_titre">';
 			$out .= '<th class="liste_titre">'.$langs->trans('RoomNumber').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('RoomOrder').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomFloor').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('PlaceRoomDictType').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomCapacityShort').'</th>';
 			$out .=  '</tr>';
 
 			foreach ($obj_room->lines as $key => $room)
@@ -155,8 +157,17 @@ if($object->fetch($id) > 0 )
 				$out .= '<td>';
 				$out .= $room->ref;
 				$out .= '</td>';
+
 				$out .= '<td>';
-				$out .= $room->fk_floor;
+				$out .= $room->floor_ref;
+				$out .= '</td>';
+
+				$out .= '<td>';
+				$out .= $room->type_label;
+				$out .= '</td>';
+
+				$out .= '<td>';
+				$out .= $room->capacity;
 				$out .= '</td>';
 
 				$out .= '</tr>';
@@ -165,13 +176,13 @@ if($object->fetch($id) > 0 )
 			$out .= '</table>';
 
 		}
-		elseif(!sizeof($obj_room->lines)) {
+		elseif($list_room>0 && !sizeof($obj_room->lines)) {
 
 			$out.='<div class="info">'.$langs->trans('NoRoomFoundForThisBuilding').'</div>';
 		}
 		else {
 
-			setEventMessage($obj_room->error);
+			setEventMessage($obj_room->error,'errors');
 		}
 
 

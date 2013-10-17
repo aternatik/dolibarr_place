@@ -78,7 +78,8 @@ if ($action == 'create' && ! $_POST['cancel'])
 	$label=GETPOST('label','alpha');
 	$fk_building=GETPOST('fk_building','int');
 	$fk_floor=GETPOST('fk_floor','int');
-	$type_code=GETPOST('type_code','alpha');
+	$type_code=GETPOST('fk_type_room','alpha');
+	$capacity=GETPOST('capacity','int');
 
 	if (empty($ref))
 	{
@@ -96,6 +97,7 @@ if ($action == 'create' && ! $_POST['cancel'])
 		$object->fk_building=$fk_building;
 		$object->fk_floor=$fk_floor;
 		$object->type_code=$type_code;
+		$object->capacity=$capacity;
 
 		$result=$object->create($user);
 		if ($result > 0)
@@ -110,12 +112,12 @@ if ($action == 'create' && ! $_POST['cancel'])
 		{
 			// Creation KO
 			setEventMessage($object->error, 'errors');
-			$action = 'add_building';
+			$action = '';
 		}
 	}
 	else
 	{
-		$action = 'add_building';
+		$action = '';
 	}
 }
 
@@ -203,6 +205,10 @@ if($object->fetch($fk_building) > 0)
 	print '<td>';
 	print $formplace->select_types_rooms($fk_type_room, 'fk_type_room','',2);
 	print '</td></tr>';
+
+	// Capacity
+	print '<tr><td width="20%"><span class="">'.$langs->trans("RoomFormLabel_capacity").'</span></td>';
+	print '<td><input size="12" name="capacity" value="'.(GETPOST('capacity') ? GETPOST('capacity') : $object_room->capacity).'"></td></tr>';
 
 	// Public note
 	print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
