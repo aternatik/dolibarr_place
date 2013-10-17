@@ -51,6 +51,8 @@ PlaceAboutPage = Place module about page
 BackToBuildingList=Back to building list
 PleaseSelectPlaceFirst=Please first select a place
 
+# Dictionary
+PlaceRoomDictType=Type of rooms
 #
 # Page Place
 #

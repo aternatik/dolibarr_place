@@ -46,6 +46,7 @@ class Room extends Place
 	var $label;
 	var $fk_building;
 	var $fk_floor;
+	var $type_code;
 	var $note_public;
 	var $note_private;
 	var $fk_user_creat;
@@ -87,6 +88,7 @@ class Room extends Place
 		if (isset($this->label)) $this->label=trim($this->label);
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
+		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
 		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
 		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
 		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
@@ -104,6 +106,7 @@ class Room extends Place
 		$sql.= "label,";
 		$sql.= "fk_building,";
 		$sql.= "fk_floor,";
+		$sql.= "type_code,";
 		$sql.= "note_public,";
 		$sql.= "note_private,";
 		$sql.= "fk_user_creat";
@@ -116,6 +119,7 @@ class Room extends Place
 		$sql.= " ".(! isset($this->label)?'NULL':"'".$this->db->escape($this->label)."'").",";
 		$sql.= " ".(! isset($this->fk_building)?'NULL':"'".$this->fk_building."'").",";
 		$sql.= " ".(! isset($this->fk_floor)?'NULL':"'".$this->fk_floor."'").",";
+		$sql.= " ".(! isset($this->type_code)?'NULL':"'".$this->type_code."'").",";
 		$sql.= " ".(! isset($this->note_public)?'NULL':"'".$this->db->escape($this->note_public)."'").",";
 		$sql.= " ".(! isset($this->note_private)?'NULL':"'".$this->db->escape($this->note_private)."'").",";
 		$sql.= " ".$user->id;
@@ -183,6 +187,7 @@ class Room extends Place
 		$sql.= " t.label,";
 		$sql.= " t.fk_building,";
 		$sql.= " t.fk_floor,";
+		$sql.= " t.type_code,";
 		$sql.= " t.note_public,";
 		$sql.= " t.note_private,";
 		$sql.= " t.fk_user_creat,";
@@ -207,6 +212,7 @@ class Room extends Place
 				$this->label = $obj->label;
 				$this->fk_building = $obj->fk_building;
 				$this->fk_floor = $obj->fk_floor;
+				$this->type_code = $obj->type_code;
 				$this->note_public = $obj->note_public;
 				$this->note_private = $obj->note_private;
 				$this->fk_user_creat = $obj->fk_user_creat;
@@ -245,6 +251,7 @@ class Room extends Place
     	//$sql.= " t.fk_soc,";
     	$sql.= " t.fk_building,";
     	$sql.= " t.fk_floor,";
+    	$sql.= " t.type_code,";
     	$sql.= " t.note_public,";
     	$sql.= " t.note_private,";
     	$sql.= " t.fk_user_creat,";
@@ -318,6 +325,7 @@ class Room extends Place
 		if (isset($this->label)) $this->label=trim($this->label);
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
+		if (isset($this->type_code)) $this->fk_floor=trim($this->type_code);
 		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
 		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
 		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
@@ -335,6 +343,7 @@ class Room extends Place
 		$sql.= " label=".(isset($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
 		$sql.= " fk_building=".(isset($this->fk_building)?$this->fk_building:"null").",";
 		$sql.= " fk_floor=".(isset($this->fk_floor)?$this->fk_floor:"null").",";
+		$sql.= " type_code=".(isset($this->type_code)?$this->type_code:"null").",";
 		$sql.= " note_public=".(isset($this->note_public)?"'".$this->db->escape($this->note_public)."'":"null").",";
 		$sql.= " note_private=".(isset($this->note_private)?"'".$this->db->escape($this->note_private)."'":"null").",";
 		$sql.= " fk_user_creat=".(isset($this->fk_user_creat)?$this->fk_user_creat:"null").",";
@@ -443,6 +452,46 @@ class Room extends Place
 	}
 
 
+	/**
+	 *      Charge dans cache la liste des types de rooms (paramétrable dans dictionnaire)
+	 *
+	 *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
+	 */
+	function load_cache_types_rooms()
+	{
+		global $langs;
+
+		if (count($this->cache_types_rooms)) return 0;    // Cache deja charge
+
+		$sql = "SELECT rowid, code, label, use_default, pos, description";
+		$sql.= " FROM ".MAIN_DB_PREFIX."c_placeroom_type";
+		$sql.= " WHERE active > 0";
+		$sql.= " ORDER BY pos";
+		dol_syslog(get_class($this)."::load_cache_type_rooms sql=".$sql,LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$num = $this->db->num_rows($resql);
+			$i = 0;
+			while ($i < $num)
+			{
+				$obj = $this->db->fetch_object($resql);
+				// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+				$label=($langs->trans("RoomTypeShort".$obj->code)!=("RoomTypeShort".$obj->code)?$langs->trans("RoomTypeShort".$obj->code):($obj->label!='-'?$obj->label:''));
+				$this->cache_types_rooms[$obj->rowid]['code'] =$obj->code;
+				$this->cache_types_rooms[$obj->rowid]['label']=$label;
+				$this->cache_types_rooms[$obj->rowid]['use_default'] =$obj->use_default;
+				$this->cache_types_rooms[$obj->rowid]['pos'] =$obj->pos;
+				$i++;
+			}
+			return $num;
+		}
+		else
+		{
+			dol_print_error($this->db);
+			return -1;
+		}
+	}
 
 
 
@@ -515,6 +564,7 @@ class Room extends Place
 		$this->label='';
 		$this->fk_building='';
 		$this->fk_floor='';
+		$this->type_code='';
 		$this->note_public='';
 		$this->note_private='';
 		$this->fk_user_creat='';
