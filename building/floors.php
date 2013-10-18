@@ -207,6 +207,10 @@ if($object->fetch($id) > 0 )
 			print '<div class="inline-block divButAction">';
 			print '<a href="floors.php?id='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('FloorEdition').'</a>';
 			print '</div>';
+
+			print '<div class="inline-block divButAction">';
+			print '<a href="../room/add.php?fk_building='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('AddRoom').'</a>';
+			print '</div>';
 		}
 	}
 	print '</div>';
