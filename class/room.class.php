@@ -254,6 +254,7 @@ class Room extends Place
     	$sql="SELECT ";
     	$sql.= " t.rowid,";
     	$sql.= " t.ref,";
+    	$sql.= " t.label,";
     	//$sql.= " t.fk_soc,";
     	$sql.= " t.fk_building,";
     	$sql.= " t.fk_floor,";
@@ -297,6 +298,7 @@ class Room extends Place
     				$line = new stdClass($this->db);
     				$line->id				=	$obj->rowid;
     				$line->ref				=	$obj->ref;
+    				$line->label			=	$obj->label;
     				//$line->fk_soc			=	$obj->fk_soc;
     				$line->fk_building		=	$obj->fk_building;
     				$line->fk_floor 		= 	$obj->fk_floor;
@@ -305,6 +307,9 @@ class Room extends Place
     				$line->type_label 		= 	$obj->type_label;
     				$line->capacity 		= 	$obj->capacity;
     				$line->fk_user_create	=	$obj->fk_user_create;
+
+    				$building_stat = new Building($this->db);
+    				$line->building	 = $building_stat;
 
     				$this->lines[$i] = $line;
     				$i++;
@@ -341,7 +346,7 @@ class Room extends Place
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
 		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
-		if (isset($this->capacity)) $this->type_code=trim($this->capacity);
+		if (isset($this->capacity)) $this->capacity=trim($this->capacity);
 		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
 		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
 		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
@@ -359,7 +364,7 @@ class Room extends Place
 		$sql.= " label=".(isset($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
 		$sql.= " fk_building=".(isset($this->fk_building)?$this->fk_building:"null").",";
 		$sql.= " fk_floor=".(isset($this->fk_floor)?$this->fk_floor:"null").",";
-		$sql.= " type_code=".(isset($this->type_code)?$this->type_code:"null").",";
+		$sql.= " type_code=".(isset($this->type_code)?"'".$this->db->escape($this->type_code)."'":"null").",";
 		$sql.= " capacity=".(isset($this->capacity)?$this->capacity:"null").",";
 		$sql.= " note_public=".(isset($this->note_public)?"'".$this->db->escape($this->note_public)."'":"null").",";
 		$sql.= " note_private=".(isset($this->note_private)?"'".$this->db->escape($this->note_private)."'":"null").",";
@@ -368,7 +373,6 @@ class Room extends Place
 
 
         $sql.= " WHERE rowid=".$this->id;
-
 		$this->db->begin();
 
 		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);

@@ -80,8 +80,8 @@ class FormPlace
 
     	$roomstat->load_cache_types_rooms();
 
-    	print '<select id="select'.$htmlname.'" class="flat select_roomtype" name="'.$htmlname.'">';
-    	if ($empty) print '<option value="">&nbsp;</option>';
+    	$out = '<select id="select'.$htmlname.'" class="flat select_roomtype" name="'.$htmlname.'">';
+    	if ($empty) $out .= '<option value="">&nbsp;</option>';
     	if (is_array($roomstat->cache_types_rooms) && count($roomstat->cache_types_rooms))
     	{
     		foreach($roomstat->cache_types_rooms as $id => $arraytypes)
@@ -92,24 +92,26 @@ class FormPlace
     			// We discard empty line if showempty is on because an empty line has already been output.
     			if ($empty && empty($arraytypes['code'])) continue;
 
-    			if ($format == 0) print '<option value="'.$id.'"';
-    			if ($format == 1) print '<option value="'.$arraytypes['code'].'"';
-    			if ($format == 2) print '<option value="'.$arraytypes['code'].'"';
-    			if ($format == 3) print '<option value="'.$id.'"';
+    			if ($format == 0) $out .= '<option value="'.$id.'"';
+    			if ($format == 1) $out .= '<option value="'.$arraytypes['code'].'"';
+    			if ($format == 2) $out .= '<option value="'.$arraytypes['code'].'"';
+    			if ($format == 3) $out .= '<option value="'.$id.'"';
     			// Si selected est text, on compare avec code, sinon avec id
-    			if (preg_match('/[a-z]/i', $selected) && $selected == $arraytypes['code']) print ' selected="selected"';
-    			elseif ($selected == $id) print ' selected="selected"';
-    			print '>';
+    			if (preg_match('/[a-z]/i', $selected) && $selected == $arraytypes['code']) $out .= ' selected="selected"';
+    			elseif ($selected == $id) $out .= ' selected="selected"';
+    			$out .= '>';
     			if ($format == 0) $value=($maxlength?dol_trunc($arraytypes['label'],$maxlength):$arraytypes['label']);
     			if ($format == 1) $value=$arraytypes['code'];
     			if ($format == 2) $value=($maxlength?dol_trunc($arraytypes['label'],$maxlength):$arraytypes['label']);
     			if ($format == 3) $value=$arraytypes['code'];
-    			print $value?$value:'&nbsp;';
-    			print '</option>';
+    			$out .= $value?$value:'&nbsp;';
+    			$out .= '</option>';
     		}
     	}
-    	print '</select>';
+    	$out .= '</select>';
     	if ($user->admin && ! $noadmininfo) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
+
+    	return $out;
     }
 
 }

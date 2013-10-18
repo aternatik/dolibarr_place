@@ -12,5 +12,5 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-ALTER TABLE llx_place_room ADD COLUMN type_code integer NULL AFTER fk_floor;
+ALTER TABLE llx_place_room ADD COLUMN type_code varchar(32) NULL AFTER fk_floor;
 ALTER TABLE llx_place_room ADD COLUMN capacity integer NULL AFTER type_code;

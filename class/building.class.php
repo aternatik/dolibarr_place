@@ -612,7 +612,7 @@ class Building extends Place
 	/**
 	 * Function to show floor select list from database read
 	 */
-	function show_select_floor($fk_building,$htmlname)
+	function show_select_floor($fk_building,$htmlname,$id_floor)
 	{
 		global $langs;
 
@@ -632,7 +632,10 @@ class Building extends Place
 
 			foreach ($list_floor as $key => $floor)
 			{
-				$out .= '<option value="'.$floor->id.'">';
+				$out .= '<option value="'.$floor->id.'"';
+				if($id_floor == $floor->id)
+					$out .= ' selected="selected"';
+				$out .= '>';
 
 
 				$out .= $floor->pos.' - '.$floor->ref;

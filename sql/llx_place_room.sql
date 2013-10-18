@@ -22,6 +22,8 @@ CREATE TABLE llx_place_room
   label           varchar(255),
   fk_building     integer NOT NULL,
   fk_floor        integer,
+  type_code		  varchar(32),
+  capacity        integer,
   note_public     text,
   note_private    text,
   fk_user_creat   integer,
