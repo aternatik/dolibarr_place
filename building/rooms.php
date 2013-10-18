@@ -53,6 +53,7 @@ $langs->load("other");
 
 // Get parameters
 $id			= GETPOST('id','int');
+$roomid		= GETPOST('roomid','int');
 $action		= GETPOST('action','alpha');
 $fk_place	= GETPOST('fk_place','int');
 $ref		= GETPOST('ref','alpha');
@@ -60,6 +61,7 @@ $lat		= GETPOST('lat','alpha');
 $lng		= GETPOST('lng','alpha');
 
 $mode		= GETPOST('mode','alpha');
+$confirm	= GETPOST('confirm','alpha');
 
 if( ! $user->rights->place->read)
 	accessforbidden();
@@ -82,7 +84,6 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 		setEventMessage('<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("Ref")).'</div>');
 	}
 
-	$roomid = GETPOST('roomid');
 	$res = $obj_room->fetch($roomid);
 	if(!$res)
 	{
@@ -122,6 +123,38 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 		$action='editroom';
 	}
 }
+// Remove line
+else if ($action == 'confirm_deleteroom' && $confirm == 'yes' && $user->rights->place->write)
+{
+	$ret = $obj_room->fetch($roomid);
+	if($ret)
+	{
+		$result = $obj_room->delete($user);
+		if($result > 0) {
+			setEventMessage($langs->trans('RoomDeleted'));
+			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			exit;
+
+		}
+		else
+		{
+			setEventMessage('<div class="error">'.$obj_room->error.'</div>');
+			$action='';
+		}
+
+
+	}
+	else
+	{
+		setEventMessage('<div class="error">'.$obj_room->error.'</div>');
+
+		$action='';
+	}
+
+
+	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+	exit;
+}
 
 
 
@@ -132,7 +165,7 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('',$langs->trans('RoomManagment'),'','','','',array('/place/js/place.js.php'));
+llxHeader('',$langs->trans('RoomsManagment'),'','','','',array('/place/js/place.js.php'));
 
 $form=new Form($db);
 
@@ -193,6 +226,12 @@ if($object->fetch($id) > 0 )
 
 		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
 		{
+
+			// Confirm delete
+			if ($action == 'ask_deleteroom')
+			{
+				$out .= $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$id.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom','',0,1);
+			}
 
 
 			$out .= '<table width="100%;" class="noborder">';
@@ -271,6 +310,8 @@ if($object->fetch($id) > 0 )
 
 					$out .= '<td>';
 					$out .= '<a href="' . $_SERVER["PHP_SELF"] .'?id='.$id.'&amp;action=editroom&amp;roomid='.$room->id.'#'.$room->id.'">'.img_edit().'</a>';
+
+					$out .= '<a href="'.$_SERVER["PHP_SELF"].'?id='.$id.'&amp;action=ask_deleteroom&amp;roomid='.$room->id.'">'.img_delete().'</a>';
 					$out .= '</td>';
 
 					$out .= '</tr>';

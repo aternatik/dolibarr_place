@@ -124,3 +124,6 @@ RoomFormLabel_floor=Étage de la salle
 RoomCreatedWithSuccess=Salle ajoutée avec succès
 RoomNumber=Numéro/repère de salle
 RoomOrder=Ordre/position
+DeleteRoom=Effacer la salle
+ConfirmDeleteRoom=Confirmer la suppression de cette salle?
+RoomDeleted=Salle supprimée

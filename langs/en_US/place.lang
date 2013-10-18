@@ -105,3 +105,23 @@ FloorsUpdated=Floors updated
 FloorEdition=Edit floors
 FloorDeletedWithSuccess=Floor successfully deleted
 NoFloorFoundForThisBuilding=No floor for this building
+
+
+#
+# Rooms
+#
+Room=Room
+Rooms=Rooms
+AddRoom=add room
+RoomsManagment=Room management
+NoRoomFoundForThisBuilding=No room fo this building
+AddNewRoomToThisBuilding=Add room to this building
+RoomFormLabel_ref=Room landmark
+RoomFormLabel_fk_building=Building
+RoomFormLabel_floor=Floor of the room
+RoomCreatedWithSuccess=Room successfully added
+RoomNumber=Room number/landmark
+RoomOrder=Position/Order
+DeleteRoom=Delete room
+DeleteRoom=Confirm delete this room?
+RoomDeleted=Room deleted
