@@ -51,6 +51,8 @@ PlaceAboutPage = Place module about page
 BackToBuildingList=Back to building list
 PleaseSelectPlaceFirst=Please first select a place
 
+# Dictionary
+PlaceRoomDictType=Type of rooms
 #
 # Page Place
 #
@@ -59,6 +61,9 @@ PlacePageIndex=Place management
 NoPlaceInDatabase=No place in databas
 AddPlace=Add place
 PlaceFormLabel_ref=Reference / label
+RoomFormLabel_capacity=Room capacity
+RoomCapacityShort=Capacity
+RoomFloor=Floor
 PlaceFormLabel_description=Description
 PlaceFormLabel_fk_socpeople=People to use for address
 PlaceFormLabel_lat=Latitude
@@ -100,3 +105,23 @@ FloorsUpdated=Floors updated
 FloorEdition=Edit floors
 FloorDeletedWithSuccess=Floor successfully deleted
 NoFloorFoundForThisBuilding=No floor for this building
+
+
+#
+# Rooms
+#
+Room=Room
+Rooms=Rooms
+AddRoom=add room
+RoomsManagment=Room management
+NoRoomFoundForThisBuilding=No room fo this building
+AddNewRoomToThisBuilding=Add room to this building
+RoomFormLabel_ref=Room landmark
+RoomFormLabel_fk_building=Building
+RoomFormLabel_floor=Floor of the room
+RoomCreatedWithSuccess=Room successfully added
+RoomNumber=Room number/landmark
+RoomOrder=Position/Order
+DeleteRoom=Delete room
+DeleteRoom=Confirm delete this room?
+RoomDeleted=Room deleted

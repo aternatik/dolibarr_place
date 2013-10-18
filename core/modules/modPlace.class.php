@@ -61,7 +61,7 @@ class modPlace extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Place";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '0.1';
+		$this->version = '0.2';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -160,7 +160,18 @@ class modPlace extends DolibarrModules
 		// 'categories_x'		to add a tab in category view
 		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
 		// Dictionnaries
-		$this->dictionnaries = array();
+		$this->dictionnaries=array(
+			'langs'=>'place@place',
+			'tabname'=>array(MAIN_DB_PREFIX."c_placeroom_type"),
+			'tablib'=>array("PlaceRoomDictType"),
+			'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.pos, f.label, f.active, f.use_default FROM '.MAIN_DB_PREFIX.'c_placeroom_type as f'),
+			'tabsqlsort'=>array("pos ASC"),
+			'tabfield'=>array("pos,code,label,use_default"),
+			'tabfieldvalue'=>array("pos,code,label,use_default"),
+			'tabfieldinsert'=>array("pos,code,label,use_default"),
+			'tabrowid'=>array("rowid"),
+			'tabcond'=>array($conf->place->enabled)
+		);
 		/* Example:
 		  // This is to avoid warnings
 		  if (! isset($conf->place->enabled)) $conf->place->enabled=0;

@@ -44,6 +44,7 @@ if (! $res) die("Include of main fails");
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
 require_once '../class/room.class.php';
+require_once '../class/html.formplace.class.php';
 require_once '../lib/place.lib.php';
 
 // Load traductions files requiredby by page
@@ -77,6 +78,8 @@ if ($action == 'create' && ! $_POST['cancel'])
 	$label=GETPOST('label','alpha');
 	$fk_building=GETPOST('fk_building','int');
 	$fk_floor=GETPOST('fk_floor','int');
+	$type_code=GETPOST('fk_type_room','alpha');
+	$capacity=GETPOST('capacity','int');
 
 	if (empty($ref))
 	{
@@ -93,6 +96,8 @@ if ($action == 'create' && ! $_POST['cancel'])
 		$object->label=GETPOST('label','alpha');
 		$object->fk_building=$fk_building;
 		$object->fk_floor=$fk_floor;
+		$object->type_code=$type_code;
+		$object->capacity=$capacity;
 
 		$result=$object->create($user);
 		if ($result > 0)
@@ -107,12 +112,12 @@ if ($action == 'create' && ! $_POST['cancel'])
 		{
 			// Creation KO
 			setEventMessage($object->error, 'errors');
-			$action = 'add_building';
+			$action = '';
 		}
 	}
 	else
 	{
-		$action = 'add_building';
+		$action = '';
 	}
 }
 
@@ -128,6 +133,7 @@ $pagetitle=$langs->trans('AddRoom');
 llxHeader('',$pagetitle,'');
 
 $form=new Form($db);
+$formplace=new FormPlace($db);
 $object=new Building($db);
 $object_room=new Room($db);
 
@@ -192,6 +198,17 @@ if($object->fetch($fk_building) > 0)
 	//<input size="12" name="fk_floor" value="'.(GETPOST('fk_floor') ? GETPOST('fk_floor') : $object_room->fk_floor).'">';
 	print ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagmentForBuilding').'</a>';
 	print '</td></tr>';
+
+	// Room type
+	$formplace = new FormPlace($db);
+	print '<tr><td width="20%">'.$langs->trans("PlaceRoomDictType").'</td>';
+	print '<td>';
+	print $formplace->select_types_rooms($fk_type_room, 'fk_type_room','',2);
+	print '</td></tr>';
+
+	// Capacity
+	print '<tr><td width="20%"><span class="">'.$langs->trans("RoomFormLabel_capacity").'</span></td>';
+	print '<td><input size="12" name="capacity" value="'.(GETPOST('capacity') ? GETPOST('capacity') : $object_room->capacity).'"></td></tr>';
 
 	// Public note
 	print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';

@@ -52,6 +52,8 @@ PlaceAboutPage = Page à propos du module Place
 BackToBuildingList=Retour à la liste des bâtiments
 PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
 
+# Dictionary
+PlaceRoomDictType=Type de salle
 
 #
 # Page Place
@@ -61,6 +63,9 @@ PlacePageIndex=Gestion des lieux
 NoPlaceInDatabase=Aucun lieu en base de données
 AddPlace=Ajouter un lieu
 PlaceFormLabel_ref=Référence / libellé
+RoomFormLabel_capacity=Capacité de la chambre
+RoomCapacityShort=Capacité
+RoomFloor=Étage
 PlaceFormLabel_description=Description
 PlaceFormLabel_fk_socpeople=Contact/adresse à associer
 PlaceFormLabel_lat=Latitude
@@ -119,3 +124,6 @@ RoomFormLabel_floor=Étage de la salle
 RoomCreatedWithSuccess=Salle ajoutée avec succès
 RoomNumber=Numéro/repère de salle
 RoomOrder=Ordre/position
+DeleteRoom=Effacer la salle
+ConfirmDeleteRoom=Confirmer la suppression de cette salle?
+RoomDeleted=Salle supprimée

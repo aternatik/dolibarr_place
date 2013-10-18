@@ -1,0 +1,15 @@
+###################################################
+#
+#	Module "Place" for Dolibarr ERP/CRM
+#
+#	Location, building, floor and room management 
+#
+#
+###################################################
+
+Changes from 0.1 to 0.2
+Add dictonary for room type
+Add field capacity for rooms
+Can edit and delete rooms
+
+Initial release - 0.1 

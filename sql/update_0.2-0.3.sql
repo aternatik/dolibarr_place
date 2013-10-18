@@ -1,5 +1,4 @@
--- Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
--- Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+-- Copyright (C) 2013  Jean-François FERRY <jfefe@aternatik.fr>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,19 +12,5 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-CREATE TABLE llx_place_room
-(
-  rowid           integer AUTO_INCREMENT PRIMARY KEY,
-  entity          integer,
-  ref             varchar(255),
-  label           varchar(255),
-  fk_building     integer NOT NULL,
-  fk_floor        integer,
-  type_code		  varchar(32),
-  capacity        integer,
-  note_public     text,
-  note_private    text,
-  fk_user_creat   integer,
-  tms             timestamp
-)ENGINE=innodb;
+ALTER TABLE llx_place_room ADD COLUMN type_code varchar(32) NULL AFTER fk_floor;
+ALTER TABLE llx_place_room ADD COLUMN capacity integer NULL AFTER type_code;

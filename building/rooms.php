@@ -43,6 +43,7 @@ if (! $res) die("Include of main fails");
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
 require_once '../class/room.class.php';
+require_once '../class/html.formplace.class.php';
 require_once '../lib/place.lib.php';
 
 // Load traductions files requiredby by page
@@ -52,6 +53,7 @@ $langs->load("other");
 
 // Get parameters
 $id			= GETPOST('id','int');
+$roomid		= GETPOST('roomid','int');
 $action		= GETPOST('action','alpha');
 $fk_place	= GETPOST('fk_place','int');
 $ref		= GETPOST('ref','alpha');
@@ -59,18 +61,100 @@ $lat		= GETPOST('lat','alpha');
 $lng		= GETPOST('lng','alpha');
 
 $mode		= GETPOST('mode','alpha');
+$confirm	= GETPOST('confirm','alpha');
 
 if( ! $user->rights->place->read)
 	accessforbidden();
 
 $object=new Building($db);
+$obj_room = new Room($db);
 
 /*******************************************************************
 * ACTIONS
 *
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
+if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->write )
+{
+	$error=0;
 
+	if (empty($ref))
+	{
+		$error++;
+		setEventMessage('<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("Ref")).'</div>');
+	}
+
+	$res = $obj_room->fetch($roomid);
+	if(!$res)
+	{
+		$error++;
+		setEventMessage('<div class="error">'.$langs->trans("ErrorFailedToLoadRoom",$langs->transnoentities("Id")).'</div>');
+	}
+
+	if (! $error)
+	{
+
+		$obj_room->ref          		= $ref;
+		$obj_room->label  				= GETPOST("label",'alpha');
+		$obj_room->fk_floor  			= GETPOST("fk_floor",'int');
+
+		$obj_room->type_code  			= GETPOST("fk_type_room",'alpha');
+		$obj_room->capacity  			= GETPOST("capacity",'int');
+
+		$obj_room->note_public       	= GETPOST("note_public");
+		$obj_room->note_private       	= GETPOST("note_private");
+
+		$result=$obj_room->update($user);
+		if ($result > 0)
+		{
+			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			exit;
+		}
+		else
+		{
+			setEventMessage('<div class="error">'.$obj_room->error.'</div>');
+
+			$action='editroom';
+		}
+
+	}
+	else
+	{
+		$action='editroom';
+	}
+}
+// Remove line
+else if ($action == 'confirm_deleteroom' && $confirm == 'yes' && $user->rights->place->write)
+{
+	$ret = $obj_room->fetch($roomid);
+	if($ret)
+	{
+		$result = $obj_room->delete($user);
+		if($result > 0) {
+			setEventMessage($langs->trans('RoomDeleted'));
+			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			exit;
+
+		}
+		else
+		{
+			setEventMessage('<div class="error">'.$obj_room->error.'</div>');
+			$action='';
+		}
+
+
+	}
+	else
+	{
+		setEventMessage('<div class="error">'.$obj_room->error.'</div>');
+
+		$action='';
+	}
+
+
+	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+	exit;
+}
 
 
 
@@ -81,7 +165,7 @@ $object=new Building($db);
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('',$langs->trans('RoomManagment'),'','','','',array('/place/js/place.js.php'));
+llxHeader('',$langs->trans('RoomsManagment'),'','','','',array('/place/js/place.js.php'));
 
 $form=new Form($db);
 
@@ -117,7 +201,7 @@ if($object->fetch($id) > 0 )
 	print_fiche_titre($langs->trans('RoomsManagment'),'','room_32.png@place');
 
 
-		$obj_room = new Room($db);
+
 		// Show room for fk_building
 
 		$sortorder	= GETPOST('sortorder','alpha');
@@ -138,40 +222,113 @@ if($object->fetch($id) > 0 )
 		$pageprev = $page - 1;
 		$pagenext = $page + 1;
 
-		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('fk_building'=>$id));
+		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('t.fk_building'=>$id));
 
 		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
 		{
+
+			// Confirm delete
+			if ($action == 'ask_deleteroom')
+			{
+				$out .= $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$id.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom','',0,1);
+			}
+
+
 			$out .= '<table width="100%;" class="noborder">';
 			//$out .=  '<table class="noborder">'."\n";
 			$out .=  '<tr class="liste_titre">';
 			$out .= '<th class="liste_titre">'.$langs->trans('RoomNumber').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('RoomOrder').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('Label').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomFloor').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('PlaceRoomDictType').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('RoomCapacityShort').'</th>';
+			$out .= '<th class="liste_titre">'.$langs->trans('Edit').'</th>';
 			$out .=  '</tr>';
 
 			foreach ($obj_room->lines as $key => $room)
 			{
-				$out .= '<tr>';
-				$out .= '<td>';
-				$out .= $room->ref;
-				$out .= '</td>';
-				$out .= '<td>';
-				$out .= $room->fk_floor;
-				$out .= '</td>';
+				if($action=='editroom' && $room->id == GETPOST('roomid','int'))
+				{
+					$out .= '<form action="'.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$room->id.'" method="POST">';
+					$out .= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+					$out .= '<input type="hidden" name="action" value="updateroom">';
+					$out .= '<input type="hidden" name="usenewupdatelineform" value="1" />';
+					$out .= '<input type="hidden" name="id" value="'.$id.'">';
+					$out .= '<input type="hidden" name="roomid" value="'.$room->id.'">';
 
-				$out .= '</tr>';
+					$out .= '<tr>';
+					$out .= '<td>';
+					$out .= '<input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $room->ref).'"></td>';
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= '<input size="40" name="label" value="'.(GETPOST('label') ? GETPOST('label') : $room->label).'"></td>';
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= $room->building->show_select_floor($id, 'fk_floor',$room->fk_floor);
+					$out .= '</td>';
+
+					$out .= '<td><div>';
+					$formplace = new FormPlace($db);
+					$out .= $formplace->select_types_rooms($room->type_code, 'fk_type_room','',2,'',1);
+					$out .= '</div></td>';
+
+					$out .= '<td>';
+					$out .= '<input size="8" name="capacity" value="'.(GETPOST('capacity') ? GETPOST('capacity') : $room->capacity).'"></td>';
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= '<input type="submit" name="update_'.$room->id.'" value="'.$langs->trans('Save').'"/></td>';
+					$out .= '</td>';
+
+					$out .= '</tr>';
+					$out .= '</form>';
+				}
+				else
+				{
+					$out .= '<tr>';
+					$out .= '<td>';
+					$out .= $room->ref;
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= $room->label;
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= $room->floor_ref;
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= $room->type_label;
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= $room->capacity;
+					$out .= '</td>';
+
+					$out .= '<td>';
+					$out .= '<a href="' . $_SERVER["PHP_SELF"] .'?id='.$id.'&amp;action=editroom&amp;roomid='.$room->id.'#'.$room->id.'">'.img_edit().'</a>';
+
+					$out .= '<a href="'.$_SERVER["PHP_SELF"].'?id='.$id.'&amp;action=ask_deleteroom&amp;roomid='.$room->id.'">'.img_delete().'</a>';
+					$out .= '</td>';
+
+					$out .= '</tr>';
+					$out .= '</tr>';
+				}
 			}
 
 			$out .= '</table>';
 
 		}
-		elseif(!sizeof($obj_room->lines)) {
+		elseif($list_room>0 && !sizeof($obj_room->lines)) {
 
 			$out.='<div class="info">'.$langs->trans('NoRoomFoundForThisBuilding').'</div>';
 		}
 		else {
 
-			setEventMessage($obj_room->error);
+			setEventMessage($obj_room->error,'errors');
 		}
 
 
