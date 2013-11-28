@@ -107,7 +107,7 @@ class Place extends CommonObject
 
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
 		$sql.= " ".(empty($this->fk_soc)?'NULL':$this->fk_soc).",";
-		$sql.= " ".(empty($this->fk_socpeople)?'NULL':$this->fk_socpeople).",";
+		$sql.= " ".(empty($this->fk_socpeople)?'0':$this->fk_socpeople).",";
 		$sql.= " ".(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").",";
 		$sql.= " ".(empty($this->lat)?'NULL':"'".$this->lat."'").",";
 		$sql.= " ".(empty($this->lng)?'NULL':"'".$this->lng."'").",";

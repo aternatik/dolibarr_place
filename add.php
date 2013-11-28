@@ -87,12 +87,14 @@ if ($action == 'confirm_add_place')
 		$error++;
 	}
 
+	/*
 	if (!$fk_socpeople || $fk_socpeople < 0)
 	{
 		$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Contact"));
 		setEventMessage($mesg, 'errors');
 		$error++;
 	}
+	*/
 
 
 	if (! $error)
@@ -221,7 +223,7 @@ if(!$action) {
 	$field = 'fk_socpeople';
 	print '<tr>';
 	print '<td>';
-	print '<label for="'.$field.'" class="fieldrequired">';
+	print '<label for="'.$field.'">';
 	print $langs->trans('PlaceFormLabel_'.$field);
 	print '</label>';
 	print '</td>';
