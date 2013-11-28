@@ -51,6 +51,8 @@ PlaceAboutPage = Page à propos du module Place
 #
 BackToBuildingList=Retour à la liste des bâtiments
 PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
+ActionIntoPlace=Localisation de l'évènement
+ActionIntoRoom=Salle
 
 # Dictionary
 PlaceRoomDictType=Type de salle

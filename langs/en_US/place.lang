@@ -50,6 +50,8 @@ PlaceAboutPage = Place module about page
 #
 BackToBuildingList=Back to building list
 PleaseSelectPlaceFirst=Please first select a place
+ActionIntoPlace=Event location
+ActionIntoRoom=Room
 
 # Dictionary
 PlaceRoomDictType=Type of rooms
