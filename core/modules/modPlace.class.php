@@ -94,7 +94,7 @@ class modPlace extends DolibarrModules
 			// Set this to relative path of css if module has its own css file
 			'css' => '/place/css/place.css.php',
 			// Set here all hooks context managed by module
-			'hooks' => array('actioncard')
+			'hooks' => array('actioncard','actioncommdao')
 			// Set here all workflow context managed by module
 			//'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 		);
@@ -159,6 +159,10 @@ class modPlace extends DolibarrModules
 		// 'contact'			to add a tab in contact view
 		// 'categories_x'		to add a tab in category view
 		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
+
+		$this->tabs = array(
+			'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
+		);
 		// Dictionnaries
 		$this->dictionnaries=array(
 			'langs'=>'place@place',

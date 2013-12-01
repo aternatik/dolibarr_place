@@ -23,13 +23,13 @@
  */
 
 // Put here all includes required by your class file
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+require_once("resource.class.php");
 
 
 /**
  *	DAO Place object
  */
-class Place extends CommonObject
+class Place extends Resource
 {
 	var $db;							//!< To store db handler
 	var $error;							//!< To return error code (or message)
@@ -460,19 +460,28 @@ class Place extends CommonObject
 		global $langs;
 
 		$result='';
+
 		if ($option == '')
 		{
 			$lien = '<a href="'.dol_buildpath('/place/fiche.php',1).'?id='.$this->id. $get_params .'">';
 			$picto='place@place';
+			$label=$langs->trans("ShowPlace").': '.$this->ref;
+
 		}
 		if ($option == 'building@place')
 		{
 			$lien = '<a href="'.dol_buildpath('/place/building/fiche.php',1).'?id='.$this->id. $get_params .'">';
 			$picto='building@place';
+			$label=$langs->trans("ShowBuilding").': '.$this->ref;
+		}
+		if ($option == 'room@place')
+		{
+			$lien = '<a href="'.dol_buildpath('/place/room/fiche.php',1).'?id='.$this->id. $get_params .'">';
+			$picto='room@place';
+			$label=$langs->trans("ShowRoom").': '.$this->ref;
 		}
 
 		$lienfin='</a>';
-
 
 		$label=$langs->trans("ShowPlace").': '.$this->ref;
 

@@ -36,8 +36,8 @@ class Room extends Place
 	var $db;							//!< To store db handler
 	var $error;							//!< To return error code (or message)
 	var $errors=array();				//!< To return several error codes (or messages)
-	var $element='placeroom';			//!< Id that identify managed objects
-	var $table_element='placeroom';		//!< Name of table without prefix where object is stored
+	var $element='room';			//!< Id that identify managed objects
+	var $table_element='place_room';		//!< Name of table without prefix where object is stored
 
     var $id;
 
@@ -514,7 +514,21 @@ class Room extends Place
 		}
 	}
 
+	/**
+	 *	Return clicable link of object (with eventually picto)
+	 *
+	 *	@param      int		$withpicto		Add picto into link
+	 *	@param      string	$option			Where point the link ('compta', 'expedition', 'document', ...)
+	 *	@param      string	$get_params    	Parametres added to url
+	 *	@return     string          		String with URL
+	 */
+	function getNomUrl($withpicto=0,$option='', $get_params='')
+	{
+		global $langs;
 
+		return parent::getNomUrl($withpicto,'room@place');
+
+	}
 
 	/**
 	 *	Load an object from its id and create a new one in database
