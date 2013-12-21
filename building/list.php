@@ -101,7 +101,7 @@ if($id > 0)
 
 }
 // Load object list
-$ret = $object->fetch_all($sortorder, $sortfield, $limit, $offset);
+$ret = $object->fetch_all($sortorder, $sortfield, $limit, $offset,$filter);
 if($ret == -1) {
 	dol_print_error($db,$object->error);
 	exit;
@@ -111,7 +111,7 @@ print_fiche_titre($pagetitle,'','building_32.png@place');
 
 
 if(!$ret) {
-	print '<div class="warning">'.$langs->trans('NoPlaceInDatabase').'</div>';
+	print '<div class="warning">'.$langs->trans('NoBuildingForThisPlace').'</div>';
 }
 else
 {

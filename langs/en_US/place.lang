@@ -94,6 +94,7 @@ BuildingFormLabel_lng=Longitude
 BuildingCreatedWithSuccess=Building sucessfully added
 BuildingPlaceName=Location
 BuildingList=Buildings list
+NoBuildingForThisPlace=No building for that place
 
 #
 # Etages 
