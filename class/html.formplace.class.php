@@ -316,7 +316,7 @@ class FormPlace
     		}
     		else
     		{
-    			$out.= '<option value="-1"'.($showempty==2?'':' selected="selected"').' disabled="disabled">'.$langs->trans($socid?"NoContactDefinedForThirdParty":"NoContactDefined").'</option>';
+    			$out.= '<option value="-1"'.($showempty==2?'':' selected="selected"').' disabled="disabled">'.$langs->trans("NoRoomDefined").'</option>';
     		}
     		if ($htmlname != 'none' || $options_only)
     		{
