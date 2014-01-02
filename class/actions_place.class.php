@@ -37,37 +37,6 @@ class ActionsPlace
         if (in_array('actioncard',explode(':',$parameters['context'])))
         {
         	$out = '';
-        	// Show room select list when create an actioncom
-        	if($action == 'create')
-        	{
-        		$form = new Form($db);
-        		if(!class_exists('FormPlace'))
-        			require_once 'html.formplace.class.php';
-        		$formplace = new FormPlace($db);
-
-        		// Place & Room
-        		$out .= '<tr><td width="30%" class="nowrap">'.$langs->trans("ActionIntoPlace").'</td><td>';
-        		if (GETPOST('fk_resource_place','int') > 0)
-        		{
-        			if(!class_exists('Place'))
-        				require_once 'place.class.php';
-        			$room = new Place($db);
-        			$room->fetch(GETPOST('fk_resource_place','int'));
-        			$out .= $room->getNomUrl(1);
-        			$out .= '<input type="hidden" name="fk_resource_place" value="'.GETPOST('fk_resource_place','int').'">';
-        		}
-        		else
-        		{
-        			$events=array();
-        			$events[]=array('method' => 'getRooms', 'url' => dol_buildpath('/place/core/ajax/rooms.php',1), 'htmlname' => 'fk_resource_room', 'params' => array());
-        			$out .= $formplace->select_place_list('','fk_resource_place','',1,1,0,$events);
-        		}
-
-        		$out .= '</td></tr>';
-        		$out .= '<tr><td class="nowrap">'.$langs->trans("ActionIntoRoom").'</td><td>';
-        		$out .= $formplace->selectrooms(GETPOST('fk_resource_place','int'),GETPOST('fk_resource_room'),'fk_resource_room',1);
-        		$out .= '</td></tr>';
-        	}
 
         	/*
         	 *  View Location and room into actioncomm card
@@ -76,7 +45,7 @@ class ActionsPlace
         	{
         		$form = new Form($db);
         		if(!class_exists('Resource'))
-        			require_once 'resource.class.php';
+        			dol_include_once('resource/class/resource.class.php');
         		$resource = new Resource($db);
 
         		$resources = $resource->getElementResources($object->element,$object->id);
@@ -137,27 +106,6 @@ class ActionsPlace
         		}
         	}
 
-        	// Show place and room select list when edit an actioncom
-        	if($action == 'edit')
-        	{
-        		$form = new Form($db);
-        		if(!class_exists('FormPlace'))
-        			require_once 'html.formplace.class.php';
-        		$formplace = new FormPlace($db);
-
-        		// Place & Room
-        		$out .= '<tr><td width="30%" class="nowrap">'.$langs->trans("ActionIntoPlace").'</td><td>';
-
-        		$events=array();
-        		$events[]=array('method' => 'getRooms', 'url' => dol_buildpath('/place/core/ajax/rooms.php',1), 'htmlname' => 'fk_resource_room', 'params' => array());
-        		$out .= $formplace->select_place_list(GETPOST('fk_resource_place','int'),'fk_resource_place','',1,1,0,$events);
-
-
-        		$out .= '</td></tr>';
-        		$out .= '<tr><td class="nowrap">'.$langs->trans("ActionIntoRoom").'</td><td>';
-        		$out .= $formplace->selectrooms(GETPOST('fk_resource_place','int'),GETPOST('fk_resource_room'),'fk_resource_room',1);
-        		$out .= '</td></tr>';
-        	}
         	print $out;
 
         }
@@ -168,20 +116,83 @@ class ActionsPlace
         return 0;
     }
 
-    function insertExtraFields($parameters, &$object, &$action, $hookmanager)
+    function doActions($parameters, &$object, &$action, $hookmanager)
     {
     	global $langs, $db;
 
-    	if (in_array('actioncommdao',explode(':',$parameters['context'])))
-    	{
-    		// Init du tableau des resources pour l'element
-    		$object->resources = array('place@place' => GETPOST('fk_resource_place'), 'room@place' => GETPOST('fk_resource_room'));
+    	$langs->load('place@place');
+		$langs->load('resource@resource');
 
-    		foreach($object->resources as $resource_element => $resource_id)
+    	if (in_array('element_resource',explode(':',$parameters['context'])))
+    	{
+			$element_id = GETPOST('element_id','int');
+			$element = GETPOST('element','alpha');
+			$resource_type = GETPOST('resource_type');
+
+			$busy = GETPOST('busy','int');
+			$mandatory = GETPOST('mandatory','int');
+
+    		if($action == 'add_resource_place' && !GETPOST('cancel'))
     		{
-    			include_once 'resource.class.php';
-    			$resource = new Resource($db);
-    			$resource->add_element_resource($object->id,$object->element,$resource_id,$resource_element);
+	    		dol_include_once('resource/class/resource.class.php');
+	    		$resource_stat = new Resource($db);
+	    		$res = $resource_stat->add_element_resource($element_id,$element,GETPOST('fk_resource_place'),$resource_type,$busy,$mandatory);
+
+	    		if($res > 0)
+	    		{
+	    			setEventMessage($langs->trans('ResourceLinkedWithSuccess'),'mesgs');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
+	    		else
+	    		{
+	    			setEventMessage($langs->trans('ErrorWhenLinkingResource'),'errors');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
+
+    		}
+
+    		if($action == 'add_resource_room' && !GETPOST('cancel'))
+    		{
+    			// Init du tableau des resources pour l'element
+    			dol_include_once('resource/class/resource.class.php');
+    			$resource_stat = new Resource($db);
+
+    			$resources = array('place@place' => GETPOST('fk_resource_place'),'room@place' => GETPOST('fk_resource_room'));
+    			$error=$number_resources=0;
+
+    			foreach($resources as $resource_element => $resource_id)
+    			{
+					if($element && $resource_id > 0)
+					{
+						$res = $resource_stat->add_element_resource($element_id,$element,$resource_id,$resource_element,$busy,$mandatory);
+						if($res > 0)
+						{
+							$number_resources++;
+						}
+						else
+						{
+							$error++;
+						}
+					}
+					else
+					{
+						setEventMessage('ErrorNoId','errors');
+						$error++;
+					}
+    			}
+
+    			if(!$error && $number_resources > 0)
+    			{
+    				setEventMessage($langs->trans('ResourcesLinkedWithSuccess',$number_resources),'mesgs');
+    				header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
+    			}
+    			else
+    			{
+    				setEventMessage($langs->trans('ErrorWhenLinkingResources'),'errors');
+    				header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
+    			}
     		}
     	}
     }

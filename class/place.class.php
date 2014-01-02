@@ -23,7 +23,7 @@
  */
 
 // Put here all includes required by your class file
-require_once("resource.class.php");
+dol_include_once("/resource/class/resource.class.php");
 
 
 /**
