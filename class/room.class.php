@@ -196,10 +196,12 @@ class Room extends Place
 		$sql.= " t.note_public,";
 		$sql.= " t.note_private,";
 		$sql.= " t.fk_user_creat,";
+		$sql.= " ty.label as type_label,";
 		$sql.= " t.tms";
 
 
         $sql.= " FROM ".MAIN_DB_PREFIX."place_room as t";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
         $sql.= " WHERE t.rowid = ".$id;
 
     	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
@@ -219,13 +221,18 @@ class Room extends Place
 				$this->fk_floor = $obj->fk_floor;
 				$this->capacity = $obj->capacity;
 				$this->type_code = $obj->type_code;
+				$this->type_label = $obj->type_label;
 				$this->note_public = $obj->note_public;
 				$this->note_private = $obj->note_private;
 				$this->fk_user_creat = $obj->fk_user_creat;
 				$this->tms = $this->db->jdate($obj->tms);
 
-
             }
+
+            parent::fetch_building($this->fk_building);
+            parent::fetch_place($this->building->fk_place);
+            parent::fetch_floor($this->fk_floor);
+
             $this->db->free($resql);
 
             return 1;
@@ -362,10 +369,10 @@ class Room extends Place
 		$sql.= " entity=".(isset($this->entity)?$this->entity:"null").",";
 		$sql.= " ref=".(isset($this->ref)?"'".$this->db->escape($this->ref)."'":"null").",";
 		$sql.= " label=".(isset($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
-		$sql.= " fk_building=".(isset($this->fk_building)?$this->fk_building:"null").",";
-		$sql.= " fk_floor=".(isset($this->fk_floor)?$this->fk_floor:"null").",";
+		$sql.= " fk_building=".(isset($this->fk_building)?"'".$this->db->escape($this->fk_building)."'":"null").",";
+		$sql.= " fk_floor=".(isset($this->fk_floor)?"'".$this->db->escape($this->fk_floor)."'":"null").",";
 		$sql.= " type_code=".(isset($this->type_code)?"'".$this->db->escape($this->type_code)."'":"null").",";
-		$sql.= " capacity=".(isset($this->capacity)?$this->capacity:"null").",";
+		$sql.= " capacity=".(isset($this->capacity)?"'".$this->db->escape($this->capacity)."'":"null").",";
 		$sql.= " note_public=".(isset($this->note_public)?"'".$this->db->escape($this->note_public)."'":"null").",";
 		$sql.= " note_private=".(isset($this->note_private)?"'".$this->db->escape($this->note_private)."'":"null").",";
 		$sql.= " fk_user_creat=".(isset($this->fk_user_creat)?$this->fk_user_creat:"null").",";

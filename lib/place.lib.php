@@ -112,3 +112,25 @@ function buildingPrepareHead($object)
 
 	return $head;
 }
+
+
+function roomPrepareHead($object)
+{
+	global $langs, $conf, $user;
+	$h = 0;
+	$head = array();
+
+	$head[$h][0] = dol_buildpath('/place/room/card.php',1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Room");
+	$head[$h][2] = 'room';
+	$h++;
+
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
+	// $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
+	complete_head_from_modules($conf,$langs,$object,$head,$h,'room');
+
+
+	return $head;
+}

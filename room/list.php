@@ -97,7 +97,6 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 
 		$obj_room->ref          		= $ref;
 		$obj_room->label  				= GETPOST("label",'alpha');
-		$obj_room->fk_floor  			= GETPOST("fk_floor",'int');
 
 		$obj_room->type_code  			= GETPOST("fk_type_room",'alpha');
 		$obj_room->capacity  			= GETPOST("capacity",'int');
@@ -290,7 +289,10 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 				{
 					$out .= '<tr>';
 					$out .= '<td>';
-					$out .= $room->ref;
+					$roomstat = new Room($db);
+					$roomstat->id=$room->id;
+					$roomstat->ref = $room->ref;
+					$out .= $roomstat->getNomUrl();
 					$out .= '</td>';
 
 					$out .= '<td>';
