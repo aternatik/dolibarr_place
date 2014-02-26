@@ -32,9 +32,15 @@ function placeAdminPrepareHead()
 	$head = array();
 
 	$head[$h][0] = dol_buildpath("/place/admin/admin_place.php", 1);
-	$head[$h][1] = $langs->trans("Settings");
+	$head[$h][1] = $langs->trans("SettingsPlace");
 	$head[$h][2] = 'settings';
 	$h++;
+
+	$head[$h][0] = dol_buildpath("/place/admin/room_extrafields.php", 1);
+	$head[$h][1] = $langs->trans("RoomAttributes");
+	$head[$h][2] = 'attributeroom';
+	$h++;
+
 	$head[$h][0] = dol_buildpath("/place/admin/about.php", 1);
 	$head[$h][1] = $langs->trans("About");
 	$head[$h][2] = 'about';

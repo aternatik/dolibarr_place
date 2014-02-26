@@ -41,6 +41,8 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
 if (! $res) die("Include of main fails");
 
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
 require_once '../class/room.class.php';
@@ -62,6 +64,11 @@ $ref		= GETPOST('ref','alpha');
 if( ! $user->rights->place->read)
 	accessforbidden();
 
+$object=new Building($db);
+$object_room=new Room($db);
+
+$extrafields = new ExtraFields($db);
+$extralabels=$extrafields->fetch_name_optionals_label($object_room->table_element);
 
 
 /*******************************************************************
@@ -98,6 +105,8 @@ if ($action == 'create' && ! $_POST['cancel'])
 		$object->type_code=$type_code;
 		$object->capacity=$capacity;
 
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
+
 		$result=$object->create($user);
 		if ($result > 0)
 		{
@@ -133,8 +142,7 @@ llxHeader('',$pagetitle,'');
 
 $form=new Form($db);
 $formplace=new FormPlace($db);
-$object=new Building($db);
-$object_room=new Room($db);
+
 
 // If we know building
 if($object->fetch($fk_building) > 0)
@@ -209,6 +217,13 @@ if($object->fetch($fk_building) > 0)
 	print '<tr><td width="20%"><span class="">'.$langs->trans("RoomFormLabel_capacity").'</span></td>';
 	print '<td><input size="12" name="capacity" value="'.(GETPOST('capacity') ? GETPOST('capacity') : $object_room->capacity).'"></td></tr>';
 
+	// Extrafields
+	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object_room,$action);    // Note that $action and $object may have been modified by hook
+	if (empty($reshook) && ! empty($extrafields->attribute_label))
+	{
+		print $object->showOptionals($extrafields,'edit');
+	}
+
 	// Public note
 	print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
 	print '<td>';
@@ -223,6 +238,7 @@ if($object->fetch($fk_building) > 0)
 		print '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object_room->note_private)."</textarea><br>";
 		print "</td></tr>";
 	}
+
 
 	print '<tr><td align="center" colspan="2">';
 	print '<input name="add" class="button" type="submit" value="'.$langs->trans("Add").'"> &nbsp; ';

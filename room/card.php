@@ -41,10 +41,13 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
 if (! $res) die("Include of main fails");
 
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+
 require_once '../class/building.class.php';
 require_once '../class/room.class.php';
 require_once '../class/html.formplace.class.php';
 require_once '../lib/place.lib.php';
+
 
 // Load traductions files requiredby by page
 $langs->load("place@place");
@@ -63,6 +66,10 @@ if( ! $user->rights->place->read)
 	accessforbidden();
 
 $object=new Room($db);
+
+$extrafields = new ExtraFields($db);
+$extralabels=$extrafields->fetch_name_optionals_label($object->table_element);
+
 
 /*******************************************************************
 * ACTIONS
@@ -97,7 +104,9 @@ if ($action == 'room_update' && ! $_POST["cancel"]  && $user->rights->place->wri
 		$object->capacity  			= GETPOST("capacity",'int');
 
 		$object->note_public       	= GETPOST("note_public");
-		$object->note_private       	= GETPOST("note_private");
+		$object->note_private       = GETPOST("note_private");
+
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 
 		$result=$object->update($user);
 		if ($result > 0)
@@ -217,7 +226,12 @@ if($object->fetch($id) > 0)
 			print "</td></tr>";
 		}
 
-		// TODO : extrafields
+		// Extrafields
+		$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+		if (empty($reshook) && ! empty($extrafields->attribute_label))
+		{
+			print $object->showOptionals($extrafields,'edit');
+		}
 
 		print '<tr><td align="center" colspan="2">';
 		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'"> &nbsp; ';
@@ -275,8 +289,12 @@ if($object->fetch($id) > 0)
 		print '</td>';
 		print '</tr>';
 
-		// TODO : extrafields
-
+		// Extrafields
+		$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+		if (empty($reshook) && ! empty($extrafields->attribute_label))
+		{
+			print $object->showOptionals($extrafields);
+		}
 
 		print '</table>';
 

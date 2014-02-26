@@ -79,7 +79,7 @@ class Room extends Place
      */
     function create($user, $notrigger=0)
     {
-    	global $conf, $langs;
+    	global $conf, $langs, $hookmanager;
 		$error=0;
 
 		// Clean parameters
@@ -140,6 +140,24 @@ class Room extends Place
 		if (! $error)
         {
             $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."place_room");
+
+            // Actions on extra fields (by external module or standard code)
+            // FIXME le hook fait double emploi avec le trigger !!
+            $hookmanager->initHooks(array('HookModuleNamedao'));
+            $parameters=array('socid'=>$this->id);
+            $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+            if (empty($reshook))
+            {
+            	if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
+            	{
+            		$result=$this->insertExtraFields();
+            		if ($result < 0)
+            		{
+            			$error++;
+            		}
+            	}
+            }
+            else if ($reshook < 0) $error++;
 
 			if (! $notrigger)
 			{
@@ -232,6 +250,14 @@ class Room extends Place
             parent::fetch_building($this->fk_building);
             parent::fetch_place($this->building->fk_place);
             parent::fetch_floor($this->fk_floor);
+
+            if (!class_exists('ExtraFields'))
+            	require_once(DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php');
+			$extrafields=new ExtraFields($this->db);
+			$extralabels=$extrafields->fetch_name_optionals_label($this->table_element,true);
+			if (count($extralabels)>0) {
+				$this->fetch_optionals($this->id,$extralabels);
+			}
 
             $this->db->free($resql);
 
@@ -342,7 +368,7 @@ class Room extends Place
      */
     function update($user=0, $notrigger=0)
     {
-    	global $conf, $langs;
+    	global $conf, $langs, $hookmanager;
 		$error=0;
 
 		// Clean parameters
@@ -388,6 +414,25 @@ class Room extends Place
 
 		if (! $error)
 		{
+
+			// Actions on extra fields (by external module or standard code)
+			// FIXME le hook fait double emploi avec le trigger !!
+			$hookmanager->initHooks(array('HookPlacedao'));
+			$parameters=array('socid'=>$this->id);
+			$reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+			if (empty($reshook))
+			{
+				if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
+				{
+					$result=$this->insertExtraFields();
+					if ($result < 0)
+					{
+						$error++;
+					}
+				}
+			}
+			else if ($reshook < 0) $error++;
+
 			if (! $notrigger)
 			{
 	            // Uncomment this and change MYOBJECT to your own tag if you
@@ -459,6 +504,20 @@ class Room extends Place
     		dol_syslog(get_class($this)."::delete sql=".$sql);
     		$resql = $this->db->query($sql);
         	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+
+        	// Removed extrafields
+        	if (! $error)
+        	{
+        		if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
+        		{
+        			$result=$this->deleteExtraFields();
+        			if ($result < 0)
+        			{
+        				$error++;
+        				dol_syslog(get_class($this)."::delete erreur ".$errorflag." ".$this->error, LOG_ERR);
+        			}
+        		}
+        	}
 		}
 
         // Commit or rollback
