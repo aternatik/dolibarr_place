@@ -545,7 +545,6 @@ class Building extends Place
 		global $conf,$langs;
 		print '<table width="100%" class="border">';
 
-
 		// Ref
 		print '<tr>';
 		print '<td  width="20%">' . $langs->trans("BuildingFormLabel_ref") . '</td>';

@@ -16,7 +16,7 @@
  */
 
 /**
- *   	\file       place/building/rooms.php
+ *   	\file       place/room/list.php
  *		\ingroup    place
  *		\brief      This file is to manage building rooms
  */
@@ -56,6 +56,7 @@ $id			= GETPOST('id','int');
 $roomid		= GETPOST('roomid','int');
 $action		= GETPOST('action','alpha');
 $fk_place	= GETPOST('fk_place','int');
+$fk_building	= GETPOST('building','int');
 $ref		= GETPOST('ref','alpha');
 $lat		= GETPOST('lat','alpha');
 $lng		= GETPOST('lng','alpha');
@@ -66,7 +67,7 @@ $confirm	= GETPOST('confirm','alpha');
 if( ! $user->rights->place->read)
 	accessforbidden();
 
-$object=new Building($db);
+$obj_building=new Building($db);
 $obj_room = new Room($db);
 
 /*******************************************************************
@@ -96,7 +97,6 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 
 		$obj_room->ref          		= $ref;
 		$obj_room->label  				= GETPOST("label",'alpha');
-		$obj_room->fk_floor  			= GETPOST("fk_floor",'int');
 
 		$obj_room->type_code  			= GETPOST("fk_type_room",'alpha');
 		$obj_room->capacity  			= GETPOST("capacity",'int');
@@ -107,7 +107,7 @@ if ($action == 'updateroom' && ! $_POST["cancel"]  && $user->rights->place->writ
 		$result=$obj_room->update($user);
 		if ($result > 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			Header("Location: ".$_SERVER['PHP_SELF']."?building=".$fk_building);
 			exit;
 		}
 		else
@@ -132,7 +132,7 @@ else if ($action == 'confirm_deleteroom' && $confirm == 'yes' && $user->rights->
 		$result = $obj_room->delete($user);
 		if($result > 0) {
 			setEventMessage($langs->trans('RoomDeleted'));
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			Header("Location: ".$_SERVER['PHP_SELF']."?building=".$fk_building);
 			exit;
 
 		}
@@ -152,7 +152,7 @@ else if ($action == 'confirm_deleteroom' && $confirm == 'yes' && $user->rights->
 	}
 
 
-	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$obj_building->id);
 	exit;
 }
 
@@ -170,18 +170,18 @@ llxHeader('',$langs->trans('RoomsManagment'),'','','','',array('/place/js/place.
 $form=new Form($db);
 
 
-if($object->fetch($id) > 0 )
+if($fk_building && $obj_building->fetch($fk_building) > 0 )
 {
 
-	$head=placePrepareHead($object->place);
+	$head=placePrepareHead($obj_building->place);
 	dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
 
-	$ret = $object->place->printInfoTable();
+	$ret = $obj_building->place->printInfoTable();
 
 	print '</div>';
 
 	//Second tabs list for building
-	$head=buildingPrepareHead($object);
+	$head=buildingPrepareHead($obj_building);
 	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
 
 
@@ -190,7 +190,7 @@ if($object->fetch($id) > 0 )
 	/*---------------------------------------
 	 * View building info
 	*/
-	$ret_html = $object->printShortInfoTable();
+	$ret_html = $obj_building->printShortInfoTable();
 
 
 	/*
@@ -222,7 +222,7 @@ if($object->fetch($id) > 0 )
 		$pageprev = $page - 1;
 		$pagenext = $page + 1;
 
-		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('t.fk_building'=>$id));
+		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('t.fk_building'=>$fk_building));
 
 		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
 		{
@@ -230,7 +230,7 @@ if($object->fetch($id) > 0 )
 			// Confirm delete
 			if ($action == 'ask_deleteroom')
 			{
-				$out .= $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$id.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom','',0,1);
+				$out .= $form->formconfirm($_SERVER["PHP_SELF"].'?building='.$fk_building.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom','',0,1);
 			}
 
 
@@ -253,7 +253,7 @@ if($object->fetch($id) > 0 )
 					$out .= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 					$out .= '<input type="hidden" name="action" value="updateroom">';
 					$out .= '<input type="hidden" name="usenewupdatelineform" value="1" />';
-					$out .= '<input type="hidden" name="id" value="'.$id.'">';
+					$out .= '<input type="hidden" name="building" value="'.$fk_building.'">';
 					$out .= '<input type="hidden" name="roomid" value="'.$room->id.'">';
 
 					$out .= '<tr>';
@@ -289,7 +289,10 @@ if($object->fetch($id) > 0 )
 				{
 					$out .= '<tr>';
 					$out .= '<td>';
-					$out .= $room->ref;
+					$roomstat = new Room($db);
+					$roomstat->id=$room->id;
+					$roomstat->ref = $room->ref;
+					$out .= $roomstat->getNomUrl();
 					$out .= '</td>';
 
 					$out .= '<td>';
@@ -309,9 +312,9 @@ if($object->fetch($id) > 0 )
 					$out .= '</td>';
 
 					$out .= '<td>';
-					$out .= '<a href="' . $_SERVER["PHP_SELF"] .'?id='.$id.'&amp;action=editroom&amp;roomid='.$room->id.'#'.$room->id.'">'.img_edit().'</a>';
+					$out .= '<a href="' . $_SERVER["PHP_SELF"] .'?building='.$fk_building.'&amp;action=editroom&amp;roomid='.$room->id.'#'.$room->id.'">'.img_edit().'</a>';
 
-					$out .= '<a href="'.$_SERVER["PHP_SELF"].'?id='.$id.'&amp;action=ask_deleteroom&amp;roomid='.$room->id.'">'.img_delete().'</a>';
+					$out .= '<a href="'.$_SERVER["PHP_SELF"].'?building='.$fk_building.'&amp;action=ask_deleteroom&amp;roomid='.$room->id.'">'.img_delete().'</a>';
 					$out .= '</td>';
 
 					$out .= '</tr>';
@@ -348,7 +351,7 @@ if($object->fetch($id) > 0 )
 		if($user->rights->place->write)
 		{
 			print '<div class="inline-block divButAction">';
-			print '<a href="../room/add.php?fk_building='.$id.'" class="butAction">'.$langs->trans('AddNewRoomToThisBuilding').'</a>';
+			print '<a href="../room/add.php?building='.$fk_building.'" class="butAction">'.$langs->trans('AddNewRoomToThisBuilding').'</a>';
 			print '</div>';
 		}
 	}
@@ -361,7 +364,7 @@ if($object->fetch($id) > 0 )
 
 // Example 2 : Adding links to objects
 // The class must extends CommonObject class to have this method available
-//$somethingshown=$object->showLinkedObjectBlock();
+//$somethingshown=$obj_building->showLinkedObjectBlock();
 
 
 // Example 3 : List of data

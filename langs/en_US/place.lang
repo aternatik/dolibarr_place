@@ -50,6 +50,8 @@ PlaceAboutPage = Place module about page
 #
 BackToBuildingList=Back to building list
 PleaseSelectPlaceFirst=Please first select a place
+ActionIntoPlace=Event location
+ActionIntoRoom=Room
 
 # Dictionary
 PlaceRoomDictType=Type of rooms
@@ -58,7 +60,7 @@ PlaceRoomDictType=Type of rooms
 #
 PlacePageName=Place management
 PlacePageIndex=Place management
-NoPlaceInDatabase=No place in databas
+NoPlaceInDatabase=No place in database
 AddPlace=Add place
 PlaceFormLabel_ref=Reference / label
 RoomFormLabel_capacity=Room capacity
@@ -76,6 +78,7 @@ OSMLink=Link to Open Street Map
 ShowInOSM=See location into OSM
 SeeOrEdit=Edit/see
 NameOfThePlace=Location name
+SelectPlace=Select place
 
 
 #
@@ -92,9 +95,10 @@ BuildingFormLabel_lng=Longitude
 BuildingCreatedWithSuccess=Building sucessfully added
 BuildingPlaceName=Location
 BuildingList=Buildings list
+NoBuildingForThisPlace=No building for that place
 
 #
-# Etages 
+# Etages
 #
 Floors=Floors
 FloorManagment=Floor management
@@ -110,9 +114,9 @@ NoFloorFoundForThisBuilding=No floor for this building
 #
 # Rooms
 #
-Room=Room
+RoomSingular=Room
 Rooms=Rooms
-AddRoom=add room
+AddRoom=Add room
 RoomsManagment=Room management
 NoRoomFoundForThisBuilding=No room fo this building
 AddNewRoomToThisBuilding=Add room to this building
@@ -125,3 +129,4 @@ RoomOrder=Position/Order
 DeleteRoom=Delete room
 DeleteRoom=Confirm delete this room?
 RoomDeleted=Room deleted
+NoRoomDefined=No room defined

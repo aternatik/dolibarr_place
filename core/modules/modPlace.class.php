@@ -1,6 +1,6 @@
 <?php
 /* Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
- * Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+ * Copyright (C) 2013-2014	Jean-François Ferry	<jfefe@aternatik.fr>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ class modPlace extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Place";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '0.2';
+		$this->version = '0.3';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -94,7 +94,8 @@ class modPlace extends DolibarrModules
 			// Set this to relative path of css if module has its own css file
 			'css' => '/place/css/place.css.php',
 			// Set here all hooks context managed by module
-			//'hooks' => array('hookcontext1','hookcontext2')
+			'hooks' => array('actioncard','actioncommdao','element_resource'),
+			'resources' => array('place@place','room@place')
 			// Set here all workflow context managed by module
 			//'workflow' => array('order' => array('WORKFLOW_ORDER_AUTOCREATE_INVOICE'))
 		);
@@ -109,7 +110,7 @@ class modPlace extends DolibarrModules
 
 		// Dependencies
 		// List of modules id that must be enabled if this module is enabled
-		$this->depends = array();
+		$this->depends = array('modResource');
 		// List of modules id to disable if this one is disabled
 		$this->requiredby = array();
 		// Minimum version of PHP required by module
@@ -159,6 +160,10 @@ class modPlace extends DolibarrModules
 		// 'contact'			to add a tab in contact view
 		// 'categories_x'		to add a tab in category view
 		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
+
+		$this->tabs = array(
+			//'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
+		);
 		// Dictionnaries
 		$this->dictionnaries=array(
 			'langs'=>'place@place',

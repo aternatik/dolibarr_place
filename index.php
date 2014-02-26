@@ -104,7 +104,7 @@ else
 	{
 
 		print '<tr><td>';
-		print $object->getElementUrl($place->id, 'place',1);
+		print $place->getNomUrl(1);
 		print '</td>';
 
 		print '<td>';

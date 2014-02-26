@@ -23,13 +23,13 @@
  */
 
 // Put here all includes required by your class file
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+dol_include_once("/resource/class/resource.class.php");
 
 
 /**
  *	DAO Place object
  */
-class Place extends CommonObject
+class Place extends Resource
 {
 	var $db;							//!< To store db handler
 	var $error;							//!< To return error code (or message)
@@ -107,7 +107,7 @@ class Place extends CommonObject
 
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
 		$sql.= " ".(empty($this->fk_soc)?'NULL':$this->fk_soc).",";
-		$sql.= " ".(empty($this->fk_socpeople)?'NULL':$this->fk_socpeople).",";
+		$sql.= " ".(empty($this->fk_socpeople)?'0':$this->fk_socpeople).",";
 		$sql.= " ".(! isset($this->description)?'NULL':"'".$this->db->escape($this->description)."'").",";
 		$sql.= " ".(empty($this->lat)?'NULL':"'".$this->lat."'").",";
 		$sql.= " ".(empty($this->lng)?'NULL':"'".$this->lng."'").",";
@@ -460,19 +460,28 @@ class Place extends CommonObject
 		global $langs;
 
 		$result='';
+
 		if ($option == '')
 		{
 			$lien = '<a href="'.dol_buildpath('/place/fiche.php',1).'?id='.$this->id. $get_params .'">';
 			$picto='place@place';
+			$label=$langs->trans("ShowPlace").': '.$this->ref;
+
 		}
 		if ($option == 'building@place')
 		{
 			$lien = '<a href="'.dol_buildpath('/place/building/fiche.php',1).'?id='.$this->id. $get_params .'">';
 			$picto='building@place';
+			$label=$langs->trans("ShowBuilding").': '.$this->ref;
+		}
+		if ($option == 'room@place')
+		{
+			$lien = '<a href="'.dol_buildpath('/place/room/card.php',1).'?id='.$this->id. $get_params .'">';
+			$picto='room@place';
+			$label=$langs->trans("ShowRoom").': '.$this->ref;
 		}
 
 		$lienfin='</a>';
-
 
 		$label=$langs->trans("ShowPlace").': '.$this->ref;
 
@@ -505,8 +514,89 @@ class Place extends CommonObject
 		print '</table>';
 	}
 
+	/**
+	 *  Load object place in $this->place from the database
+	 *
+	 *  @param	int		$fk_place    Id place
+	 *  @return int    	<0 if KO, >0 if OK
+	 */
+	function fetch_place($fk_place)
+	{
+		if (empty($fk_place)) return 0;
+
+		$placestat = new Place($this->db);
+		if($placestat->fetch($fk_place) > 0)
+		{
+			$this->place =	$placestat;
+			return 1;
+		}
+		else return 0;
+	}
 
 	/**
+	 *  Load object building in $this->building from the database
+	 *
+	 *  @param	int		$fk_building    Id building
+	 *  @return int     <0 if KO, >0 if OK
+	 */
+	function fetch_building($fk_building)
+	{
+		if (empty($fk_building)) return 0;
+
+		$buildingstat = new Building($this->db);
+		if($buildingstat->fetch($fk_building) > 0)
+		{
+			$this->building =	$buildingstat;
+			return 1;
+		}
+		else return 0;
+	}
+
+   /**
+     *  Load object floor in $this->floor from the database
+     *
+     *  @param	int		$fk_floor    Id floor
+     *  @return int     <0 if KO, >0 if OK
+     */
+    function fetch_floor($fk_floor)
+    {
+    	global $langs;
+
+    	if (empty($fk_floor)) return 0;
+
+        $sql = "SELECT";
+		$sql.= " t.rowid,";
+		$sql.= " t.ref,";
+		$sql.= " t.pos,";
+		$sql.= " t.fk_building,";
+		$sql.= " t.tms";
+        $sql.= " FROM ".MAIN_DB_PREFIX."place_floor as t";
+        $sql.= " WHERE t.rowid = ".$fk_floor;
+
+    	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
+        $resql=$this->db->query($sql);
+        if ($resql)
+        {
+            if ($this->db->num_rows($resql))
+            {
+                $obj = $this->db->fetch_object($resql);
+
+                $this->floor=$obj;
+
+            }
+            $this->db->free($resql);
+            return 1;
+
+        }
+        else
+        {
+      	    $this->error="Error ".$this->db->lasterror();
+            dol_syslog(get_class($this)."::fetch ".$this->error, LOG_ERR);
+            return -1;
+        }
+    }
+
+/**
 	 *	Load an object from its id and create a new one in database
 	 *
 	 *	@param	int		$fromid     Id of object to clone

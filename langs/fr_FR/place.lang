@@ -51,6 +51,8 @@ PlaceAboutPage = Page à propos du module Place
 #
 BackToBuildingList=Retour à la liste des bâtiments
 PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
+ActionIntoPlace=Localisation de l'évènement
+ActionIntoRoom=Salle
 
 # Dictionary
 PlaceRoomDictType=Type de salle
@@ -96,7 +98,7 @@ BuildingPlaceName=Nom du lieu
 BuildingList=Liste des bâtiments
 
 #
-# Etages 
+# Etages
 #
 Floors=Étages
 FloorManagment=Gestion des étages
@@ -127,3 +129,4 @@ RoomOrder=Ordre/position
 DeleteRoom=Effacer la salle
 ConfirmDeleteRoom=Confirmer la suppression de cette salle?
 RoomDeleted=Salle supprimée
+NoRoomDefined=Pas de salle défini
