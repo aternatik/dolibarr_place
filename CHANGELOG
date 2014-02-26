@@ -6,6 +6,10 @@
 #
 #
 ###################################################
+Changes from 0.2 to 0.3
+Extrafields on room 
+Add single page for each room
+Improve integration into resources module
 
 Changes from 0.1 to 0.2
 Add dictonary for room type
