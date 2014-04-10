@@ -21,3 +21,5 @@
  *	\ingroup	place
  *	\brief		This file is css file for place module
  */
+
+header('Content-type: text/css');
