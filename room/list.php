@@ -190,7 +190,7 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 	/*---------------------------------------
 	 * View building info
 	*/
-	$ret_html = $obj_building->printShortInfoTable();
+	$obj_building->printShortInfoTable();
 
 
 	/*

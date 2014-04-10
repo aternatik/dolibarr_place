@@ -199,7 +199,7 @@ if($object->fetch($id) > 0)
 		/*---------------------------------------
 		 * View object
 		*/
-		$ret_html = $object->printInfoTable();
+		$object->printInfoTable();
 	}
 
 	print '</div>';
