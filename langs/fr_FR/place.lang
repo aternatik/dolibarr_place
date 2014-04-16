@@ -17,7 +17,6 @@
 #
 # Générique
 #
-
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
 Module110110Name = Gestion de lieux
@@ -81,6 +80,10 @@ ShowInOSM=Afficher le point sur OSM
 SeeOrEdit=Voir/éditer
 NameOfThePlace=Nom du lieu
 
+#
+# Ressource
+#
+Place=Lieu
 
 #
 # Bâtiments
@@ -98,7 +101,7 @@ BuildingPlaceName=Nom du lieu
 BuildingList=Liste des bâtiments
 
 #
-# Etages
+# Étages
 #
 Floors=Étages
 FloorManagment=Gestion des étages

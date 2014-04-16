@@ -17,7 +17,6 @@
 #
 # Generic
 #
-
 # Module label 'ModuleXXXName'
 Module110110Name = Place managment
 # Module description 'ModuleXXXDesc'
@@ -55,6 +54,7 @@ ActionIntoRoom=Room
 
 # Dictionary
 PlaceRoomDictType=Type of rooms
+
 #
 # Page Place
 #
@@ -80,9 +80,13 @@ SeeOrEdit=Edit/see
 NameOfThePlace=Location name
 SelectPlace=Select place
 
+#
+# Resource
+#
+Place=Place
 
 #
-# Bâtiments
+# Buildings
 #
 Buildings=Buildings
 BuildingSingular=Building
@@ -98,7 +102,7 @@ BuildingList=Buildings list
 NoBuildingForThisPlace=No building for that place
 
 #
-# Etages
+# Floors
 #
 Floors=Floors
 FloorManagment=Floor management
@@ -109,7 +113,6 @@ FloorsUpdated=Floors updated
 FloorEdition=Edit floors
 FloorDeletedWithSuccess=Floor successfully deleted
 NoFloorFoundForThisBuilding=No floor for this building
-
 
 #
 # Rooms
