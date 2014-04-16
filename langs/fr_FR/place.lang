@@ -84,6 +84,9 @@ NameOfThePlace=Nom du lieu
 # Ressource
 #
 Place=Lieu
+Building=Bâtiment
+Floor=Étage
+Room=Salle
 
 #
 # Bâtiments

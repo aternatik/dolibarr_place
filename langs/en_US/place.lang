@@ -84,6 +84,9 @@ SelectPlace=Select place
 # Resource
 #
 Place=Place
+Building=Building
+Floor=Floor
+Room=Room
 
 #
 # Buildings
