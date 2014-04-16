@@ -262,7 +262,7 @@ class Building extends Place
     	$sql.= " t.fk_user_creat,";
     	$sql.= " t.tms";
     	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_building as t ';
-    	$sql.= " WHERE t.entity IN (".getEntity('place').")";
+    	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
     	if (!empty($filter)){
