@@ -112,8 +112,6 @@ class ActionsPlace
 
         $this->results=array('myreturn'=>'');
         $this->resprints=$out;
-
-        return 0;
     }
 
     function doActions($parameters, &$object, &$action, $hookmanager)
