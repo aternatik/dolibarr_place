@@ -541,6 +541,8 @@ class Place extends Resource
 	 */
 	function fetch_building($fk_building)
 	{
+		dol_include_once('place/class/building.class.php');
+
 		if (empty($fk_building)) return 0;
 
 		$buildingstat = new Building($this->db);
