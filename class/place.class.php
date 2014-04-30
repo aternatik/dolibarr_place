@@ -461,24 +461,22 @@ class Place extends Resource
 
 		$result='';
 
-		if ($option == '')
-		{
-			$lien = '<a href="'.dol_buildpath('/place/fiche.php',1).'?id='.$this->id. $get_params .'">';
-			$picto='place@place';
-			$label=$langs->trans("ShowPlace").': '.$this->ref;
-
-		}
-		if ($option == 'building@place')
-		{
-			$lien = '<a href="'.dol_buildpath('/place/building/fiche.php',1).'?id='.$this->id. $get_params .'">';
-			$picto='building@place';
-			$label=$langs->trans("ShowBuilding").': '.$this->ref;
-		}
-		if ($option == 'room@place')
-		{
-			$lien = '<a href="'.dol_buildpath('/place/room/card.php',1).'?id='.$this->id. $get_params .'">';
-			$picto='room@place';
-			$label=$langs->trans("ShowRoom").': '.$this->ref;
+		switch($option) {
+			case 'building@place':
+				$lien = '<a href="'.dol_buildpath('/place/building/fiche.php',1).'?id='.$this->id. $get_params .'">';
+				$picto='building@place';
+				$label=$langs->trans("ShowBuilding").': '.$this->ref;
+				break;
+			case 'room@place':
+				$lien = '<a href="'.dol_buildpath('/place/room/card.php',1).'?id='.$this->id. $get_params .'">';
+				$picto='room@place';
+				$label=$langs->trans("ShowRoom").': '.$this->ref;
+				break;
+			default:
+				$lien = '<a href="'.dol_buildpath('/place/fiche.php',1).'?id='.$this->id. $get_params .'">';
+				$picto='place@place';
+				$label=$langs->trans("ShowPlace").': '.$this->ref;
+				break;
 		}
 
 		$lienfin='</a>';
