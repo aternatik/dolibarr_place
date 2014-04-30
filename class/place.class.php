@@ -483,8 +483,6 @@ class Place extends Resource
 
 		$lienfin='</a>';
 
-		$label=$langs->trans("ShowPlace").': '.$this->ref;
-
 		if ($withpicto) $result.=($lien.img_object($label,$picto).$lienfin);
 		if ($withpicto && $withpicto != 2) $result.=' ';
 		$result.=$lien.$this->ref.$lienfin;

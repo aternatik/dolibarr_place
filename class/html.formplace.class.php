@@ -41,6 +41,8 @@ class FormPlace
 
     var $error;
 
+	public $num;
+
 
 	/**
 	* Constructor
@@ -250,8 +252,6 @@ class FormPlace
     	$resql=$this->db->query($sql);
     	if ($resql)
     	{
-    		$num=$this->db->num_rows($resql);
-
     		if ($conf->use_javascript_ajax && $conf->global->CONTACT_USE_SEARCH_TO_SELECT && ! $forcecombo && ! $options_only)
     		{
     			$out.= ajax_combobox($htmlname, $event, $conf->global->CONTACT_USE_SEARCH_TO_SELECT);
@@ -307,6 +307,7 @@ class FormPlace
     						{
     							$out.= $roomstatic->getFullName($langs);
     							if ($showfunction && $obj->poste) $out.= ' ('.$obj->poste.')';
+							    //FIXME: $showsoc is undeclared
     							if (($showsoc > 0) && $obj->company) $out.= ' - ('.$obj->company.')';
     						}
     					}

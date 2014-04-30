@@ -22,6 +22,9 @@
 
 class ActionsPlace
 {
+	public $results;
+	public $resprints;
+
      /** Overloading the formObjectOptions function : replacing the parent's function with the one below
       *  @param      parameters  meta datas of the hook (context, etc...)
       *  @param      object             the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
@@ -34,16 +37,15 @@ class ActionsPlace
         //print_r($parameters);
         //echo "action: ".$action;
 
+	    $out = '';
+
         if (in_array('actioncard',explode(':',$parameters['context'])))
         {
-        	$out = '';
-
         	/*
         	 *  View Location and room into actioncomm card
         	 */
         	if($action == '')
         	{
-        		$form = new Form($db);
         		if(!class_exists('Resource'))
         			dol_include_once('resource/class/resource.class.php');
         		$resource = new Resource($db);
@@ -52,6 +54,7 @@ class ActionsPlace
         		$num=count($resources);
 
         		$i = 0;
+				$var = false;
         		while ($i < $num) {
         			$var = !$var;
 
