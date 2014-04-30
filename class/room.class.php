@@ -145,7 +145,7 @@ class Room extends Place
             // FIXME le hook fait double emploi avec le trigger !!
             $hookmanager->initHooks(array('HookModuleNamedao'));
             $parameters=array('socid'=>$this->id);
-            $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+            $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this);    // Note that $action and $object may have been modified by some hooks
             if (empty($reshook))
             {
             	if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
@@ -419,7 +419,7 @@ class Room extends Place
 			// FIXME le hook fait double emploi avec le trigger !!
 			$hookmanager->initHooks(array('HookPlacedao'));
 			$parameters=array('socid'=>$this->id);
-			$reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+			$reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this);    // Note that $action and $object may have been modified by some hooks
 			if (empty($reshook))
 			{
 				if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
@@ -514,7 +514,7 @@ class Room extends Place
         			if ($result < 0)
         			{
         				$error++;
-        				dol_syslog(get_class($this)."::delete erreur ".$errorflag." ".$this->error, LOG_ERR);
+        				dol_syslog(get_class($this)."::delete error ".$this->error, LOG_ERR);
         			}
         		}
         	}
