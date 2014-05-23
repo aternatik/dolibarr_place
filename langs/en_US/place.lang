@@ -21,7 +21,6 @@
 # Module label 'ModuleXXXName'
 Module110110Name = Place managment
 # Module description 'ModuleXXXDesc'
-# (where XXX is value of numeric property 'numero' of module)
 Module110110Desc = manage locations, buildings, floors and rooms
 Menu110110PlaceIndex=Place management
 Menu110110PlaceAdd=Add new place
@@ -80,7 +79,6 @@ SeeOrEdit=Edit/see
 NameOfThePlace=Location name
 SelectPlace=Select place
 
-
 #
 # Bâtiments
 #
@@ -130,3 +128,10 @@ DeleteRoom=Delete room
 DeleteRoom=Confirm delete this room?
 RoomDeleted=Room deleted
 NoRoomDefined=No room defined
+
+#
+# Resources types
+#
+Place=Place
+Room=Room
+Building=Building
