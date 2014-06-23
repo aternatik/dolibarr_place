@@ -6,6 +6,9 @@
 #
 #
 ###################################################
+Changes from 0.3 to 0.4
+Add document support for building and rooms
+
 Changes from 0.2 to 0.3
 Extrafields on room 
 Add single page for each room
