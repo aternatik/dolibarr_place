@@ -19,10 +19,8 @@
 #
 
 # Module label 'ModuleXXXName'
-# (where XXX is value of numeric property 'numero' of module)
 Module110110Name = Gestion de lieux
 # Module description 'ModuleXXXDesc'
-# (where XXX is value of numeric property 'numero' of module)
 Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
 Menu110110PlaceIndex=Gestion des lieux
 Menu110110PlaceAdd=Ajouter un lieu
@@ -80,7 +78,7 @@ OSMLink=Lien Open Street Map
 ShowInOSM=Afficher le point sur OSM
 SeeOrEdit=Voir/éditer
 NameOfThePlace=Nom du lieu
-
+SelectPlace=Selection du lieu
 
 #
 # Bâtiments
@@ -130,3 +128,10 @@ DeleteRoom=Effacer la salle
 ConfirmDeleteRoom=Confirmer la suppression de cette salle ?
 RoomDeleted=Salle supprimée
 NoRoomDefined=Pas de salle défini
+
+#
+# Types de ressources
+#
+Place=Lieu
+Room=Salle
+Building=Bâtiment
