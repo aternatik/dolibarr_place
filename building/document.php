@@ -20,9 +20,9 @@
  */
 
 /**
- *  \file       htdocs/societe/document.php
- *  \brief      Tab for documents linked to third party
- *  \ingroup    societe
+ *  \file       place/building/document.php
+ *  \brief      Tab for documents linked to building
+ *  \ingroup    place
  */
 
 $res=0;
@@ -99,7 +99,6 @@ if ($object->id)
 	/*
 	 * Affichage onglets
 	 */
-	if (! empty($conf->notification->enabled)) $langs->load("mails");
 	$head = buildingPrepareHead($object);
 
 	$form=new Form($db);
@@ -123,12 +122,6 @@ if ($object->id)
 	print '<td colspan="3">';
 	print $form->showrefnav($object,'id','',($user->societe_id?0:1),'rowid','ref');
 	print '</td></tr>';
-
-	// Prefix
-	if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
-	{
-		print '<tr><td>'.$langs->trans('Prefix').'</td><td colspan="3">'.$object->prefix_comm.'</td></tr>';
-	}
 
 	// Nbre fichiers
 	print '<tr><td>'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
