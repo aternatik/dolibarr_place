@@ -106,7 +106,7 @@ class ActionsPlace
         		}
         	}
 
-        	print $out;
+        	//print $out;
 
         }
 
