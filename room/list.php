@@ -182,7 +182,7 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 
 	//Second tabs list for building
 	$head=buildingPrepareHead($obj_building);
-	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
 
 
 
@@ -197,7 +197,7 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 	 * Floors management
 	 */
 
-	print '<br />';
+	print '</div><br />';
 	print_fiche_titre($langs->trans('RoomsManagment'),'','room_32.png@place');
 
 

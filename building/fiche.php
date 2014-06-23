@@ -132,9 +132,11 @@ if($object->fetch($id) > 0)
 	$ret = $object->place->printInfoTable();
 
 	print '</div>';
+	
+	
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'building', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'building', $langs->trans("BuildingSingular"),0,'building@place');
 
 	if ($action == 'edit' )
 	{

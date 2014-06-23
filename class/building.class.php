@@ -550,6 +550,14 @@ class Building extends Place
 		print $this->ref;
 		print '</td>';
 		print '</tr>';
+		
+		// Description
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Description") . '</td>';
+		print '<td   width="30%">';
+		print $this->description;
+		print '</td>';
+		print '</tr>';
 
 		print '</table>';
 	}

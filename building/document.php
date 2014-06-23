@@ -112,7 +112,7 @@ if ($object->id)
 
 	$form=new Form($db);
 
-	dol_fiche_head($head, 'document', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'document', $langs->trans("BuildingSingular"),0,'building@place');
 
 	// Construit liste des fichiers
 	$filearray=dol_dir_list($upload_dir,"files",0,'','(\.meta|_preview\.png)$',$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
@@ -139,7 +139,7 @@ if ($object->id)
 
 	print '</table>';
 
-	print '<br />';
+	print '</div><br />';
 
 	$modulepart = 'place';
 	$permission = $user->rights->place->write;

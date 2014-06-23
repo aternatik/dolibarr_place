@@ -156,13 +156,13 @@ if($object->fetch($fk_building) > 0)
 	print '</div>';
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
 
 	/*---------------------------------------
 	 * View building info
 	*/
 	$ret_html = $object->printShortInfoTable();
-	print '<br />';
+	print '</div><br />';
 
 
 }

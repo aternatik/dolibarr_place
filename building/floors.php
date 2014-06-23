@@ -150,7 +150,7 @@ if($object->fetch($id) > 0 )
 
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),1,'building@place');
+	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),0,'building@place');
 
 
 
@@ -165,7 +165,7 @@ if($object->fetch($id) > 0 )
 	 * Floors managment
 	 */
 
-	print '<br />';
+	print '</div><br />';
 	print_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
 
 	if($action == 'show_floor_form')
