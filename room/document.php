@@ -115,15 +115,15 @@ if ($object->id)
     if($object->building)
     {
         $head=buildingPrepareHead($object->building);
-        dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
+        dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
     
         $ret = $object->building->printShortInfoTable();
-        print '<br />';
+        print '</div>';
     }
     
-	$head = buildingPrepareHead($object);
 
-	dol_fiche_head($head, 'document', $langs->trans("Room"),0,'room@place');
+	$head=roomPrepareHead($object);
+	dol_fiche_head($head, 'document', $langs->trans("RoomSingular"),0,'room@place');
 
 
 	// Construit liste des fichiers
