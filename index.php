@@ -29,8 +29,8 @@ $res=@include("../main.inc.php");				// For root directory
 if (! $res) $res=@include("../../main.inc.php");	// For "custom" directory
 if (! $res) die("Include of main fails");
 
-require 'class/place.class.php';
-require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once 'class/place.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 
 
 

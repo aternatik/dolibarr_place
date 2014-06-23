@@ -107,6 +107,11 @@ function buildingPrepareHead($object)
 	$head[$h][2] = 'rooms';
 	$h++;
 
+	$head[$h][0] = dol_buildpath('/place/building/document.php',1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Documents");
+	$head[$h][2] = 'document';
+	$h++;
+
 
 
 	// Show more tabs from modules
@@ -129,6 +134,11 @@ function roomPrepareHead($object)
 	$head[$h][0] = dol_buildpath('/place/room/card.php',1).'?id='.$object->id;
 	$head[$h][1] = $langs->trans("Room");
 	$head[$h][2] = 'room';
+	$h++;
+	
+	$head[$h][0] = dol_buildpath('/place/room/document.php',1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Documents");
+	$head[$h][2] = 'document';
 	$h++;
 
 	// Show more tabs from modules

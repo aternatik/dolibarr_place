@@ -106,14 +106,12 @@ class ActionsPlace
         		}
         	}
 
-        	print $out;
+        	//print $out;
 
         }
 
         $this->results=array('myreturn'=>'');
         $this->resprints=$out;
-
-        return 0;
     }
 
     function doActions($parameters, &$object, &$action, $hookmanager)

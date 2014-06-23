@@ -61,7 +61,7 @@ class modPlace extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Place";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '0.3';
+		$this->version = '0.4';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -102,7 +102,7 @@ class modPlace extends DolibarrModules
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/place/temp");
-		$this->dirs = array("/place");
+		$this->dirs = array("/place","place/building");
 
 		// Config pages. Put here list of php pages
 		// stored into place/admin directory, used to setup module.

@@ -12,7 +12,7 @@ $formplace = new FormPlace($db);
 
 $out .= '<div class="tagtable centpercent border allwidth">';
 
-$out .= '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+$out .= '<form class="tagtr '.($var==true?'pair':'impair').'" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 $out .= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 $out .= '<input type="hidden" name="action" value="add_resource_room">';
 $out .= '<input type="hidden" name="element" value="'.$element.'">';
@@ -21,7 +21,7 @@ $out .= '<input type="hidden" name="resource_type" value="'.$resource_type.'">';
 
 
 // Place & Room
-$out .= '<div class="nowrap">'.$langs->trans("Place").'</div>';
+$out .= '<div class="tagtd">'.$langs->trans("Place").'</div>';
 $out .= '<div>';
 if (GETPOST('fk_resource_place','int') > 0)
 {
@@ -40,13 +40,13 @@ else
 }
 
 $out .= '</div>';
-$out .= '<div>'.$langs->trans("Room").'</div>';
+$out .= '<div  class="tagtd">'.$langs->trans("Room").'</div>';
 $out .= '<div>';
 $out .= $formplace->selectrooms(GETPOST('fk_resource_room','int'),GETPOST('fk_resource_room'),'fk_resource_room',1);
 $out .= '</div>';
 
-$out .= '<div><label>'.$langs->trans('Busy').'</label> '.$form->selectyesno('busy',$linked_resource['busy']?1:0,1).'</div>';
-$out .= '<div><label>'.$langs->trans('Mandatory').'</label> '.$form->selectyesno('mandatory',$linked_resource['mandatory']?1:0,1).'</div>';
+$out .= '<div class="tagtd"><label>'.$langs->trans('Busy').'</label> '.$form->selectyesno('busy',$linked_resource['busy']?1:0,1).'</div>';
+$out .= '<div class="tagtd"><label>'.$langs->trans('Mandatory').'</label> '.$form->selectyesno('mandatory',$linked_resource['mandatory']?1:0,1).'</div>';
 $out .= '<div>';
 $out .='<input type="submit" id="add-resource-room" class="button" value="'.$langs->trans("Add").'"';
 $out .=' />';

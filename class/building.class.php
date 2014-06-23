@@ -525,14 +525,12 @@ class Building extends Place
 		print '<tr>';
 		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
 		print '<td   width="30%">';
-		print '<a href="http://openstreetmap.org/?lat='.$this->lat.'&amp;lon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
+		print '<a href="http://openstreetmap.org/?mlat='.$this->lat.'&amp;mlon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
 		print '</td>';
 		print '</tr>';
 
 
 		print '</table>';
-
-		return '';
 	}
 
 	/**
@@ -552,10 +550,16 @@ class Building extends Place
 		print $this->ref;
 		print '</td>';
 		print '</tr>';
+		
+		// Description
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Description") . '</td>';
+		print '<td   width="30%">';
+		print $this->description;
+		print '</td>';
+		print '</tr>';
 
 		print '</table>';
-
-		return '';
 	}
 
 	/**
@@ -786,7 +790,7 @@ class Building extends Place
 	/**
 	 *	Add/Update floors data by $this->floors
 	 *
-	 *	@return	void
+	 *	@return int <0 if KO, >0 if OK
 	 */
 	function insertFloors($user)
 	{

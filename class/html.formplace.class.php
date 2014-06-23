@@ -64,7 +64,7 @@ class FormPlace
      *      @param  int		$empty			1=peut etre vide, 0 sinon
      * 		@param	int		$noadmininfo	0=Add admin info, 1=Disable admin info
      *      @param  int		$maxlength      Max length of label
-     * 		@return	void
+     * 		@return	string  HTML select element
      */
     function select_types_rooms($selected='',$htmlname='roomtype',$filtertype='',$format=0, $empty=0, $noadmininfo=0,$maxlength=0)
     {
@@ -245,8 +245,8 @@ class FormPlace
     	$sql.= " WHERE s.entity IN (".getEntity('room', 1).")";
     	if ($fk_place > 0) $sql.= " AND b.fk_place=".$fk_place;
     	$sql.= " ORDER BY s.ref ASC, s.fk_floor ASC";
-
-    	dol_syslog(get_class($this)."::select_contacts sql=".$sql);
+    	
+    	dol_syslog(get_class($this)."::selectrooms sql=".$sql);
     	$resql=$this->db->query($sql);
     	if ($resql)
     	{
