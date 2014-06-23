@@ -20,8 +20,8 @@
  */
 
 /**
- *  \file       place/building/document.php
- *  \brief      Tab for documents linked to building
+ *  \file       place/room/document.php
+ *  \brief      Tab for documents linked to a room
  *  \ingroup    place
  */
 
@@ -37,7 +37,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 // Change this following line to use the correct relative path from htdocs
-require_once '../class/building.class.php';
+require_once '../class/room.class.php';
 require_once '../lib/place.lib.php';
 
 $langs->load("place@place");
@@ -68,15 +68,14 @@ $pagenext = $page + 1;
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="name";
 
-$object = new Building($db);
+$object = new Room($db);
 if ($id > 0 || ! empty($ref))
 {
 	$result = $object->fetch($id, $ref);
 
-	$relativepathwithnofile = 'building/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
-	$upload_dir = $conf->place->dir_output . "/building/" . dol_sanitizeFileName($object->ref) ;
+	$relativepathwithnofile = 'building/'.dol_sanitizeFileName($object->building->ref).'/room/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
+	$upload_dir = $conf->place->dir_output .'/'. $relativepathwithnofile ;
 }
-
 
 /*
  * Actions
@@ -92,13 +91,16 @@ include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php
 $form = new Form($db);
 
 //$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("Building").' - '.$langs->trans("Files"),$help_url);
+llxHeader('',$langs->trans("Room").' - '.$langs->trans("Files"),$help_url);
 
 if ($object->id)
 {
+    
+    
 	/*
 	 * Affichage onglets
 	 */
+    
     if($object->place)
     {
         $head=placePrepareHead($object->place);
@@ -108,11 +110,21 @@ if ($object->id)
         print '</div>';
     }
     
+    
+    //Second tabs list for building
+    if($object->building)
+    {
+        $head=buildingPrepareHead($object->building);
+        dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),1,'building@place');
+    
+        $ret = $object->building->printShortInfoTable();
+        print '<br />';
+    }
+    
 	$head = buildingPrepareHead($object);
 
-	$form=new Form($db);
+	dol_fiche_head($head, 'document', $langs->trans("Room"),0,'room@place');
 
-	dol_fiche_head($head, 'document', $langs->trans("BuildingSingular"),1,'building@place');
 
 	// Construit liste des fichiers
 	$filearray=dol_dir_list($upload_dir,"files",0,'','(\.meta|_preview\.png)$',$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
@@ -126,7 +138,7 @@ if ($object->id)
 	print '<table class="border"width="100%">';
 
 	// Ref
-	print '<tr><td width="25%">'.$langs->trans("BuildingFormLabel_ref").'</td>';
+	print '<tr><td width="25%">'.$langs->trans("RoomFormLabel_ref").'</td>';
 	print '<td colspan="3">';
 	print $form->showrefnav($object,'id','',($user->societe_id?0:1),'rowid','ref');
 	print '</td></tr>';
@@ -139,7 +151,7 @@ if ($object->id)
 
 	print '</table>';
 
-	print '<br />';
+	print '</div>';
 
 	$modulepart = 'place';
 	$permission = $user->rights->place->write;

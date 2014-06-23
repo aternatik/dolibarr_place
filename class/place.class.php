@@ -543,6 +543,8 @@ class Place extends Resource
 	{
 		if (empty($fk_building)) return 0;
 
+		if(!class_exists('Building'))
+		    require_once dol_buildpath('/place/class/building.class.php');
 		$buildingstat = new Building($this->db);
 		if($buildingstat->fetch($fk_building) > 0)
 		{
