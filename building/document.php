@@ -141,7 +141,7 @@ if ($object->id)
 	print '</div>';
 
 	$modulepart = 'place';
-	$permission = $user->rights->place->creer;
+	$permission = $user->rights->place->write;
 	$param = '&id=' . $object->id;
 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
 }
