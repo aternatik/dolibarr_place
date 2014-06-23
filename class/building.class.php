@@ -531,8 +531,6 @@ class Building extends Place
 
 
 		print '</table>';
-
-		return '';
 	}
 
 	/**
@@ -552,10 +550,16 @@ class Building extends Place
 		print $this->ref;
 		print '</td>';
 		print '</tr>';
+		
+		// Description
+		print '<tr>';
+		print '<td  width="20%">' . $langs->trans("Description") . '</td>';
+		print '<td   width="30%">';
+		print $this->description;
+		print '</td>';
+		print '</tr>';
 
 		print '</table>';
-
-		return '';
 	}
 
 	/**
@@ -786,7 +790,7 @@ class Building extends Place
 	/**
 	 *	Add/Update floors data by $this->floors
 	 *
-	 *	@return	void
+	 *	@return int <0 if KO, >0 if OK
 	 */
 	function insertFloors($user)
 	{

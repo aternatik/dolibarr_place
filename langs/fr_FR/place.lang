@@ -20,7 +20,7 @@
 
 # Module label 'ModuleXXXName'
 # (where XXX is value of numeric property 'numero' of module)
-Module110110Name = Getion de lieux
+Module110110Name = Gestion de lieux
 # Module description 'ModuleXXXDesc'
 # (where XXX is value of numeric property 'numero' of module)
 Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
@@ -34,24 +34,24 @@ Permission1101103=Effacer les lieux
 #
 # Page d'administration
 #
-PlaceSetup = Configuration du module Place
+PlaceSetup = Configuration du module Lieux
 Settings = Réglages
-PlaceSetupPage = Page de réglage du modules Place
+PlaceSetupPage = Page de réglage du modules Lieux
 PlaceNothingToSet=Pas de réglages spécifiques pour ce module
 
 #
 # Page À propos
 #
 About = À propos
-PlaceAbout = À propos du module Place
-PlaceAboutPage = Page à propos du module Place
+PlaceAbout = À propos du module Lieux
+PlaceAboutPage = Page à propos du module Lieux
 
 #
 # Divers
 #
 BackToBuildingList=Retour à la liste des bâtiments
 PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
-ActionIntoPlace=Localisation de l'évènement
+ActionIntoPlace=Localisation de l'événement
 ActionIntoRoom=Salle
 
 # Dictionary
@@ -65,7 +65,7 @@ PlacePageIndex=Gestion des lieux
 NoPlaceInDatabase=Aucun lieu en base de données
 AddPlace=Ajouter un lieu
 PlaceFormLabel_ref=Référence / libellé
-RoomFormLabel_capacity=Capacité de la chambre
+RoomFormLabel_capacity=Capacité de la salle
 RoomCapacityShort=Capacité
 RoomFloor=Étage
 PlaceFormLabel_description=Description
@@ -114,7 +114,7 @@ FloorManagmentForBuilding=Gestion des étages du bâtiment
 #
 # Salles
 #
-Room=Salle
+RoomSingular=Salle
 Rooms=Salles
 AddRoom=Ajouter une salle
 RoomsManagment=Gestion des salles
@@ -127,6 +127,6 @@ RoomCreatedWithSuccess=Salle ajoutée avec succès
 RoomNumber=Numéro/repère de salle
 RoomOrder=Ordre/position
 DeleteRoom=Effacer la salle
-ConfirmDeleteRoom=Confirmer la suppression de cette salle?
+ConfirmDeleteRoom=Confirmer la suppression de cette salle ?
 RoomDeleted=Salle supprimée
 NoRoomDefined=Pas de salle défini

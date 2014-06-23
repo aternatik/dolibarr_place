@@ -64,7 +64,7 @@ class FormPlace
      *      @param  int		$empty			1=peut etre vide, 0 sinon
      * 		@param	int		$noadmininfo	0=Add admin info, 1=Disable admin info
      *      @param  int		$maxlength      Max length of label
-     * 		@return	void
+     * 		@return	string  HTML select element
      */
     function select_types_rooms($selected='',$htmlname='roomtype',$filtertype='',$format=0, $empty=0, $noadmininfo=0,$maxlength=0)
     {

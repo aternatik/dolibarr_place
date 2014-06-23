@@ -102,7 +102,7 @@ class modPlace extends DolibarrModules
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/place/temp");
-		$this->dirs = array("/place");
+		$this->dirs = array("/place","place/building");
 
 		// Config pages. Put here list of php pages
 		// stored into place/admin directory, used to setup module.
