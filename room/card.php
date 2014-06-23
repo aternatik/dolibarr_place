@@ -340,6 +340,7 @@ if($object->fetch($id) > 0)
 
 
 // Example 3 : List of data
+$error = 0;
 if ($action == 'list')
 {
     $sql = "SELECT";
