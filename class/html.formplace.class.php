@@ -245,8 +245,8 @@ class FormPlace
     	$sql.= " WHERE s.entity IN (".getEntity('room', 1).")";
     	if ($fk_place > 0) $sql.= " AND b.fk_place=".$fk_place;
     	$sql.= " ORDER BY s.ref ASC, s.fk_floor ASC";
-
-    	dol_syslog(get_class($this)."::select_contacts sql=".$sql);
+    	
+    	dol_syslog(get_class($this)."::selectrooms sql=".$sql);
     	$resql=$this->db->query($sql);
     	if ($resql)
     	{
