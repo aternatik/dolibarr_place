@@ -328,6 +328,42 @@ if($object->fetch($id) > 0)
 			print '</div>';
 		}
 	}
+	print '</div>';
+
+	$events = $object->getActionsForResource('room@place',$id,$filter);
+	
+	print_fiche_titre($langs->trans("EventsForThisRoom"));
+	print "<table class='noborder' width='100%'>\n";
+	print "<tr class='liste_titre'><td colspan=''>".$langs->trans("DateStart")."</td><td>".$langs->trans("DateEnd")."</td><td>".$langs->trans("Title")."</td><td>".$langs->trans("Type")."</td><td>".$langs->trans("Edit")."</td>";
+	print "</tr>\n";
+	if (count($events) > 0)
+	{
+	    $var=true;
+	    foreach ($events as $event)
+	    {
+	        $var=!$var;
+	        print "\t<tr ".$bc[$var].">\n";
+	
+	        print '<td>'.dol_print_date($event['datep'],'dayhour').'</td>';
+	        print '<td>'.dol_print_date($event['datef'],'dayhour').'</td>';
+	
+	        print '<td with="50%">';
+	        print "<a href='".DOL_URL_ROOT."/comm/action/fiche.php?action=view&amp;id=".$event['rowid']."'>".$event['label']."</a>";
+	        print "</td>\n";
+	        print "<td>".$event['code']."</td>";
+	        //print "<td>".dolGetFirstLastname($event->author->firstname,$event->author->lastname)."</td>";
+	        print '<td><a href="'.dol_buildpath('/resource/element_resource.php',1).'?element=action&element_id='.$event['rowid'].'">'.img_picto('','edit').'</a></td>';
+	
+	        print "\t</tr>\n";
+	    }
+	}
+	else
+	{
+	    print "<tr ".$bc[false].'><td colspan="3">'.$langs->trans("NoEvents")."</td></tr>";
+	}
+	print "</table>\n";
+	
+	
 
 }
 

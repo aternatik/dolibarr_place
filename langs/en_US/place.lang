@@ -128,6 +128,7 @@ DeleteRoom=Delete room
 DeleteRoom=Confirm delete this room?
 RoomDeleted=Room deleted
 NoRoomDefined=No room defined
+EventsForThisRoom=Events for this room
 
 #
 # Resources types
