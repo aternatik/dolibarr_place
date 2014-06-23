@@ -28,7 +28,7 @@ if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 
-if(!$res) $res = require_once '../../../../main.inc.php';
+require_once '../../../../main.inc.php';
 
 $id			= GETPOST('id','int');
 $action		= GETPOST('action','alpha');
