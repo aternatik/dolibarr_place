@@ -525,7 +525,7 @@ class Building extends Place
 		print '<tr>';
 		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
 		print '<td   width="30%">';
-		print '<a href="http://openstreetmap.org/?lat='.$this->lat.'&amp;lon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
+		print '<a href="http://openstreetmap.org/?mlat='.$this->lat.'&amp;mlon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
 		print '</td>';
 		print '</tr>';
 
