@@ -543,14 +543,9 @@ class Place extends Resource
 	{
 		if (empty($fk_building)) return 0;
 
-<<<<<<< HEAD
 		if ( !class_exists ('Building'))
 			dol_include_once('/place/class/building.class.php');
 
-=======
-		if(!class_exists('Building'))
-		    require_once dol_buildpath('/place/class/building.class.php');
->>>>>>> feature/documents
 		$buildingstat = new Building($this->db);
 		if($buildingstat->fetch($fk_building) > 0)
 		{
