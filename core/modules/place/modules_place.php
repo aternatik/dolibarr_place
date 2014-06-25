@@ -321,7 +321,7 @@ function place_doc_create($db, $object, $message, $modele, $outputlangs)
         else
         {
             $outputlangs->charset_output=$sav_charset_output;
-            dol_print_error($db,"thirdparty_doc_create Error: ".$obj->error);
+            dol_print_error($db,"place_doc_create Error: ".$obj->error);
             return -1;
         }
 
@@ -362,7 +362,7 @@ function room_doc_create($db, $object, $message, $modele, $outputlangs)
         }
         else
         {
-            print $langs->trans("Error")." ".$langs->trans("Error_PLACE_ADDON_PDF_ODT_PATH_NotDefined");
+            print $langs->trans("Error")." ".$langs->trans("Error_PLACE_ROOM_ADDON_PDF_ODT_PATH_NotDefined");
             return 0;
         }
     }
@@ -395,7 +395,7 @@ function room_doc_create($db, $object, $message, $modele, $outputlangs)
             // Appel des triggers
             include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
             $interface=new Interfaces($db);
-            $result=$interface->run_triggers('PLACE_BUILDDOC',$object,$user,$langs,$conf);
+            $result=$interface->run_triggers('PLACE_ROOM_BUILDDOC',$object,$user,$langs,$conf);
             if ($result < 0) {
                 $error++; $this->errors=$interface->errors;
             }
@@ -406,7 +406,7 @@ function room_doc_create($db, $object, $message, $modele, $outputlangs)
         else
         {
             $outputlangs->charset_output=$sav_charset_output;
-            dol_print_error($db,"thirdparty_doc_create Error: ".$obj->error);
+            dol_print_error($db,"room_doc_create Error: ".$obj->error);
             return -1;
         }
 

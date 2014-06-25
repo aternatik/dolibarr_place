@@ -102,47 +102,6 @@ if ($action== 'del')
     if (! $resql) dol_print_error($db);
 }
 
-// Define default generator
-if ($action == 'setdoc')
-{
-    $label = GETPOST('label','alpha');
-    $scandir = GETPOST('scandir','alpha');
-
-    $db->begin();
-
-    if (dolibarr_set_const($db, "PLACE_ADDON_PDF_ODT_PATH",$value,'chaine',0,'',$conf->entity))
-    {
-        $conf->global->PLACE_ADDON_PDF_ODT_PATH = $value;
-    }
-
-    // On active le modele
-    $type='place';
-    $sql_del = "DELETE FROM ".MAIN_DB_PREFIX."document_model";
-    $sql_del.= " WHERE nom = '".$db->escape(GETPOST('value','alpha'))."'";
-    $sql_del.= " AND type = '".$type."'";
-    $sql_del.= " AND entity = ".$conf->entity;
-    dol_syslog("societe.php ".$sql);
-    $result1=$db->query($sql_del);
-
-    $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
-    $sql.= " VALUES ('".$db->escape($value)."', '".$type."', ".$conf->entity.", ";
-    $sql.= ($label?"'".$db->escape($label)."'":'null').", ";
-    $sql.= (! empty($scandir)?"'".$db->escape($scandir)."'":"null");
-    $sql.= ")";
-    dol_syslog("admin_place.php ".$sql);
-    $result2=$db->query($sql);
-    if ($result1 && $result2)
-    {
-        $db->commit();
-    }
-    else
-    {
-        dol_syslog("admin_place.php ".$db->lasterror(), LOG_ERR);
-        $db->rollback();
-    }
-}
-
-
 
 /*
  * View

@@ -24,9 +24,7 @@
  *	\brief      File of class to build ODT documents for third parties
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
-require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
@@ -35,15 +33,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/doc.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-if (! empty($conf->propal->enabled))      require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
-if (! empty($conf->facture->enabled))     require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-if (! empty($conf->facture->enabled))     require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture-rec.class.php';
-if (! empty($conf->commande->enabled))    require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
-if (! empty($conf->fournisseur->enabled)) require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
-if (! empty($conf->fournisseur->enabled)) require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
-if (! empty($conf->contrat->enabled))     require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
-if (! empty($conf->ficheinter->enabled))  require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
-if (! empty($conf->deplacement->enabled)) require_once DOL_DOCUMENT_ROOT.'/compta/deplacement/class/deplacement.class.php';
+
 if (! empty($conf->agenda->enabled))      require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 
 dol_include_once('/place/core/modules/place/modules_place.php');
@@ -51,7 +41,7 @@ dol_include_once('/place/core/modules/place/modules_place.php');
 /**
  *	Class to build documents using ODF templates generator
  */
-class doc_generic_place_odt extends ModelePlace
+class doc_generic_room_odt extends ModelePlace
 {
 	var $emetteur;	// Objet societe qui emet
 
@@ -72,9 +62,9 @@ class doc_generic_place_odt extends ModelePlace
 		$langs->load("place@place");
 
 		$this->db = $db;
-		$this->name = "ODT templates";
+		$this->name = "ODT ROOM templates";
 		$this->description = $langs->trans("DocumentModelOdt");
-		$this->scandir = 'PLACE_ADDON_PDF_ODT_PATH';	// Name of constant that is used to save list of directories to scan
+		$this->scandir = 'PLACE_ROOM_ADDON_PDF_ODT_PATH';	// Name of constant that is used to save list of directories to scan
 
 		// Dimension page pour format A4
 		$this->type = 'odt';
@@ -110,18 +100,20 @@ class doc_generic_place_odt extends ModelePlace
 	 * @param   Translate		$outputlangs        Lang object to use for output
 	 * @return	array								Array of substitution
 	 */
-	function get_substitutionarray_object($object,$outputlangs)
+	function get_substitutionarray_object($object,$outputlangs,$key='object')
 	{
 		global $conf;
 
 		return array(
-		'object_id'=>$object->id,
-		'object_ref'=>$object->ref,
-		'object_description'=>$object->description,
-		'object_lat'=>$object->lat,
-		'object_lng'=>$object->lng,
-		'object_note_private'=>$object->note_private,
-		'object_note_public'=>$object->note_public
+			$key.'_id'=>$object->id,
+			$key.'_ref'=>$object->ref,
+			$key.'_label'=>$object->label,
+			$key.'_fk_building'=>$object->fk_building,
+			$key.'_fk_floor'=>$object->fk_floor,
+			$key.'_capacity'=>$object->capacity,
+			$key.'_type_code'=>$object->type_code,
+			$key.'_note_private'=>$object->note_private,
+			$key.'_note_public'=>$object->note_public
 		);
 
 	}
@@ -133,25 +125,29 @@ class doc_generic_place_odt extends ModelePlace
 	 *	@param  Translate		$outputlangs        Lang object to use for output
 	 *  @return	array								Return a substitution array
 	 */
-	function get_substitutionarray_buildings($building,$outputlangs)
+	function get_substitutionarray_events($event,$outputlangs,$key='event')
 	{
 		global $conf;
 
 		return array(
-		'building_ref'=>$task->ref,
-		'building_fk_project'=>$building->fk_project,
-		'building_projectref'=>$building->projectref,
-		'building_projectlabel'=>$building->projectlabel,
-		'building_label'=>$building->label,
-		'building_description'=>$building->description,
-		'building_fk_parent'=>$building->fk_parent,
-		'building_duration'=>$building->duration,
-		'building_progress'=>$building->progress,
-		'building_public'=>$building->public,
-		'building_date_start'=>dol_print_date($building->date_start,'day'),
-		'building_date_end'=>dol_print_date($building->date_end,'day'),
-		'building_note_private'=>$building->note_private,
-		'building_note_public'=>$building->note_public
+		$key.'_id'=>$event->id,
+		$key.'_ref'=>$event->ref,
+		$key.'_label'=>$event->label,
+		$key.'_description'=>$event->note,
+		$key.'_durationp'=>$event->durationp,
+		$key.'_percentage'=>$event->percentage,
+		$key.'_type'=> $event->type,
+		$key.'_type_code'=>$event->type_code,
+		$key.'_fk_project'=>$event->fk_project,
+		$key.'_fk_element'=>$event->fk_element,
+		$key.'_elementtype'=>$event->elementtype,
+		$key.'_type_code'=>$event->type_code,
+		$key.'_date_start'=>dol_print_date($event->datep,'dayhour'),
+		$key.'_date_start_rfc'=>dol_print_date($event->datep,'dayhourrfc'),
+		$key.'_date_end'=>dol_print_date($event->datef,'dayhour'),
+		$key.'_date_end_rfc'=>dol_print_date($event->datef,'dayhourrfc'),
+		$key.'_note_private'=>$event->note_private,
+		$key.'_note_public'=>$event->note_public
 		);
 	}
 
@@ -175,13 +171,13 @@ class doc_generic_place_odt extends ModelePlace
 		$texte.= '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 		$texte.= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		$texte.= '<input type="hidden" name="action" value="setModuleOptions">';
-		$texte.= '<input type="hidden" name="param1" value="PLACE_ADDON_PDF_ODT_PATH">';
+		$texte.= '<input type="hidden" name="param2" value="PLACE_ROOM_ADDON_PDF_ODT_PATH">';
 		$texte.= '<table class="nobordernopadding" width="100%">';
 
 		// List of directories area
 		$texte.= '<tr><td>';
 		$texttitle=$langs->trans("ListOfDirectories");
-		$listofdir=explode(',',preg_replace('/[\r\n]+/',',',trim($conf->global->PLACE_ADDON_PDF_ODT_PATH)));
+		$listofdir=explode(',',preg_replace('/[\r\n]+/',',',trim($conf->global->PLACE_ROOM_ADDON_PDF_ODT_PATH)));
 		$listoffiles=array();
 		foreach($listofdir as $key=>$tmpdir)
 		{
@@ -204,8 +200,8 @@ class doc_generic_place_odt extends ModelePlace
 
 		$texte.= $form->textwithpicto($texttitle,$texthelp,1,'help','',1);
 		$texte.= '<div><div style="display: inline-block; min-width: 100px; vertical-align: middle;">';
-		$texte.= '<textarea class="flat" cols="60" name="value1">';
-		$texte.=$conf->global->PLACE_ADDON_PDF_ODT_PATH;
+		$texte.= '<textarea class="flat" cols="60" name="value2">';
+		$texte.=$conf->global->PLACE_ROOM_ADDON_PDF_ODT_PATH;
 		$texte.= '</textarea>';
 		$texte.= '</div><div style="display: inline-block; vertical-align: middle;">';
 		$texte.= '<input type="submit" class="button" value="'.$langs->trans("Modify").'" name="Button">';
@@ -241,7 +237,7 @@ class doc_generic_place_odt extends ModelePlace
 
 		if (empty($srctemplatepath))
 		{
-			dol_syslog("doc_generic_place::write_file parameter srctemplatepath empty", LOG_WARNING);
+			dol_syslog("doc_generic_room::write_file parameter srctemplatepath empty", LOG_WARNING);
 			return -1;
 		}
 
@@ -269,7 +265,7 @@ class doc_generic_place_odt extends ModelePlace
 			if (! is_object($object))
 			{
 				$id = $object;
-				$object = new Place($this->db);
+				$object = new Room($this->db);
 				$result=$object->fetch($id);
 				if ($result < 0)
 				{
@@ -278,10 +274,10 @@ class doc_generic_place_odt extends ModelePlace
 				}
 			}
 
-			$dir = $conf->place->dir_output;
+			$dir = $conf->place->dir_output . '/'.dol_sanitizeFileName($object->place->id.'-'.str_replace(' ','-',$object->place->ref))."/building/" . dol_sanitizeFileName($object->building->ref)."/rooms";
 			$objectref = dol_sanitizeFileName($object->ref);
 			if (! preg_match('/specimen/i',$objectref)) $dir.= "/" . $objectref;
-			$file = $dir . "/" . $objectref . ".odt";
+			$file = $dir . "/".$objectref . ".odt";
 
 			if (! file_exists($dir))
 			{
@@ -312,12 +308,8 @@ class doc_generic_place_odt extends ModelePlace
 					$filename=$newfiletmp.'.'.$newfileformat;
 				}
 				$file=$dir.'/'.$filename;
-				//print "newdir=".$dir;
-				//print "newfile=".$newfile;
-				//print "file=".$file;
-				//print "conf->societe->dir_temp=".$conf->societe->dir_temp;
 
-				dol_mkdir($conf->projet->dir_temp);
+				dol_mkdir($conf->place->dir_temp);
 
 				$socobject=$object->thirdparty;
 
@@ -334,7 +326,7 @@ class doc_generic_place_odt extends ModelePlace
 					$odfHandler = new odf(
 						$srctemplatepath,
 						array(
-						'PATH_TO_TMP'	  => $conf->projet->dir_temp,
+						'PATH_TO_TMP'	  => $conf->place->dir_temp,
 						'ZIP_PROXY'		  => 'PclZipProxy',	// PhpZipProxy or PclZipProxy. Got "bad compression method" error when using PhpZipProxy.
 						'DELIMITER_LEFT'  => '{',
 						'DELIMITER_RIGHT' => '}'
@@ -397,6 +389,51 @@ class doc_generic_place_odt extends ModelePlace
 					}
 				}
 
+				// Replace tags of lines for events
+
+				$event_array = $object->getActionsForResource('room@place',$object->id,$filter);
+			    $eventstatic = new ActionComm($this->db);
+				if((is_array($event_array) && count($event_array) > 0))
+				{
+				    try
+				    {
+				        $listlines = $odfHandler->setSegment('roomevents');
+
+				        foreach ($event_array as $array_key => $event)
+				        {
+				            $res_event = $eventstatic->fetch($event['rowid']);
+				            //var_dump($eventstatic); exit;
+				            $tmparray=$this->get_substitutionarray_events($eventstatic,$outputlangs,'event');
+				            foreach($tmparray as $key => $val)
+				            {
+				                try
+				                {
+				                    $listlines->setVars($key, $val, true, 'UTF-8');
+				                }
+				                catch(OdfException $e)
+				                {
+									$this->error=$e->getMessage();
+									//dol_syslog($this->error, LOG_WARNING);
+				                }
+				                catch(SegmentException $e)
+				                {
+									$this->error=$e->getMessage();
+									//dol_syslog($this->error, LOG_WARNING);
+				                }
+				            }
+				            $listlines->merge();
+				        }
+				        $odfHandler->mergeSegment($listlines);
+				    }
+				    catch(OdfException $e)
+				    {
+				        $this->error=$e->getMessage();
+				        dol_syslog($this->error, LOG_WARNING);
+				        //return -1;
+				    }
+				}
+
+
 				// Replace tags of object + external modules
 				$tmparray=$this->get_substitutionarray_object($object,$outputlangs);
 				complete_substitutions_array($tmparray, $outputlangs, $object);
@@ -438,7 +475,6 @@ class doc_generic_place_odt extends ModelePlace
 				// Call the beforeODTSave hook
 				$parameters=array('odfHandler'=>&$odfHandler,'file'=>$file,'object'=>$object,'outputlangs'=>$outputlangs);
 				$reshook=$hookmanager->executeHooks('beforeODTSave',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-
 
 				// Write new file
 				if (!empty($conf->global->MAIN_ODT_AS_PDF)) {
