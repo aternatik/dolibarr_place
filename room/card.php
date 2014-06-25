@@ -42,6 +42,7 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main
 if (! $res) die("Include of main fails");
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 require_once '../class/building.class.php';
 require_once '../class/room.class.php';
@@ -129,6 +130,55 @@ if ($action == 'room_update' && ! $_POST["cancel"]  && $user->rights->place->wri
 }
 
 
+// Remove file in doc form
+else if ($action == 'remove_file')
+{
+    if ($object->fetch($id))
+    {
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+
+        $langs->load("other");
+        $upload_dir = $conf->place->dir_output;
+        $file = $upload_dir . '/' . GETPOST('file');
+        $ret=dol_delete_file($file,0,0,0,$object);
+        if ($ret) setEventMessage($langs->trans("FileWasRemoved", GETPOST('urlfile')));
+        else setEventMessage($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), 'errors');
+    }
+}
+/*
+ * Generate document
+*/
+if ($action == 'builddoc')  // En get ou en post
+{
+    if (is_numeric(GETPOST('model')))
+    {
+        $error=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Model"));
+    }
+    else
+    {
+        require_once '../core/modules/place/modules_place.php';
+
+        $object->fetch($id);
+
+        // Define output language
+        $outputlangs = $langs;
+        $newlang='';
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$fac->client->default_lang;
+        if (! empty($newlang))
+        {
+            $outputlangs = new Translate("",$conf);
+            $outputlangs->setDefaultLang($newlang);
+        }
+        $result=room_doc_create($db, $object, '', GETPOST('model','alpha'), $outputlangs);
+        if ($result <= 0)
+        {
+            dol_print_error($db,$result);
+            exit;
+        }
+    }
+}
+
 /***************************************************
 * VIEW
 *
@@ -138,7 +188,7 @@ if ($action == 'room_update' && ! $_POST["cancel"]  && $user->rights->place->wri
 llxHeader('','Room','');
 
 $form=new Form($db);
-
+$formfile = new FormFile($db);
 
 if($object->fetch($id) > 0)
 {
@@ -165,7 +215,7 @@ if($object->fetch($id) > 0)
 	$head=roomPrepareHead($object);
 	dol_fiche_head($head, 'room', $langs->trans("RoomSingular"),0,'room@place');
 
-	
+
 
 	if ($action == 'edit' )
 	{
@@ -330,8 +380,21 @@ if($object->fetch($id) > 0)
 	}
 	print '</div>';
 
+	/*
+	 * Documents generes
+	*/
+
+	$dirtoscan=dol_sanitizeFileName($object->place->id.'-'.str_replace(' ','-',$object->place->ref))."/building/".dol_sanitizeFileName($object->building->ref).'/rooms/'.dol_sanitizeFileName($object->ref);
+	$filedir=$conf->place->dir_output . '/'.dol_sanitizeFileName($object->place->id.'-'.str_replace(' ','-',$object->place->ref))."/building/".dol_sanitizeFileName($object->building->ref).'/rooms/'.dol_sanitizeFileName($object->ref);
+	$urlsource=$_SERVER["PHP_SELF"]."?id=".$object->id;
+	$genallowed=$user->rights->place->read;
+	$delallowed=$user->rights->place->write;
+	$var=true;
+	$somethingshown=$formfile->show_documents('place',$dirtoscan,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf);
+
+
 	$events = $object->getActionsForResource('room@place',$id,$filter);
-	
+
 	print_fiche_titre($langs->trans("EventsForThisRoom"));
 	print "<table class='noborder' width='100%'>\n";
 	print "<tr class='liste_titre'><td colspan=''>".$langs->trans("DateStart")."</td><td>".$langs->trans("DateEnd")."</td><td>".$langs->trans("Title")."</td><td>".$langs->trans("Type")."</td><td>".$langs->trans("Edit")."</td>";
@@ -343,17 +406,17 @@ if($object->fetch($id) > 0)
 	    {
 	        $var=!$var;
 	        print "\t<tr ".$bc[$var].">\n";
-	
+
 	        print '<td>'.dol_print_date($event['datep'],'dayhour').'</td>';
 	        print '<td>'.dol_print_date($event['datef'],'dayhour').'</td>';
-	
+
 	        print '<td with="50%">';
 	        print "<a href='".DOL_URL_ROOT."/comm/action/fiche.php?action=view&amp;id=".$event['rowid']."'>".$event['label']."</a>";
 	        print "</td>\n";
 	        print "<td>".$event['code']."</td>";
 	        //print "<td>".dolGetFirstLastname($event->author->firstname,$event->author->lastname)."</td>";
 	        print '<td><a href="'.dol_buildpath('/resource/element_resource.php',1).'?element=action&element_id='.$event['rowid'].'">'.img_picto('','edit').'</a></td>';
-	
+
 	        print "\t</tr>\n";
 	    }
 	}
@@ -362,8 +425,8 @@ if($object->fetch($id) > 0)
 	    print "<tr ".$bc[false].'><td colspan="3">'.$langs->trans("NoEvents")."</td></tr>";
 	}
 	print "</table>\n";
-	
-	
+
+
 
 }
 

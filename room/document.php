@@ -73,8 +73,9 @@ if ($id > 0 || ! empty($ref))
 {
 	$result = $object->fetch($id, $ref);
 
-	$relativepathwithnofile = 'building/'.dol_sanitizeFileName($object->building->ref).'/room/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
+	$relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ','-',$object->place->ref)).'/building/'.dol_sanitizeFileName($object->building->ref).'/rooms/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
 	$upload_dir = $conf->place->dir_output .'/'. $relativepathwithnofile ;
+
 }
 
 /*
@@ -95,32 +96,32 @@ llxHeader('',$langs->trans("Room").' - '.$langs->trans("Files"),$help_url);
 
 if ($object->id)
 {
-    
-    
+
+
 	/*
 	 * Affichage onglets
 	 */
-    
+
     if($object->place)
     {
         $head=placePrepareHead($object->place);
         dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
-    
+
         $ret = $object->place->printInfoTable();
         print '</div>';
     }
-    
-    
+
+
     //Second tabs list for building
     if($object->building)
     {
         $head=buildingPrepareHead($object->building);
         dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
-    
+
         $ret = $object->building->printShortInfoTable();
         print '</div>';
     }
-    
+
 
 	$head=roomPrepareHead($object);
 	dol_fiche_head($head, 'document', $langs->trans("RoomSingular"),0,'room@place');
