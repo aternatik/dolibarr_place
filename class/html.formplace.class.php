@@ -141,7 +141,7 @@ class FormPlace
     	// On recherche les societes
     	$sql = "SELECT p.rowid, p.ref";
     	$sql.= " FROM ".MAIN_DB_PREFIX ."place as p";
-    	$sql.= " WHERE p.entity IN (".getEntity('place', 1).")";
+    	$sql.= " WHERE p.entity IN (".getEntity('resource', true).")";
     	if ($filter) $sql.= " AND (".$filter.")";
     	//if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
     	//if (! empty($conf->global->COMPANY_HIDE_INACTIVE_IN_COMBOBOX)) $sql.= " AND s.status<>0 ";
@@ -244,7 +244,7 @@ class FormPlace
    		$sql.= " LEFT OUTER JOIN  ".MAIN_DB_PREFIX ."place_building as b ON b.rowid=s.fk_building ";
    		$sql.= " LEFT OUTER JOIN  ".MAIN_DB_PREFIX ."place as p ON p.rowid=b.fk_place ";
 
-    	$sql.= " WHERE s.entity IN (".getEntity('room', 1).")";
+    	$sql.= " WHERE s.entity IN (".getEntity('resource', true).")";
     	if ($fk_place > 0) $sql.= " AND b.fk_place=".$fk_place;
     	$sql.= " ORDER BY s.ref ASC, s.fk_floor ASC";
     	
