@@ -302,7 +302,7 @@ class Room extends Place
     	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_room as t ';
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."place_floor as f ON t.fk_floor=f.rowid";
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
-    	$sql.= " WHERE t.entity IN (".getEntity('place').")";
+    	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
     	if (!empty($filter)){
