@@ -66,14 +66,14 @@ require DOL_DOCUMENT_ROOT.'/core/actions_extrafields.inc.php';
  */
 
 llxHeader ( '', $langs->trans ( "PlaceSetup" ) );
-
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans ( "BackToModuleList" ) . '</a>';
 print_fiche_titre ( $langs->trans ( "PlaceSetup" ), $linkback, 'setup' );
+
+// Configuration header
+$head = placeAdminPrepareHead();
+dol_fiche_head($head, 'attributeroom', $langs->trans("Module110110Name"), 0, "place@place");
 print "<br>\n";
 
-$head = placeAdminPrepareHead ();
-
-dol_fiche_head ( $head, 'attributeroom', $langs->trans ( "PlaceSetup" ) );
 
 print $langs->trans ( "DefineHereComplementaryAttributes", $langs->transnoentitiesnoconv ( "PlaceRoom" ) ) . '<br>' . "\n";
 print '<br>';
