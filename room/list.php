@@ -347,7 +347,7 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 	if ($action != "show_floor_form" )
 	{
 
-		// Add floor
+		// Add room
 		if($user->rights->place->write)
 		{
 			print '<div class="inline-block divButAction">';
