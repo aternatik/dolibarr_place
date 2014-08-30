@@ -154,44 +154,21 @@ class ActionsPlace
 
     		if($action == 'add_resource_room' && !GETPOST('cancel'))
     		{
-    			// Init du tableau des resources pour l'element
-    			dol_include_once('resource/class/resource.class.php');
-    			$resource_stat = new Resource($db);
+    			$objstat = fetchObjectByElement($element_id, $element);
+	    		$res = $objstat->add_element_resource(GETPOST('fk_resource_room'),$resource_type,$busy,$mandatory);
 
-    			$resources = array('place@place' => GETPOST('fk_resource_place'),'room@place' => GETPOST('fk_resource_room'));
-    			$error=$number_resources=0;
-
-    			foreach($resources as $resource_element => $resource_id)
-    			{
-					if($element && $resource_id > 0)
-					{
-						$res = $resource_stat->add_element_resource($element_id,$element,$resource_id,$resource_element,$busy,$mandatory);
-						if($res > 0)
-						{
-							$number_resources++;
-						}
-						else
-						{
-							$error++;
-						}
-					}
-					else
-					{
-						setEventMessage('ErrorNoId','errors');
-						$error++;
-					}
-    			}
-
-    			if(!$error && $number_resources > 0)
-    			{
-    				setEventMessage($langs->trans('ResourcesLinkedWithSuccess',$number_resources),'mesgs');
-    				header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
-    			}
-    			else
-    			{
-    				setEventMessage($langs->trans('ErrorWhenLinkingResources'),'errors');
-    				header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
-    			}
+	    		if($res > 0)
+	    		{
+	    			setEventMessage($langs->trans('ResourceLinkedWithSuccess'),'mesgs');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
+	    		else
+	    		{
+	    			setEventMessage($langs->trans('ErrorWhenLinkingResource'),'errors');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
     		}
     	}
     }
