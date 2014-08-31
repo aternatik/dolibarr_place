@@ -61,7 +61,7 @@ class modPlace extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module Place";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '0.5';
+		$this->version = '0.6';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -102,7 +102,7 @@ class modPlace extends DolibarrModules
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/place/temp");
-		$this->dirs = array("/place","place/building");
+		$this->dirs = array("/place","place/building","/place/temp");
 
 		// Config pages. Put here list of php pages
 		// stored into place/admin directory, used to setup module.
@@ -129,10 +129,16 @@ class modPlace extends DolibarrModules
 					'1',
 					'This is a constant to defined default zoom into link to OSM map',
 					1
-			)
+			),
+		    1=>array(
+		        'PLACE_ADDON_PDF_ODT_PATH',
+		        'chaine',
+		        'DOL_DATA_ROOT/doctemplates/place',
+		        '',
+		        1
+		    )
 
 		);
-
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(

@@ -44,6 +44,7 @@ class Room extends Place
 	var $entity;
 	var $ref;
 	var $label;
+	var $fk_place;
 	var $fk_building;
 	var $fk_floor;
 	var $type_code;
@@ -87,6 +88,7 @@ class Room extends Place
 		if (isset($this->entity)) $this->entity=trim($this->entity);
 		if (isset($this->ref)) $this->ref=trim($this->ref);
 		if (isset($this->label)) $this->label=trim($this->label);
+		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
 		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
@@ -106,6 +108,7 @@ class Room extends Place
 		$sql.= "entity,";
 		$sql.= "ref,";
 		$sql.= "label,";
+		$sql.= "fk_place,";
 		$sql.= "fk_building,";
 		$sql.= "fk_floor,";
 		$sql.= "type_code,";
@@ -120,6 +123,7 @@ class Room extends Place
 		$sql.= " ".$conf->entity.",";
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
 		$sql.= " ".(! isset($this->label)?'NULL':"'".$this->db->escape($this->label)."'").",";
+		$sql.= " ".(! isset($this->fk_place)?'NULL':"'".$this->fk_place."'").",";
 		$sql.= " ".(! isset($this->fk_building)?'NULL':"'".$this->fk_building."'").",";
 		$sql.= " ".(! isset($this->fk_floor)?'NULL':"'".$this->fk_floor."'").",";
 		$sql.= " ".(! isset($this->type_code)?'NULL':"'".$this->type_code."'").",";
@@ -143,8 +147,8 @@ class Room extends Place
 
             // Actions on extra fields (by external module or standard code)
             // FIXME le hook fait double emploi avec le trigger !!
-            $hookmanager->initHooks(array('HookModuleNamedao'));
-            $parameters=array('socid'=>$this->id);
+            $hookmanager->initHooks(array('HookPlacedao'));
+            $parameters=array('id'=>$this->id);
             $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this);    // Note that $action and $object may have been modified by some hooks
             if (empty($reshook))
             {
@@ -207,6 +211,7 @@ class Room extends Place
 		$sql.= " t.entity,";
 		$sql.= " t.ref,";
 		$sql.= " t.label,";
+		$sql.= " t.fk_place,";
 		$sql.= " t.fk_building,";
 		$sql.= " t.fk_floor,";
 		$sql.= " t.capacity,";
@@ -235,6 +240,7 @@ class Room extends Place
 				$this->entity = $conf->entity;
 				$this->ref = $obj->ref;
 				$this->label = $obj->label;
+				$this->fk_place = $obj->fk_place;
 				$this->fk_building = $obj->fk_building;
 				$this->fk_floor = $obj->fk_floor;
 				$this->capacity = $obj->capacity;
@@ -248,7 +254,7 @@ class Room extends Place
             }
 
             parent::fetch_building($this->fk_building);
-            parent::fetch_place($this->building->fk_place);
+            parent::fetch_place($this->fk_place);
             parent::fetch_floor($this->fk_floor);
 
             if (!class_exists('ExtraFields'))
@@ -288,7 +294,7 @@ class Room extends Place
     	$sql.= " t.rowid,";
     	$sql.= " t.ref,";
     	$sql.= " t.label,";
-    	//$sql.= " t.fk_soc,";
+    	$sql.= " t.fk_place,";
     	$sql.= " t.fk_building,";
     	$sql.= " t.fk_floor,";
     	$sql.= " t.capacity,";
@@ -302,7 +308,7 @@ class Room extends Place
     	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_room as t ';
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."place_floor as f ON t.fk_floor=f.rowid";
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
-    	$sql.= " WHERE t.entity IN (".getEntity('place').")";
+    	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
     	if (!empty($filter)){
@@ -332,7 +338,7 @@ class Room extends Place
     				$line->id				=	$obj->rowid;
     				$line->ref				=	$obj->ref;
     				$line->label			=	$obj->label;
-    				//$line->fk_soc			=	$obj->fk_soc;
+    				$line->fk_place			=	$obj->fk_place;
     				$line->fk_building		=	$obj->fk_building;
     				$line->fk_floor 		= 	$obj->fk_floor;
     				$line->floor_ref 		= 	$obj->floor_ref;
@@ -376,6 +382,7 @@ class Room extends Place
 		if (isset($this->entity)) $this->entity=trim($this->entity);
 		if (isset($this->ref)) $this->ref=trim($this->ref);
 		if (isset($this->label)) $this->label=trim($this->label);
+		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
 		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
 		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
 		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
@@ -395,6 +402,7 @@ class Room extends Place
 		$sql.= " entity=".(isset($this->entity)?$this->entity:"null").",";
 		$sql.= " ref=".(isset($this->ref)?"'".$this->db->escape($this->ref)."'":"null").",";
 		$sql.= " label=".(isset($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
+		$sql.= " fk_place=".(isset($this->fk_place)?"'".$this->db->escape($this->fk_place)."'":"null").",";
 		$sql.= " fk_building=".(isset($this->fk_building)?"'".$this->db->escape($this->fk_building)."'":"null").",";
 		$sql.= " fk_floor=".(isset($this->fk_floor)?"'".$this->db->escape($this->fk_floor)."'":"null").",";
 		$sql.= " type_code=".(isset($this->type_code)?"'".$this->db->escape($this->type_code)."'":"null").",";
@@ -663,6 +671,7 @@ class Room extends Place
 		$this->entity='';
 		$this->ref='';
 		$this->label='';
+		$this->fk_place='';
 		$this->fk_building='';
 		$this->fk_floor='';
 		$this->type_code='';

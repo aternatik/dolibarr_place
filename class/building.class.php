@@ -113,7 +113,7 @@ class Building extends Place
 
         $sql.= ") VALUES (";
 
-		$sql.= " ".getEntity('building').",";
+		$sql.= " ".$conf->entity.",";
 		$sql.= " ".(! isset($this->ref)?'NULL':"'".$this->db->escape($this->ref)."'").",";
 		$sql.= " ".(! isset($this->label)?'NULL':"'".$this->db->escape($this->label)."'").",";
 		$sql.= " ".(empty($this->fk_place)?'0':$this->fk_place).",";
@@ -262,7 +262,7 @@ class Building extends Place
     	$sql.= " t.fk_user_creat,";
     	$sql.= " t.tms";
     	$sql.= ' FROM '.MAIN_DB_PREFIX .'place_building as t ';
-    	$sql.= " WHERE t.entity IN (".getEntity('place').")";
+    	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
     	if (!empty($filter)){
@@ -659,6 +659,68 @@ class Building extends Place
 
 	}
 
+	/**
+	 *	Return list of buildings for fk_place
+	 *
+	 *	@param		int		$socid		To filter on a particular third party
+	 * 	@return		array				Business list array
+	 */
+	function getBuildingList($fk_place)
+	{
+		global $conf;
+	
+		$error='';
+		if(! $fk_place>0)
+		{
+			$error++;
+			$this->error = '$fk_place must be provided';
+		}
+	
+		if(!$error)
+		{
+			$buildings = array();
+	
+			$sql = 'SELECT rowid, ref, label';
+			$sql.= ' FROM '.MAIN_DB_PREFIX .'place_building';
+			$sql.= " WHERE entity = ".$conf->entity;
+			$sql.= " AND fk_place = ".$fk_place;
+			$sql.= " ORDER BY ref ASC";
+			dol_syslog(get_class($this)."::getBuildingList sql=".$sql, LOG_DEBUG);
+			$resql=$this->db->query($sql);
+			if ($resql)
+			{
+				$num = $this->db->num_rows($resql);
+				if ($num)
+				{
+					$i = 0;
+					while ($i < $num)
+					{
+						$obj = $this->db->fetch_object($resql);
+	
+						$buildingstatic = new Building($this->db);
+						$buildingstatic->id				=	$obj->rowid;
+						$buildingstatic->ref				=	$obj->ref;
+						$buildingstatic->label				=	$obj->label;
+	
+						$buildings[$i] = $buildingstatic;
+						$i++;
+					}
+				}
+				return $buildings;
+			}
+			else
+			{
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+	
+		}
+		else
+		{
+			return -1;
+		}
+	
+	}
 
 	/**
 	 *	Return list of floors for fk_building

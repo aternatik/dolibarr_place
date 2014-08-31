@@ -45,6 +45,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
+require_once '../class/building.class.php';
 require_once '../class/room.class.php';
 require_once '../class/html.formplace.class.php';
 require_once '../lib/place.lib.php';
@@ -55,21 +56,22 @@ $langs->load("companies");
 $langs->load("other");
 
 // Get parameters
-$id			= GETPOST('id','int');
-$action		= GETPOST('action','alpha');
-$fk_place	= GETPOST('fk_place','int');
+$id				= GETPOST('id','int');
+$action			= GETPOST('action','alpha');
+$fk_place		= GETPOST('fk_place','int');
 $fk_building	= GETPOST('building','int');
-$ref		= GETPOST('ref','alpha');
+$ref			= GETPOST('ref','alpha');
 
 if( ! $user->rights->place->read)
 	accessforbidden();
 
+
 $object=new Building($db);
 $object_room=new Room($db);
+$object_place=new Place($db);
 
 $extrafields = new ExtraFields($db);
 $extralabels=$extrafields->fetch_name_optionals_label($object_room->table_element);
-
 
 /*******************************************************************
 * ACTIONS
@@ -82,7 +84,6 @@ if ($action == 'create' && ! $_POST['cancel'])
 
 	$ref=GETPOST('ref','alpha');
 	$label=GETPOST('label','alpha');
-	$fk_building=GETPOST('building','int');
 	$fk_floor=GETPOST('fk_floor','int');
 	$type_code=GETPOST('fk_type_room','alpha');
 	$capacity=GETPOST('capacity','int');
@@ -97,17 +98,17 @@ if ($action == 'create' && ! $_POST['cancel'])
 
 	if (! $error)
 	{
-		$object=new Room($db);
-		$object->ref=GETPOST('ref','alpha');
-		$object->label=GETPOST('label','alpha');
-		$object->fk_building=$fk_building;
-		$object->fk_floor=$fk_floor;
-		$object->type_code=$type_code;
-		$object->capacity=$capacity;
+		$object_room->ref=GETPOST('ref','alpha');
+		$object_room->label=GETPOST('label','alpha');
+		$object_room->fk_place=$fk_place;
+		$object_room->fk_building=$fk_building;
+		$object_room->fk_floor=$fk_floor;
+		$object_room->type_code=$type_code;
+		$object_room->capacity=$capacity;
 
-		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$object_room);
 
-		$result=$object->create($user);
+		$result=$object_room->create($user);
 		if ($result > 0)
 		{
 			// Creation OK
@@ -119,7 +120,7 @@ if ($action == 'create' && ! $_POST['cancel'])
 		else
 		{
 			// Creation KO
-			setEventMessage($object->error, 'errors');
+			setEventMessage($object_room->error, 'errors');
 			$action = '';
 		}
 	}
@@ -144,10 +145,22 @@ $form=new Form($db);
 $formplace=new FormPlace($db);
 
 
-// If we know building
-if($object->fetch($fk_building) > 0)
+// If we know place
+if($object_place->fetch($fk_place) > 0)
 {
+	$head=placePrepareHead($object_place);
+	dol_fiche_head($head, 'rooms', $langs->trans("PlaceSingular"),0,'place@place');
 
+	$ret = $object_place->printInfoTable();
+
+	print '</div><br />';
+
+
+}
+
+// If we know building
+if($fk_building && $object->fetch($fk_building) > 0)
+{
 	$head=placePrepareHead($object->place);
 	dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
 
@@ -163,6 +176,8 @@ if($object->fetch($fk_building) > 0)
 	*/
 	$ret_html = $object->printShortInfoTable();
 	print '</div><br />';
+	
+	$object_place->fetch($object->fk_place);
 
 
 }
@@ -190,11 +205,33 @@ if($object->fetch($fk_building) > 0)
 	print '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans("RoomFormLabel_ref").'</span></td>';
 	print '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object_room->ref).'"></td></tr>';
 
+	// Place
+	print '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans("RoomFormLabel_fk_place").'</span></td>';
+	if(!$fk_place) {
+	
+		print '<td>';
+		$events[]=array('method' => 'getBuildings', 'url' => dol_buildpath('/place/core/ajax/buildings.php',1), 'htmlname' => 'fk_building', 'params' => array());
+		print $formplace->select_place_list(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id,'fk_place','',1,1,0,$events);
+		print '</td>';
+	}
+	else {
+		print '<td>';
+		print $object_place->getNomUrl(1);
+		print '<input type="hidden" name="fk_place" value="'.(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id).'">';
+		print '</td>';
+	}
+	print '</tr>';
+	
 	// Building
 	if(!$fk_building)
 	{
 		print '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans("RoomFormLabel_fk_building").'</span></td>';
-		print '<td><input size="12" name="building" value="'.(GETPOST('building') ? GETPOST('building') : $object_room->fk_building).'"></td></tr>';
+		//print '<td><input size="12" name="building" value="'.(GETPOST('building') ? GETPOST('building') : $object_room->fk_building).'"></td></tr>';
+		print '<td>';
+		$event=array();
+		print $formplace->selectbuildings($fk_place,GETPOST('building') ? GETPOST('building') : $object_room->fk_building,'building',0,'','',0,'', false,0, 0, $event);
+		//print $formplace->show_select_building(,'fk_building',$fk_place,'','',0,$event);
+		print '<td>';
 
 	}
 
@@ -202,7 +239,6 @@ if($object->fetch($fk_building) > 0)
 	print '<tr><td width="20%">'.$langs->trans("RoomFormLabel_floor").'</td>';
 	print '<td>';
 	print $object->show_select_floor($fk_building, 'fk_floor');
-	//<input size="12" name="fk_floor" value="'.(GETPOST('fk_floor') ? GETPOST('fk_floor') : $object_room->fk_floor).'">';
 	print ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagmentForBuilding').'</a>';
 	print '</td></tr>';
 

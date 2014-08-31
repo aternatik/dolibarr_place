@@ -229,6 +229,14 @@ if($object->fetch($id) > 0)
 			print '<a href="floors.php?id='.$id.'" class="butAction">'.$langs->trans('FloorManagment').'</a>';
 			print '</div>';
 		}
+		
+	// Add room
+		if($user->rights->place->write)
+		{
+			print '<div class="inline-block divButAction">';
+			print '<a href="../room/add.php?building='.$id.'" class="butAction">'.$langs->trans('AddNewRoomToThisBuilding').'</a>';
+			print '</div>';
+		}
 	}
 
 }

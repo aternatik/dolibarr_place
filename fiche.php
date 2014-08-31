@@ -30,6 +30,8 @@ if (! $res) $res=@include("../../main.inc.php");	// For "custom" directory
 if (! $res) die("Include of main fails");
 
 require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+
 require 'class/place.class.php';
 require 'lib/place.lib.php';
 
@@ -105,6 +107,40 @@ if ($action == 'update' && ! $_POST["cancel"]  && $user->rights->place->write )
 }
 
 
+/*
+ * Generate document
+*/
+if ($action == 'builddoc')  // En get ou en post
+{
+    if (is_numeric(GETPOST('model')))
+    {
+        $error=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Model"));
+    }
+    else
+    {
+        require_once 'core/modules/place/modules_place.php';
+
+        $object->fetch($id);
+
+        // Define output language
+        $outputlangs = $langs;
+        $newlang='';
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$fac->client->default_lang;
+        if (! empty($newlang))
+        {
+            $outputlangs = new Translate("",$conf);
+            $outputlangs->setDefaultLang($newlang);
+        }
+        $result=place_doc_create($db, $object, '', GETPOST('model','alpha'), $outputlangs);
+        if ($result <= 0)
+        {
+            dol_print_error($db,$result);
+            exit;
+        }
+    }
+}
+
 
 
 /***************************************************
@@ -116,7 +152,7 @@ $pagetitle=$langs->trans('FichePlace');
 llxHeader('',$pagetitle,'');
 
 $form=new Form($db);
-
+$formfile = new FormFile($db);
 
 if($object->fetch($id) > 0)
 {
@@ -269,6 +305,21 @@ if($object->fetch($id) > 0)
 			print '<a href="add.php?id='.$id.'&amp;action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
 			print '</div>';
 		}
+		
+		/*
+		 * Documents generes
+		*/
+		$filename=dol_sanitizeFileName($object->ref);
+		$filedir=$conf->place->dir_output . '/' . dol_sanitizeFileName($object->ref);
+		$urlsource=$_SERVER["PHP_SELF"]."?id=".$object->id;
+		$genallowed=$user->rights->place->read;
+		$delallowed=$user->rights->place->write;
+		
+		$var=true;
+		
+		$somethingshown=$formfile->show_documents('place',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf);
+		
+		
 	}
 
 

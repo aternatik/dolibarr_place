@@ -141,7 +141,7 @@ class FormPlace
     	// On recherche les societes
     	$sql = "SELECT p.rowid, p.ref";
     	$sql.= " FROM ".MAIN_DB_PREFIX ."place as p";
-    	$sql.= " WHERE p.entity IN (".getEntity('place', 1).")";
+    	$sql.= " WHERE p.entity IN (".getEntity('resource', true).")";
     	if ($filter) $sql.= " AND (".$filter.")";
     	//if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
     	//if (! empty($conf->global->COMPANY_HIDE_INACTIVE_IN_COMBOBOX)) $sql.= " AND s.status<>0 ";
@@ -244,7 +244,7 @@ class FormPlace
    		$sql.= " LEFT OUTER JOIN  ".MAIN_DB_PREFIX ."place_building as b ON b.rowid=s.fk_building ";
    		$sql.= " LEFT OUTER JOIN  ".MAIN_DB_PREFIX ."place as p ON p.rowid=b.fk_place ";
 
-    	$sql.= " WHERE s.entity IN (".getEntity('room', 1).")";
+    	$sql.= " WHERE s.entity IN (".getEntity('resource', true).")";
     	if ($fk_place > 0) $sql.= " AND b.fk_place=".$fk_place;
     	$sql.= " ORDER BY s.ref ASC, s.fk_floor ASC";
     	
@@ -324,6 +324,123 @@ class FormPlace
     			$out.= '</select>';
     		}
 
+    		$this->num = $num;
+    		return $out;
+    	}
+    	else
+    	{
+    		dol_print_error($this->db);
+    		return -1;
+    	}
+    }
+    
+    /**
+     *	Return list of all rooms (for a place or all)
+     *
+     *	@param	int		$fk_place      	Id of place or 0 for all
+     *	@param  string	$selected   	Id room pre-selectionne
+     *	@param  string	$htmlname  	    Name of HTML field ('none' for a not editable field)
+     *	@param  int		$showempty     	0=no empty value, 1=add an empty value
+     *	@param  string	$exclude        List of rooms id to exclude
+     *	@param	string	$limitto		Disable answers that are not id in this array list
+     *	@param	string	$showfunction   Add function into label
+     *	@param	string	$moreclass		Add more class to class style
+     *	@param	bool	$options_only	Return options only (for ajax treatment)
+     *	@param	string	$showplace	    Add place name into label
+     * 	@param	int		$forcecombo		Force to use combo box
+     *  @param	array	$event			Event options. Example: array(array('method'=>'getContacts', 'url'=>dol_buildpath('/core/ajax/contacts.php',1), 'htmlname'=>'contactid', 'params'=>array('add-customer-contact'=>'disabled')))
+     *	@return	 int						<0 if KO, Nb of contact in list if OK
+     */
+    function selectbuildings($fk_place,$selected='',$htmlname='fk_building',$showempty=0,$exclude='',$limitto='',$showfunction=0, $moreclass='', $options_only=false, $showplace=0, $forcecombo=0, $event=array())
+    {
+    	global $conf,$langs;
+    
+    	$langs->load('companies');
+    
+    	$out='';
+    
+    	// On recherche les salles
+    	$sql = "SELECT b.rowid, b.ref, b.label, p.ref as place_ref";
+    	$sql.= " FROM ".MAIN_DB_PREFIX ."place_building as b";
+    	$sql.= " LEFT OUTER JOIN  ".MAIN_DB_PREFIX ."place as p ON p.rowid=b.fk_place ";
+    
+    	$sql.= " WHERE b.entity IN (".getEntity('building', true).")";
+    	if ($fk_place > 0) $sql.= " AND b.fk_place=".$fk_place;
+    	$sql.= " ORDER BY b.ref ASC";
+    	 
+    	dol_syslog(get_class($this)."::selectbuildings sql=".$sql);
+    	$resql=$this->db->query($sql);
+    	if ($resql)
+    	{
+    		if ($conf->use_javascript_ajax && ! $forcecombo && ! $options_only)
+    		{
+    			$out.= ajax_combobox($htmlname, $event, 1);
+    		}
+    
+    		if ($htmlname != 'none' || $options_only) $out.= '<select class="flat'.($moreclass?' '.$moreclass:'').'" id="'.$htmlname.'" name="'.$htmlname.'">';
+    		if ($showempty == 1) $out.= '<option value="0"'.($selected=='0'?' selected="selected"':'').'></option>';
+    		if ($showempty == 2) $out.= '<option value="0"'.($selected=='0'?' selected="selected"':'').'>'.$langs->trans("Internal").'</option>';
+    		$num = $this->db->num_rows($resql);
+    		$i = 0;
+    		if ($num)
+    		{
+    			if(!class_exists("Building"))
+    				require_once 'building.class.php';
+    			$buildingstatic=new Building($this->db);
+    
+    			while ($i < $num)
+    			{
+    				$obj = $this->db->fetch_object($resql);
+    
+    				$buildingstatic->id=$obj->rowid;
+    
+    
+    				if ($htmlname != 'none')
+    				{
+    					$disabled=0;
+    					if (is_array($exclude) && count($exclude) && in_array($obj->rowid,$exclude)) $disabled=1;
+    					if (is_array($limitto) && count($limitto) && ! in_array($obj->rowid,$limitto)) $disabled=1;
+    					if ($selected && $selected == $obj->rowid)
+    					{
+    						$out.= '<option value="'.$obj->rowid.'"';
+    						if ($disabled) $out.= ' disabled="disabled"';
+    						$out.= ' selected="selected">';
+    						$out.= $obj->ref;
+    						$out.= ' '.$obj->label;
+    						if (($showplace > 0) && $obj->place_ref) $out.= ' - ('.$obj->place_ref.')';
+    						$out.= '</option>';
+    					}
+    					else
+    					{
+    						$out.= '<option value="'.$obj->rowid.'"';
+    						if ($disabled) $out.= ' disabled="disabled"';
+    						$out.= '>';
+    						$out.= $obj->ref;
+    						$out.= ' '.$obj->label;
+    						if (($showplace > 0) && $obj->place_ref) $out.= ' - ('.$obj->place_ref.')';
+    						$out.= '</option>';
+    					}
+    				}
+    				else
+    				{
+    					if ($selected == $obj->rowid)
+    					{
+    						$out.= $buildingstatic->getFullName($langs);    						
+    					}
+    				}
+    
+    				$i++;
+    			}
+    		}
+    		else
+    		{
+    			$out.= '<option value="-1"'.($showempty==2?'':' selected="selected"').' disabled="disabled">'.$langs->trans("NoBuildingDefined").'</option>';
+    		}
+    		if ($htmlname != 'none' || $options_only)
+    		{
+    			$out.= '</select>';
+    		}
+    
     		$this->num = $num;
     		return $out;
     	}
