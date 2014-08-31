@@ -115,7 +115,7 @@ class modPlace extends DolibarrModules
 		// Minimum version of PHP required by module
 		$this->phpmin = array(5, 3);
 		// Minimum version of Dolibarr required by module
-		$this->need_dolibarr_version = array(3, 4);
+		$this->need_dolibarr_version = array(3, 6);
 		$this->langfiles = array("place@place"); // langfiles@place
 		// Constants
 		// List of particular constants to add when module is enabled
