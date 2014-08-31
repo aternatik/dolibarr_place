@@ -1,5 +1,4 @@
--- Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
--- Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+-- Copyright (C) 2013  Jean-François FERRY <jfefe@aternatik.fr>
 --
 -- This program is free software: you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,9 +12,5 @@
 --
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-ALTER TABLE llx_place_building ADD CONSTRAINT fk_place_building_fk_place FOREIGN KEY (fk_place) REFERENCES llx_place (rowid);
-ALTER TABLE llx_place_building ADD INDEX fk_building_place (fk_place);
-ALTER TABLE llx_place_room ADD INDEX fk_building_room (fk_building);
+ALTER TABLE llx_place_room ADD COLUMN fk_place integer NOT NULL AFTER label;
 ALTER TABLE llx_place_room ADD INDEX fk_place_room (fk_place);
