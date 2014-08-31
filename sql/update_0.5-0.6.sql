@@ -14,3 +14,5 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ALTER TABLE llx_place_room ADD COLUMN fk_place integer NOT NULL AFTER label;
 ALTER TABLE llx_place_room ADD INDEX fk_place_room (fk_place);
+
+ALTER TABLE llx_place_room DROP FOREIGN KEY fk_place_room_fk_building;
