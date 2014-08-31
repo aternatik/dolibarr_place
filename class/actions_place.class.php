@@ -135,10 +135,8 @@ class ActionsPlace
 
     		if($action == 'add_resource_place' && !GETPOST('cancel'))
     		{
-	    		dol_include_once('resource/class/resource.class.php');
-	    		$resource_stat = new Resource($db);
-	    		$res = $resource_stat->add_element_resource($element_id,$element,GETPOST('fk_resource_place'),$resource_type,$busy,$mandatory);
-
+	    		$objstat = fetchObjectByElement($element_id, $element);
+	    		$res = $objstat->add_element_resource(GETPOST('fk_resource_place'),$resource_type,$busy,$mandatory);
 	    		if($res > 0)
 	    		{
 	    			setEventMessage($langs->trans('ResourceLinkedWithSuccess'),'mesgs');
@@ -156,45 +154,44 @@ class ActionsPlace
 
     		if($action == 'add_resource_room' && !GETPOST('cancel'))
     		{
-    			// Init du tableau des resources pour l'element
-    			dol_include_once('resource/class/resource.class.php');
-    			$resource_stat = new Resource($db);
+    			$objstat = fetchObjectByElement($element_id, $element);
+	    		$res = $objstat->add_element_resource(GETPOST('fk_resource_room'),$resource_type,$busy,$mandatory);
 
-    			$resources = array('place@place' => GETPOST('fk_resource_place'),'room@place' => GETPOST('fk_resource_room'));
-    			$error=$number_resources=0;
-
-    			foreach($resources as $resource_element => $resource_id)
-    			{
-					if($element && $resource_id > 0)
-					{
-						$res = $resource_stat->add_element_resource($element_id,$element,$resource_id,$resource_element,$busy,$mandatory);
-						if($res > 0)
-						{
-							$number_resources++;
-						}
-						else
-						{
-							$error++;
-						}
-					}
-					else
-					{
-						setEventMessage('ErrorNoId','errors');
-						$error++;
-					}
-    			}
-
-    			if(!$error && $number_resources > 0)
-    			{
-    				setEventMessage($langs->trans('ResourcesLinkedWithSuccess',$number_resources),'mesgs');
-    				header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
-    			}
-    			else
-    			{
-    				setEventMessage($langs->trans('ErrorWhenLinkingResources'),'errors');
-    				header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
-    			}
+	    		if($res > 0)
+	    		{
+	    			setEventMessage($langs->trans('ResourceLinkedWithSuccess'),'mesgs');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
+	    		else
+	    		{
+	    			setEventMessage($langs->trans('ErrorWhenLinkingResource'),'errors');
+	    			header("Location: ".$_SERVER['PHP_SELF'].'?mode=add&resource_type='.$resource_type.'&element='.$element.'&element_id='.$element_id);
+	    			exit;
+	    		}
     		}
     	}
+    }
+    
+    /**
+     * Overloading getElementResources funtion : declare place and room objects as resources
+     * @param	parameters		meta datas of the hook (context, etc...)
+     * @param	object			the object you want to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+     * @param	action			current action (if set). Generally create or edit or null
+     * @param 	object			$hookmanager
+     * @return	void
+     */
+    function getElementResources($parameters, &$object, &$action, $hookmanager) {
+    	global $langs, $db;
+    	
+    	if (in_array('element_resource',explode(':',$parameters['context'])))
+    	{
+    		$object->available_resources[] = "place@place";
+    		$object->available_resources[] = "room@place";
+    	}
+    	
+    	$this->results=array('available_resources'=>$object->available_resources);
+    	$this->resprints='';
+    	
     }
 }
