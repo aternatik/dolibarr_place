@@ -20,6 +20,7 @@ CREATE TABLE llx_place_room
   entity          integer,
   ref             varchar(255),
   label           varchar(255),
+  fk_place        integer NOT NULL,
   fk_building     integer NOT NULL,
   fk_floor        integer,
   type_code		  varchar(32),
