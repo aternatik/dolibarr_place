@@ -15,5 +15,5 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-ALTER TABLE llx_place_room ADD CONSTRAINT fk_place_room_fk_building FOREIGN KEY (fk_building) REFERENCES llx_place_building (rowid);
-ALTER TABLE llx_place_room ADD INDEX fk_room_building (fk_building);
+ALTER TABLE llx_place_floor ADD CONSTRAINT fk_place_floor_fk_building FOREIGN KEY (fk_building) REFERENCES llx_place_building (rowid);
+ALTER TABLE llx_place_floor ADD INDEX fk_floor_building (fk_building);
