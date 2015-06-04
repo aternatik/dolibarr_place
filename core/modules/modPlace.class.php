@@ -141,34 +141,17 @@ class modPlace extends DolibarrModules
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(
-			//	// To add a new tab identified by code tabname1
-			//	'objecttype:+tabname1:Title1:langfile@place:$user->rights->place->read:/place/mynewtab1.php?id=__ID__',
-			//	// To add another new tab identified by code tabname2
-			//	'objecttype:+tabname2:Title2:langfile@place:$user->rights->othermodule->read:/place/mynewtab2.php?id=__ID__',
-			//	// To remove an existing tab identified by code tabname
-			//	'objecttype:-tabname'
+			
 		);
-		// where objecttype can be
-		// 'thirdparty'			to add a tab in third party view
-		// 'intervention'		to add a tab in intervention view
-		// 'order_supplier'		to add a tab in supplier order view
-		// 'invoice_supplier'	to add a tab in supplier invoice view
-		// 'invoice'			to add a tab in customer invoice view
-		// 'order'				to add a tab in customer order view
-		// 'product'			to add a tab in product view
-		// 'stock'				to add a tab in stock view
-		// 'propal'				to add a tab in propal view
-		// 'member'				to add a tab in fundation member view
-		// 'contract'			to add a tab in contract view
-		// 'user'				to add a tab in user view
-		// 'group'				to add a tab in group view
-		// 'contact'			to add a tab in contact view
-		// 'categories_x'		to add a tab in category view
-		// (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
+		
 
 		$this->tabs = array(
 			//'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
 		);
+        
+        // This is to avoid warnings
+		if (! isset($conf->place->enabled)) $conf->place->enabled=0;
+		
 		// Dictionnaries
 		$this->dictionaries=array(
 			'langs'=>'place@place',
@@ -182,46 +165,6 @@ class modPlace extends DolibarrModules
 			'tabrowid'=>array("rowid"),
 			'tabcond'=>array($conf->place->enabled)
 		);
-		/* Example:
-		  // This is to avoid warnings
-		  if (! isset($conf->place->enabled)) $conf->place->enabled=0;
-		  $this->dictionnaries=array(
-		  'langs'=>'place@place',
-		  // List of tables we want to see into dictonnary editor
-		  'tabname'=>array(
-		  MAIN_DB_PREFIX."table1",
-		  MAIN_DB_PREFIX."table2",
-		  MAIN_DB_PREFIX."table3"
-		  ),
-		  // Label of tables
-		  'tablib'=>array("Table1","Table2","Table3"),
-		  // Request to select fields
-		  'tabsql'=>array(
-		  'SELECT f.rowid as rowid, f.code, f.label, f.active'
-		  . ' FROM ' . MAIN_DB_PREFIX . 'table1 as f',
-		  'SELECT f.rowid as rowid, f.code, f.label, f.active'
-		  . ' FROM ' . MAIN_DB_PREFIX . 'table2 as f',
-		  'SELECT f.rowid as rowid, f.code, f.label, f.active'
-		  . ' FROM ' . MAIN_DB_PREFIX . 'table3 as f'
-		  ),
-		  // Sort order
-		  'tabsqlsort'=>array("label ASC","label ASC","label ASC"),
-		  // List of fields (result of select to show dictionnary)
-		  'tabfield'=>array("code,label","code,label","code,label"),
-		  // List of fields (list of fields to edit a record)
-		  'tabfieldvalue'=>array("code,label","code,label","code,label"),
-		  // List of fields (list of fields for insert)
-		  'tabfieldinsert'=>array("code,label","code,label","code,label"),
-		  // Name of columns with primary key (try to always name it 'rowid')
-		  'tabrowid'=>array("rowid","rowid","rowid"),
-		  // Condition to show each dictionnary
-		  'tabcond'=>array(
-		  $conf->place->enabled,
-		  $conf->place->enabled,
-		  $conf->place->enabled
-		  )
-		  );
-		 */
 
 		// Boxes
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
@@ -258,23 +201,6 @@ class modPlace extends DolibarrModules
 		$this->rights[$r][4] = 'delete';
 		$r++;
 
-
-		// Add here list of permission defined by
-		// an id, a label, a boolean and two constant strings.
-		// Example:
-		//// Permission id (must not be already used)
-		//$this->rights[$r][0] = 2000;
-		//// Permission label
-		//$this->rights[$r][1] = 'Permision label';
-		//// Permission by default for new user (0/1)
-		//$this->rights[$r][3] = 1;
-		//// In php code, permission will be checked by test
-		//// if ($user->rights->permkey->level1->level2)
-		//$this->rights[$r][4] = 'level1';
-		//// In php code, permission will be checked by test
-		//// if ($user->rights->permkey->level1->level2)
-		//$this->rights[$r][5] = 'level2';
-		//$r++;
 		// Main menu entries
 		$this->menu = array(); // List of menus to add
 		$r = 0;
@@ -344,95 +270,6 @@ class modPlace extends DolibarrModules
 		// Exports
 		$r = 1;
 
-		// Example:
-		//$this->export_code[$r]=$this->rights_class.'_'.$r;
-		//// Translation key (used only if key ExportDataset_xxx_z not found)
-		//$this->export_label[$r]='CustomersInvoicesAndInvoiceLines';
-		//// Condition to show export in list (ie: '$user->id==3').
-		//// Set to 1 to always show when module is enabled.
-		//$this->export_enabled[$r]='1';
-		//$this->export_permission[$r]=array(array("facture","facture","export"));
-		//$this->export_fields_array[$r]=array(
-		//	's.rowid'=>"IdCompany",
-		//	's.nom'=>'CompanyName',
-		//	's.address'=>'Address',
-		//	's.cp'=>'Zip',
-		//	's.ville'=>'Town',
-		//	's.fk_pays'=>'Country',
-		//	's.tel'=>'Phone',
-		//	's.siren'=>'ProfId1',
-		//	's.siret'=>'ProfId2',
-		//	's.ape'=>'ProfId3',
-		//	's.idprof4'=>'ProfId4',
-		//	's.code_compta'=>'CustomerAccountancyCode',
-		//	's.code_compta_fournisseur'=>'SupplierAccountancyCode',
-		//	'f.rowid'=>"InvoiceId",
-		//	'f.facnumber'=>"InvoiceRef",
-		//	'f.datec'=>"InvoiceDateCreation",
-		//	'f.datef'=>"DateInvoice",
-		//	'f.total'=>"TotalHT",
-		//	'f.total_ttc'=>"TotalTTC",
-		//	'f.tva'=>"TotalVAT",
-		//	'f.paye'=>"InvoicePaid",
-		//	'f.fk_statut'=>'InvoiceStatus',
-		//	'f.note'=>"InvoiceNote",
-		//	'fd.rowid'=>'LineId',
-		//	'fd.description'=>"LineDescription",
-		//	'fd.price'=>"LineUnitPrice",
-		//	'fd.tva_tx'=>"LineVATRate",
-		//	'fd.qty'=>"LineQty",
-		//	'fd.total_ht'=>"LineTotalHT",
-		//	'fd.total_tva'=>"LineTotalTVA",
-		//	'fd.total_ttc'=>"LineTotalTTC",
-		//	'fd.date_start'=>"DateStart",
-		//	'fd.date_end'=>"DateEnd",
-		//	'fd.fk_product'=>'ProductId',
-		//	'p.ref'=>'ProductRef'
-		//);
-		//$this->export_entities_array[$r]=array('s.rowid'=>"company",
-		//	's.nom'=>'company',
-		//	's.address'=>'company',
-		//	's.cp'=>'company',
-		//	's.ville'=>'company',
-		//	's.fk_pays'=>'company',
-		//	's.tel'=>'company',
-		//	's.siren'=>'company',
-		//	's.siret'=>'company',
-		//	's.ape'=>'company',
-		//	's.idprof4'=>'company',
-		//	's.code_compta'=>'company',
-		//	's.code_compta_fournisseur'=>'company',
-		//	'f.rowid'=>"invoice",
-		//	'f.facnumber'=>"invoice",
-		//	'f.datec'=>"invoice",
-		//	'f.datef'=>"invoice",
-		//	'f.total'=>"invoice",
-		//	'f.total_ttc'=>"invoice",
-		//	'f.tva'=>"invoice",
-		//	'f.paye'=>"invoice",
-		//	'f.fk_statut'=>'invoice',
-		//	'f.note'=>"invoice",
-		//	'fd.rowid'=>'invoice_line',
-		//	'fd.description'=>"invoice_line",
-		//	'fd.price'=>"invoice_line",
-		//	'fd.total_ht'=>"invoice_line",
-		//	'fd.total_tva'=>"invoice_line",
-		//	'fd.total_ttc'=>"invoice_line",
-		//	'fd.tva_tx'=>"invoice_line",
-		//	'fd.qty'=>"invoice_line",
-		//	'fd.date_start'=>"invoice_line",
-		//	'fd.date_end'=>"invoice_line",
-		//	'fd.fk_product'=>'product',
-		//	'p.ref'=>'product'
-		//);
-		//$this->export_sql_start[$r] = 'SELECT DISTINCT ';
-		//$this->export_sql_end[$r] = ' FROM (' . MAIN_DB_PREFIX . 'facture as f, '
-		//	. MAIN_DB_PREFIX . 'facturedet as fd, ' . MAIN_DB_PREFIX . 'societe as s)';
-		//$this->export_sql_end[$r] .= ' LEFT JOIN ' . MAIN_DB_PREFIX
-		//	. 'product as p on (fd.fk_product = p.rowid)';
-		//$this->export_sql_end[$r] .= ' WHERE f.fk_soc = s.rowid '
-		//	. 'AND f.rowid = fd.fk_facture';
-		//$r++;
 	}
 
 	/**
