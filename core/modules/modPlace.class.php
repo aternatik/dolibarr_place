@@ -170,7 +170,7 @@ class modPlace extends DolibarrModules
 			//'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
 		);
 		// Dictionnaries
-		$this->dictionnaries=array(
+		$this->dictionaries=array(
 			'langs'=>'place@place',
 			'tabname'=>array(MAIN_DB_PREFIX."c_placeroom_type"),
 			'tablib'=>array("PlaceRoomDictType"),
