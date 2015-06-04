@@ -59,9 +59,9 @@ class modPlace extends DolibarrModules
 		// Module description
 		// used if translation string 'ModuleXXXDesc' not found
 		// (where XXX is value of numeric property 'numero' of module)
-		$this->description = "Description of module Place";
+		$this->description = "Place managment with resource module";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '0.6';
+		$this->version = '3.6+0.7';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
