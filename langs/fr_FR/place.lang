@@ -24,6 +24,7 @@ Module110110Desc = Gérer des lieux avec des bâtiments, étages et salles
 Menu110110PlaceIndex=Gestion des lieux
 Menu110110PlaceAdd=Ajouter un lieu
 Menu110110BuildingsList=Liste des bâtiments
+Menu110110RoomsList=Liste des salles
 Permission1101101=Voir les lieux
 Permission1101102=Modifier les lieux
 Permission1101103=Effacer les lieux
@@ -115,6 +116,7 @@ FloorEdition=Éditer les étages
 FloorDeletedWithSuccess=Étage supprimé avec succès
 NoFloorFoundForThisBuilding=Aucun étage pour ce bâtiment.
 FloorManagmentForBuilding=Gestion des étages du bâtiment
+PlaceErrorNoBuildingId=Erreur : un ID bâtiment doit être fourni
 
 #
 # Salles
@@ -124,6 +126,7 @@ Rooms=Salles
 AddRoom=Ajouter une salle
 RoomsManagment=Gestion des salles
 NoRoomFoundForThisBuilding=Pas de salle pour ce bâtiment
+NoRoomFound=Pas de salle trouvée
 AddNewRoomToThisBuilding=Ajouter une salle à ce bâtiment
 RoomFormLabel_ref=Repère de la salle
 RoomFormLabel_fk_building=Bâtiment
@@ -136,6 +139,7 @@ ConfirmDeleteRoom=Confirmer la suppression de cette salle ?
 RoomDeleted=Salle supprimée
 NoRoomDefined=Pas de salle défini
 EventsForThisRoom=Évènements pour cette salle
+RoomFormLabel_fk_place=Lieu de la salle
 
 #
 # Types de ressources

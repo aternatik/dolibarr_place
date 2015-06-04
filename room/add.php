@@ -54,6 +54,7 @@ require_once '../lib/place.lib.php';
 $langs->load("place@place");
 $langs->load("companies");
 $langs->load("other");
+$langs->load("admin");
 
 // Get parameters
 $id				= GETPOST('id','int');
@@ -236,11 +237,15 @@ if($fk_building && $object->fetch($fk_building) > 0)
 	}
 
 	// Floor
-	print '<tr><td width="20%">'.$langs->trans("RoomFormLabel_floor").'</td>';
-	print '<td>';
-	print $object->show_select_floor($fk_building, 'fk_floor');
-	print ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagmentForBuilding').'</a>';
-	print '</td></tr>';
+
+    print '<tr><td width="20%">'.$langs->trans("RoomFormLabel_floor").'</td>';
+    print '<td>';
+    print $object->show_select_floor($fk_building, 'fk_floor');
+    if($fk_building > 0) {
+        print ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagment').'</a>';
+    }
+    print '</td></tr>';
+
 
 	// Room type
 	$formplace = new FormPlace($db);

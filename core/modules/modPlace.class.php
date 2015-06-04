@@ -325,6 +325,21 @@ class modPlace extends DolibarrModules
 			'target'=> '',
 			'user'=> 0
 		);
+        
+        $this->menu[$r++]=array(
+			'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
+			'type'=> 'left', // Toujours un menu gauche
+			'titre'=> 'Menu110110RoomsList',
+			'mainmenu'=> 'tools',
+			'leftmenu'=> '', // On n'indique rien ici car on ne souhaite pas intégrer de sous-menus à ce menu
+			'url'=> '/place/room/list.php',
+			'langs'=> 'place@place',
+			'position'=> 103,
+			'enabled'=> '1',
+			'perms'=> '$user->rights->place->read',
+			'target'=> '',
+			'user'=> 0
+		);
 
 		// Exports
 		$r = 1;

@@ -184,253 +184,181 @@ if($fk_building && $obj_building->fetch($fk_building) > 0 )
 	$head=buildingPrepareHead($obj_building);
 	dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
 
-
-
-
 	/*---------------------------------------
 	 * View building info
 	*/
 	$obj_building->printShortInfoTable();
-
+	print '</div><br />';
+}
 
 	/*
 	 * Floors management
 	 */
 
-	print '</div><br />';
 	print_fiche_titre($langs->trans('RoomsManagment'),'','room_32.png@place');
 
 
 
-		// Show room for fk_building
+    // Show room for fk_building
 
-		$sortorder	= GETPOST('sortorder','alpha');
-		$sortfield	= GETPOST('sortfield','alpha');
-		$page		= GETPOST('page','int');
-
-
-		if (empty($sortorder)) $sortorder="DESC";
-		if (empty($sortfield)) $sortfield="t.rowid";
-		if (empty($arch)) $arch = 0;
-
-		if ($page == -1) {
-			$page = 0 ;
-		}
-
-		$limit = $conf->liste_limit;
-		$offset = $limit * $page ;
-		$pageprev = $page - 1;
-		$pagenext = $page + 1;
-
-		$list_room = $obj_room->fetch_all($sortorder,$sortfield,$limit,$offset,array('t.fk_building'=>$fk_building));
-
-		if( is_array($obj_room->lines) && sizeof($obj_room->lines) > 0)
-		{
-
-			// Confirm delete
-			if ($action == 'ask_deleteroom')
-			{
-				$out .= $form->formconfirm($_SERVER["PHP_SELF"].'?building='.$fk_building.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom','',0,1);
-			}
+$sortorder = GETPOST('sortorder', 'alpha');
+$sortfield = GETPOST('sortfield', 'alpha');
+$page = GETPOST('page', 'int');
 
 
-			$out .= '<table width="100%;" class="noborder">';
-			//$out .=  '<table class="noborder">'."\n";
-			$out .=  '<tr class="liste_titre">';
-			$out .= '<th class="liste_titre">'.$langs->trans('RoomNumber').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('Label').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('RoomFloor').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('PlaceRoomDictType').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('RoomCapacityShort').'</th>';
-			$out .= '<th class="liste_titre">'.$langs->trans('Edit').'</th>';
-			$out .=  '</tr>';
+if (empty($sortorder))
+    $sortorder = "DESC";
+if (empty($sortfield))
+    $sortfield = "t.rowid";
+if (empty($arch))
+    $arch = 0;
 
-			foreach ($obj_room->lines as $key => $room)
-			{
-				if($action=='editroom' && $room->id == GETPOST('roomid','int'))
-				{
-					$out .= '<form action="'.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$room->id.'" method="POST">';
-					$out .= '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-					$out .= '<input type="hidden" name="action" value="updateroom">';
-					$out .= '<input type="hidden" name="usenewupdatelineform" value="1" />';
-					$out .= '<input type="hidden" name="building" value="'.$fk_building.'">';
-					$out .= '<input type="hidden" name="roomid" value="'.$room->id.'">';
-
-					$out .= '<tr>';
-					$out .= '<td>';
-					$out .= '<input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $room->ref).'"></td>';
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= '<input size="40" name="label" value="'.(GETPOST('label') ? GETPOST('label') : $room->label).'"></td>';
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= $room->building->show_select_floor($id, 'fk_floor',$room->fk_floor);
-					$out .= '</td>';
-
-					$out .= '<td><div>';
-					$formplace = new FormPlace($db);
-					$out .= $formplace->select_types_rooms($room->type_code, 'fk_type_room','',2,'',1);
-					$out .= '</div></td>';
-
-					$out .= '<td>';
-					$out .= '<input size="8" name="capacity" value="'.(GETPOST('capacity') ? GETPOST('capacity') : $room->capacity).'"></td>';
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= '<input type="submit" name="update_'.$room->id.'" value="'.$langs->trans('Save').'"/></td>';
-					$out .= '</td>';
-
-					$out .= '</tr>';
-					$out .= '</form>';
-				}
-				else
-				{
-					$out .= '<tr>';
-					$out .= '<td>';
-					$roomstat = new Room($db);
-					$roomstat->id=$room->id;
-					$roomstat->ref = $room->ref;
-					$out .= $roomstat->getNomUrl();
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= $room->label;
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= $room->floor_ref;
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= $room->type_label;
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= $room->capacity;
-					$out .= '</td>';
-
-					$out .= '<td>';
-					$out .= '<a href="' . $_SERVER["PHP_SELF"] .'?building='.$fk_building.'&amp;action=editroom&amp;roomid='.$room->id.'#'.$room->id.'">'.img_edit().'</a>';
-
-					$out .= '<a href="'.$_SERVER["PHP_SELF"].'?building='.$fk_building.'&amp;action=ask_deleteroom&amp;roomid='.$room->id.'">'.img_delete().'</a>';
-					$out .= '</td>';
-
-					$out .= '</tr>';
-					$out .= '</tr>';
-				}
-			}
-
-			$out .= '</table>';
-
-		}
-		elseif($list_room>0 && !sizeof($obj_room->lines)) {
-
-			$out.='<div class="info">'.$langs->trans('NoRoomFoundForThisBuilding').'</div>';
-		}
-		else {
-
-			setEventMessage($obj_room->error,'errors');
-		}
-
-
-
-	print $out;
-
-
-	/*
-	 * Boutons actions
-	*/
-	print '<div class="tabsAction">';
-
-	if ($action != "show_floor_form" )
-	{
-
-		// Add room
-		if($user->rights->place->write)
-		{
-			print '<div class="inline-block divButAction">';
-			print '<a href="../room/add.php?building='.$fk_building.'" class="butAction">'.$langs->trans('AddNewRoomToThisBuilding').'</a>';
-			print '</div>';
-		}
-	}
-	print '</div>';
-
+if ($page == -1) {
+    $page = 0;
 }
 
+$limit = $conf->liste_limit;
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+
+if ($fk_building > 0)
+    $filter = array('t.fk_building' => $fk_building);
 
 
+$list_room = $obj_room->fetch_all($sortorder, $sortfield, $limit, $offset, $filter);
 
-// Example 2 : Adding links to objects
-// The class must extends CommonObject class to have this method available
-//$somethingshown=$obj_building->showLinkedObjectBlock();
+if (is_array($obj_room->lines) && sizeof($obj_room->lines) > 0) {
 
-
-// Example 3 : List of data
-if ($action == 'list')
-{
-    $sql = "SELECT";
-    $sql.= " t.rowid,";
-
-		$sql.= " t.entity,";
-		$sql.= " t.ref,";
-		$sql.= " t.label,";
-		$sql.= " t.fk_place,";
-		$sql.= " t.description,";
-		$sql.= " t.lat,";
-		$sql.= " t.lng,";
-		$sql.= " t.note_public,";
-		$sql.= " t.note_private,";
-		$sql.= " t.fk_user_creat,";
-		$sql.= " t.tms";
+    // Confirm delete
+    if ($action == 'ask_deleteroom') {
+        $out .= $form->formconfirm($_SERVER["PHP_SELF"] . '?building=' . $fk_building . '&roomid=' . $roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom', '', 0, 1);
+    }
 
 
-    $sql.= " FROM ".MAIN_DB_PREFIX."place_building as t";
-    $sql.= " WHERE field3 = 'xxx'";
-    $sql.= " ORDER BY field1 ASC";
+    $out .= '<table width="100%;" class="noborder">';
+    //$out .=  '<table class="noborder">'."\n";
+    $out .= '<tr class="liste_titre">';
+    $out .= '<th class="liste_titre">' . $langs->trans('RoomNumber') . '</th>';
+    $out .= '<th class="liste_titre">' . $langs->trans('Label') . '</th>';
+    $out .= '<th class="liste_titre">' . $langs->trans('RoomFloor') . '</th>';
+    $out .= '<th class="liste_titre">' . $langs->trans('PlaceRoomDictType') . '</th>';
+    $out .= '<th class="liste_titre">' . $langs->trans('RoomCapacityShort') . '</th>';
+    $out .= '<th class="liste_titre">' . $langs->trans('Edit') . '</th>';
+    $out .= '</tr>';
 
-    print '<table class="noborder">'."\n";
-    print '<tr class="liste_titre">';
-    print_liste_field_titre($langs->trans('field1'),$_SERVER['PHP_SELF'],'t.field1','',$param,'',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans('field2'),$_SERVER['PHP_SELF'],'t.field2','',$param,'',$sortfield,$sortorder);
-    print '</tr>';
+    foreach ($obj_room->lines as $key => $room) {
+        if ($action == 'editroom' && $room->id == GETPOST('roomid', 'int')) {
+            $out .= '<form action="' . $_SERVER["PHP_SELF"] . '?id=' . $id . '#' . $room->id . '" method="POST">';
+            $out .= '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+            $out .= '<input type="hidden" name="action" value="updateroom">';
+            $out .= '<input type="hidden" name="usenewupdatelineform" value="1" />';
+            $out .= '<input type="hidden" name="building" value="' . $fk_building . '">';
+            $out .= '<input type="hidden" name="roomid" value="' . $room->id . '">';
 
-    dol_syslog($script_file." sql=".$sql, LOG_DEBUG);
-    $resql=$db->query($sql);
-    if ($resql)
-    {
-        $num = $db->num_rows($resql);
-        $i = 0;
-        if ($num)
-        {
-            while ($i < $num)
-            {
-                $obj = $db->fetch_object($resql);
-                if ($obj)
-                {
-                    // You can use here results
-                    print '<tr><td>';
-                    print $obj->field1;
-                    print $obj->field2;
-                    print '</td></tr>';
-                }
-                $i++;
-            }
+            $out .= '<tr>';
+            $out .= '<td>';
+            $out .= '<input size="12" name="ref" value="' . (GETPOST('ref') ? GETPOST('ref') : $room->ref) . '"></td>';
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= '<input size="40" name="label" value="' . (GETPOST('label') ? GETPOST('label') : $room->label) . '"></td>';
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= $room->building->show_select_floor($id, 'fk_floor', $room->fk_floor);
+            $out .= '</td>';
+
+            $out .= '<td><div>';
+            $formplace = new FormPlace($db);
+            $out .= $formplace->select_types_rooms($room->type_code, 'fk_type_room', '', 2, '', 1);
+            $out .= '</div></td>';
+
+            $out .= '<td>';
+            $out .= '<input size="8" name="capacity" value="' . (GETPOST('capacity') ? GETPOST('capacity') : $room->capacity) . '"></td>';
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= '<input type="submit" name="update_' . $room->id . '" value="' . $langs->trans('Save') . '"/></td>';
+            $out .= '</td>';
+
+            $out .= '</tr>';
+            $out .= '</form>';
+        } else {
+            $out .= '<tr>';
+            $out .= '<td>';
+            $roomstat = new Room($db);
+            $roomstat->id = $room->id;
+            $roomstat->ref = $room->ref;
+            $out .= $roomstat->getNomUrl();
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= $room->label;
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= $room->floor_ref;
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= $room->type_label;
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= $room->capacity;
+            $out .= '</td>';
+
+            $out .= '<td>';
+            $out .= '<a href="' . $_SERVER["PHP_SELF"] . '?building=' . $fk_building . '&amp;action=editroom&amp;roomid=' . $room->id . '#' . $room->id . '">' . img_edit() . '</a>';
+
+            $out .= '<a href="' . $_SERVER["PHP_SELF"] . '?building=' . $fk_building . '&amp;action=ask_deleteroom&amp;roomid=' . $room->id . '">' . img_delete() . '</a>';
+            $out .= '</td>';
+
+            $out .= '</tr>';
+            $out .= '</tr>';
         }
     }
-    else
-    {
-        $error++;
-        dol_print_error($db);
-    }
 
-    print '</table>'."\n";
+    $out .= '</table>';
+} elseif ($list_room > 0 && !sizeof($obj_room->lines)) {
+
+    $out.='<div class="info">' . $langs->trans('NoRoomFound') . '</div>';
+} else {
+
+    setEventMessage($obj_room->error, 'errors');
 }
+
+
+
+print $out;
+
+
+/*
+ * Boutons actions
+ */
+print '<div class="tabsAction">';
+
+if ($action != "show_floor_form") {
+
+    // Add room
+    if ($user->rights->place->write) {
+        if($fk_building > 0) {
+            $link_text = $langs->trans('AddNewRoomToThisBuilding');
+        } else {
+            $link_text = $langs->trans('AddRoom');
+        }
+        
+        print '<div class="inline-block divButAction">';
+        print '<a href="../room/add.php' . ( $fk_building > 0 ? '?building='.$fk_building : '') . '" class="butAction">' . $link_text . '</a>';
+        print '</div>';
+    }
+}
+print '</div>';
 
 
 
 // End of page
 llxFooter();
 $db->close();
-?>
+

@@ -24,6 +24,7 @@ Module110110Desc = manage locations, buildings, floors and rooms
 Menu110110PlaceIndex=Place management
 Menu110110PlaceAdd=Add new place
 Menu110110BuildingsList=Buildings list
+Menu110110RoomsList=Rooms list
 Permission1101101=See places
 Permission1101102=Modify places
 Permission1101103=Delete places
@@ -102,6 +103,7 @@ BuildingCreatedWithSuccess=Building sucessfully added
 BuildingPlaceName=Location
 BuildingList=Buildings list
 NoBuildingForThisPlace=No building for that place
+PlaceErrorNoBuildingId=Error : building ID required
 
 #
 # Floors
@@ -124,6 +126,7 @@ Rooms=Rooms
 AddRoom=Add room
 RoomsManagment=Room management
 NoRoomFoundForThisBuilding=No room fo this building
+NoRoomFound=No room found
 AddNewRoomToThisBuilding=Add room to this building
 RoomFormLabel_ref=Room landmark
 RoomFormLabel_fk_building=Building
@@ -136,6 +139,7 @@ DeleteRoom=Confirm delete this room?
 RoomDeleted=Room deleted
 NoRoomDefined=No room defined
 EventsForThisRoom=Events for this room
+RoomFormLabel_fk_place=Related place
 
 #
 # Resources types
