@@ -46,15 +46,16 @@ class ActionsPlace
         	 */
         	if($action == '')
         	{
-        		if(!class_exists('Resource'))
-        			dol_include_once('resource/class/resource.class.php');
-        		$resource = new Resource($db);
+        		if(!class_exists('DolResource')) {
+							include_once DOL_DOCUMENT_ROOT . '/resource/class/dolresource.class.php';
+						}
+        		$resource = new Dolresource($db);
 
         		$resources = $resource->getElementResources($object->element,$object->id);
         		$num=count($resources);
 
         		$i = 0;
-				$var = false;
+						$var = false;
         		while ($i < $num) {
         			$var = !$var;
 
@@ -172,7 +173,7 @@ class ActionsPlace
     		}
     	}
     }
-    
+
     /**
      * Overloading getElementResources funtion : declare place and room objects as resources
      * @param	parameters		meta datas of the hook (context, etc...)
@@ -183,15 +184,15 @@ class ActionsPlace
      */
     function getElementResources($parameters, &$object, &$action, $hookmanager) {
     	global $langs, $db;
-    	
+
     	if (in_array('element_resource',explode(':',$parameters['context'])))
     	{
     		$object->available_resources[] = "place@place";
     		$object->available_resources[] = "room@place";
     	}
-    	
+
     	$this->results=array('available_resources'=>$object->available_resources);
     	$this->resprints='';
-    	
+
     }
 }

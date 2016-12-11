@@ -23,13 +23,12 @@
  */
 
 // Put here all includes required by your class file
-dol_include_once("/resource/class/resource.class.php");
-
+require_once DOL_DOCUMENT_ROOT . '/resource/class/dolresource.class.php';
 
 /**
  *	DAO Place object
  */
-class Place extends Resource
+class Place extends Dolresource
 {
 	var $db;							//!< To store db handler
 	var $error;							//!< To return error code (or message)

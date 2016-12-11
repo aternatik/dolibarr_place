@@ -61,7 +61,7 @@ class modPlace extends DolibarrModules
 		// (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Place managment with resource module";
 		// Possible values for version are: 'development', 'experimental' or version
-		$this->version = '3.7+0.7';
+		$this->version = '4+0.7';
 		// Key used in llx_const table to save module status enabled/disabled
 		// (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -141,17 +141,17 @@ class modPlace extends DolibarrModules
 		// Array to add new pages in new tabs
 		// Example:
 		$this->tabs = array(
-			
+
 		);
-		
+
 
 		$this->tabs = array(
 			//'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
 		);
-        
+
         // This is to avoid warnings
 		if (! isset($conf->place->enabled)) $conf->place->enabled=0;
-		
+
 		// Dictionnaries
 		$this->dictionaries=array(
 			'langs'=>'place@place',
@@ -251,7 +251,7 @@ class modPlace extends DolibarrModules
 			'target'=> '',
 			'user'=> 0
 		);
-        
+
         $this->menu[$r++]=array(
 			'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=place', //On utilise les ancres définis dans le menu parent déclaré au dessus
 			'type'=> 'left', // Toujours un menu gauche
