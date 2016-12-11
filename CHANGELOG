@@ -2,10 +2,13 @@
 #
 #	Module "Place" for Dolibarr ERP/CRM
 #
-#	Location, building, floor and room management 
+#	Location, building, floor and room management
 #
 #
 ###################################################
+
+Changes for 1.0 version
+Dolibarr 4+ compatibility
 
 Changes from 0.5 to 0.6
 Multicompany sharing feature
@@ -18,7 +21,7 @@ Changes from 0.3 to 0.4
 Add document support for building and rooms
 
 Changes from 0.2 to 0.3
-Extrafields on room 
+Extrafields on room
 Add single page for each room
 Improve integration into resources module
 
@@ -27,4 +30,4 @@ Add dictonary for room type
 Add field capacity for rooms
 Can edit and delete rooms
 
-Initial release - 0.1 
+Initial release - 0.1
