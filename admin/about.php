@@ -1,6 +1,6 @@
 <?php
 /* Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
- * Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+ * Copyright (C) 2013-2016	Jean-François Ferry	<jfefe@aternatik.fr>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,29 +19,27 @@
 /**
  * 	\file		place/admin/about.php
  * 	\ingroup	place
- * 	\brief		This file is about page of place module
+ * 	\brief		This file is about page of place module.
  */
 // Dolibarr environment
-$res = @include("../../main.inc.php"); // From htdocs directory
-if (! $res) {
-	$res = @include("../../../main.inc.php"); // From "custom" directory
+$res = @include '../../main.inc.php'; // From htdocs directory
+if (!$res) {
+    $res = @include '../../../main.inc.php'; // From "custom" directory
 }
 
-
 // Libraries
-require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
-require_once "../lib/place.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once '../lib/place.lib.php';
 
 dol_include_once('/place/lib/PHP_Markdown_1.0.1o/markdown.php');
 
-
 //require_once "../class/myclass.class.php";
 // Translations
-$langs->load("place@place");
+$langs->load('place@place');
 
 // Access control
-if (! $user->admin) {
-	accessforbidden();
+if (!$user->admin) {
+    accessforbidden();
 }
 
 // Parameters
@@ -54,26 +52,26 @@ $action = GETPOST('action', 'alpha');
 /*
  * View
  */
-$page_name = "PlaceAbout";
+$page_name = 'PlaceAbout';
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
-$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-	. $langs->trans("BackToModuleList") . '</a>';
+$linkback = '<a href="'.DOL_URL_ROOT.'/admin/modules.php">'
+    .$langs->trans('BackToModuleList').'</a>';
 print_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = placeAdminPrepareHead();
 dol_fiche_head(
-	$head,
-	'about',
-	$langs->trans("Module110110Name"),
-	0,
-	'place@place'
+    $head,
+    'about',
+    $langs->trans('Module110110Name'),
+    0,
+    'place@place'
 );
 
 // About page goes here
-echo $langs->trans("PlaceAboutPage");
+echo $langs->trans('PlaceAboutPage');
 
 echo '<br>';
 
@@ -81,8 +79,8 @@ $buffer = file_get_contents(dol_buildpath('/place/README.md', 0));
 echo Markdown($buffer);
 
 echo '<br>',
-'<a href="' . dol_buildpath('/place/COPYING', 1) . '">',
-'<img src="' . dol_buildpath('/place/img/gplv3.png', 1) . '"/>',
+'<a href="'.dol_buildpath('/place/COPYING', 1).'">',
+'<img src="'.dol_buildpath('/place/img/gplv3.png', 1).'"/>',
 '</a>';
 
 llxFooter();
