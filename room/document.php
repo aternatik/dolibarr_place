@@ -22,14 +22,21 @@
 /**
  *  \file       place/room/document.php
  *  \brief      Tab for documents linked to a room
- *  \ingroup    place
+ *  \ingroup    place.
  */
-
-$res=0;
-if (! $res && file_exists("../main.inc.php")) $res=@include '../main.inc.php';
-if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.php';
-if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
-if (! $res) die("Include of main fails");
+$res = 0;
+if (!$res && file_exists('../main.inc.php')) {
+    $res = @include '../main.inc.php';
+}
+if (!$res && file_exists('../../main.inc.php')) {
+    $res = @include '../../main.inc.php';
+}
+if (!$res && file_exists('../../../main.inc.php')) {
+    $res = @include '../../../main.inc.php';
+}
+if (!$res) {
+    die('Include of main fails');
+}
 
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -40,50 +47,51 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once '../class/room.class.php';
 require_once '../lib/place.lib.php';
 
-$langs->load("place@place");
+$langs->load('place@place');
 $langs->load('other');
 
-
-$action=GETPOST('action');
-$confirm=GETPOST('confirm');
-$id=(GETPOST('socid','int') ? GETPOST('socid','int') : GETPOST('id','int'));
+$action = GETPOST('action');
+$confirm = GETPOST('confirm');
+$id = (GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
 
 // Security check
-if ($user->societe_id > 0)
-{
-	unset($action);
-	$socid = $user->societe_id;
+if ($user->societe_id > 0) {
+    unset($action);
+    $socid = $user->societe_id;
 }
 $result = restrictedArea($user, 'societe', $id, '&societe');
 
 // Get parameters
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
+$sortfield = GETPOST('sortfield', 'alpha');
+$sortorder = GETPOST('sortorder', 'alpha');
+$page = GETPOST('page', 'int');
+if ($page == -1) {
+    $page = 0;
+}
 $offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
-if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="name";
+if (!$sortorder) {
+    $sortorder = 'ASC';
+}
+if (!$sortfield) {
+    $sortfield = 'name';
+}
 
 $object = new Room($db);
-if ($id > 0 || ! empty($ref))
-{
-	$result = $object->fetch($id, $ref);
+if ($id > 0 || !empty($ref)) {
+    $result = $object->fetch($id, $ref);
 
-	$relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ','-',$object->place->ref)).'/building/'.dol_sanitizeFileName($object->building->ref).'/rooms/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
-	$upload_dir = $conf->place->dir_output .'/'. $relativepathwithnofile ;
-
+    $relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ', '-', $object->place->ref)).'/building/'.dol_sanitizeFileName($object->building->ref).'/rooms/'.dol_sanitizeFileName($object->ref).'/'; // for sub-directory
+    $upload_dir = $conf->place->dir_output.'/'.$relativepathwithnofile;
 }
 
 /*
  * Actions
  */
 
-include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php';
-
+include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_pre_headers.tpl.php';
 
 /*
  * View
@@ -92,79 +100,66 @@ include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php
 $form = new Form($db);
 
 //$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("Room").' - '.$langs->trans("Files"),$help_url);
+llxHeader('', $langs->trans('Room').' - '.$langs->trans('Files'), $help_url);
 
-if ($object->id)
-{
+if ($object->id) {
 
+    /*
+     * Affichage onglets
+     */
 
-	/*
-	 * Affichage onglets
-	 */
-
-    if($object->place)
-    {
-        $head=placePrepareHead($object->place);
-        dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+    if ($object->place) {
+        $head = placePrepareHead($object->place);
+        dol_fiche_head($head, 'buildings', $langs->trans('PlaceSingular'), 0, 'place@place');
 
         $ret = $object->place->printInfoTable();
-        print '</div>';
+        echo '</div>';
     }
-
 
     //Second tabs list for building
-    if($object->building)
-    {
-        $head=buildingPrepareHead($object->building);
-        dol_fiche_head($head, 'rooms', $langs->trans("BuildingSingular"),0,'building@place');
+    if ($object->building) {
+        $head = buildingPrepareHead($object->building);
+        dol_fiche_head($head, 'rooms', $langs->trans('BuildingSingular'), 0, 'building@place');
 
         $ret = $object->building->printShortInfoTable();
-        print '</div>';
+        echo '</div>';
     }
 
+    $head = roomPrepareHead($object);
+    dol_fiche_head($head, 'document', $langs->trans('RoomSingular'), 0, 'room@place');
 
-	$head=roomPrepareHead($object);
-	dol_fiche_head($head, 'document', $langs->trans("RoomSingular"),0,'room@place');
+    // Construit liste des fichiers
+    $filearray = dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview\.png)$', $sortfield, (strtolower($sortorder) == 'desc' ? SORT_DESC : SORT_ASC), 1);
+    $totalsize = 0;
+    foreach ($filearray as $key => $file) {
+        $totalsize += $file['size'];
+    }
 
+    echo '<table class="border"width="100%">';
 
-	// Construit liste des fichiers
-	$filearray=dol_dir_list($upload_dir,"files",0,'','(\.meta|_preview\.png)$',$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
-	$totalsize=0;
-	foreach($filearray as $key => $file)
-	{
-		$totalsize+=$file['size'];
-	}
+    // Ref
+    echo '<tr><td width="25%">'.$langs->trans('RoomFormLabel_ref').'</td>';
+    echo '<td colspan="3">';
+    echo $form->showrefnav($object, 'id', '', ($user->societe_id ? 0 : 1), 'rowid', 'ref');
+    echo '</td></tr>';
 
+    // Nbre fichiers
+    echo '<tr><td>'.$langs->trans('NbOfAttachedFiles').'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
-	print '<table class="border"width="100%">';
+    //Total taille
+    echo '<tr><td>'.$langs->trans('TotalSizeOfAttachedFiles').'</td><td colspan="3">'.$totalsize.' '.$langs->trans('bytes').'</td></tr>';
 
-	// Ref
-	print '<tr><td width="25%">'.$langs->trans("RoomFormLabel_ref").'</td>';
-	print '<td colspan="3">';
-	print $form->showrefnav($object,'id','',($user->societe_id?0:1),'rowid','ref');
-	print '</td></tr>';
+    echo '</table>';
 
-	// Nbre fichiers
-	print '<tr><td>'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
+    echo '</div>';
 
-	//Total taille
-	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.$totalsize.' '.$langs->trans("bytes").'</td></tr>';
-
-	print '</table>';
-
-	print '</div>';
-
-	$modulepart = 'place';
-	$permission = $user->rights->place->write;
-	$param = '&id=' . $object->id;
-	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
+    $modulepart = 'place';
+    $permission = $user->rights->place->write;
+    $param = '&id='.$object->id;
+    include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+} else {
+    accessforbidden('', 0, 0);
 }
-else
-{
-	accessforbidden('',0,0);
-}
-
 
 llxFooter();
 $db->close();
-?>

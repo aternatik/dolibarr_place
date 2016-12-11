@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+/* Copyright (C) 2013-2016	Jean-François Ferry	<jfefe@aternatik.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,18 @@
  *   	\file       place/place.php
  *		\ingroup    place
  *		\brief      Page to manage place object
- *					Initialy built by build_class_from_table on 2013-07-24 16:03
+ *					Initialy built by build_class_from_table on 2013-07-24 16:03.
  */
 
-
 // Change this following line to use the correct relative path (../, ../../, etc)
-$res=0;
-$res=@include("../main.inc.php");				// For root directory
-if (! $res) $res=@include("../../main.inc.php");	// For "custom" directory
-if (! $res) die("Include of main fails");
+$res = 0;
+$res = @include '../main.inc.php';                // For root directory
+if (!$res) {
+    $res = @include '../../main.inc.php';
+}    // For "custom" directory
+if (!$res) {
+    die('Include of main fails');
+}
 
 require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
@@ -35,30 +38,29 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require 'class/place.class.php';
 require 'lib/place.lib.php';
 
-
 // Load traductions files requiredby by page
-$langs->load("place@place");
-$langs->load("companies");
-$langs->load("other");
+$langs->load('place@place');
+$langs->load('companies');
+$langs->load('other');
 
 // Get parameters
-$id			= GETPOST('id','int');
-$action		= GETPOST('action','alpha');
-$ref		= GETPOST('ref','alpha');
-$lat		= GETPOST('lat','alpha');
-$lng		= GETPOST('lng','alpha');
+$id = GETPOST('id', 'int');
+$action = GETPOST('action', 'alpha');
+$ref = GETPOST('ref', 'alpha');
+$lat = GETPOST('lat', 'alpha');
+$lng = GETPOST('lng', 'alpha');
 
 // Protection if external user
 //if ($user->societe_id > 0)
 //{
-	//accessforbidden();
+    //accessforbidden();
 //}
 
-if( ! $user->rights->place->read)
-	accessforbidden();
+if (!$user->rights->place->read) {
+    accessforbidden();
+}
 
 $object = new Place($db);
-
 
 /*******************************************************************
 * ACTIONS
@@ -66,271 +68,239 @@ $object = new Place($db);
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
 
-if ($action == 'update' && ! $_POST["cancel"]  && $user->rights->place->write )
-{
-	$error=0;
+if ($action == 'update' && !$_POST['cancel'] && $user->rights->place->write) {
+    $error = 0;
 
-	if (empty($ref))
-	{
-		$error++;
-		$mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("Ref")).'</div>';
-	}
+    if (empty($ref)) {
+        ++$error;
+        $mesg = '<div class="error">'.$langs->trans('ErrorFieldRequired', $langs->transnoentities('Ref')).'</div>';
+    }
 
-	if (! $error)
-	{
-		$object->fetch($id);
+    if (!$error) {
+        $object->fetch($id);
 
-		$object->ref          		= $ref;
-		$object->lat          		= $lat;
-		$object->lng          		= $lng;
-		$object->description  		= $_POST["description"];
-		$object->note_public       	= $_POST["note_public"];
-		$object->note_private       = $_POST["note_private"];
+        $object->ref = $ref;
+        $object->lat = $lat;
+        $object->lng = $lng;
+        $object->description = $_POST['description'];
+        $object->note_public = $_POST['note_public'];
+        $object->note_private = $_POST['note_private'];
 
-		$result=$object->update($user);
-		if ($result > 0)
-		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
-			exit;
-		}
-		else
-		{
-			$mesg='<div class="error">'.$object->error.'</div>';
+        $result = $object->update($user);
+        if ($result > 0) {
+            header('Location: '.$_SERVER['PHP_SELF'].'?id='.$object->id);
+            exit;
+        } else {
+            $mesg = '<div class="error">'.$object->error.'</div>';
 
-			$action='edit';
-		}
-	}
-	else
-	{
-		$action='edit';
-	}
+            $action = 'edit';
+        }
+    } else {
+        $action = 'edit';
+    }
 }
-
 
 /*
  * Generate document
 */
-if ($action == 'builddoc')  // En get ou en post
-{
-    if (is_numeric(GETPOST('model')))
-    {
-        $error=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Model"));
-    }
-    else
-    {
+if ($action == 'builddoc') {  // En get ou en post
+    if (is_numeric(GETPOST('model'))) {
+        $error = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Model'));
+    } else {
         require_once 'core/modules/place/modules_place.php';
 
         $object->fetch($id);
 
         // Define output language
         $outputlangs = $langs;
-        $newlang='';
-        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
-        if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$fac->client->default_lang;
-        if (! empty($newlang))
-        {
-            $outputlangs = new Translate("",$conf);
+        $newlang = '';
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id'])) {
+            $newlang = $_REQUEST['lang_id'];
+        }
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang)) {
+            $newlang = $fac->client->default_lang;
+        }
+        if (!empty($newlang)) {
+            $outputlangs = new Translate('', $conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        $result=place_doc_create($db, $object, '', GETPOST('model','alpha'), $outputlangs);
-        if ($result <= 0)
-        {
-            dol_print_error($db,$result);
+        $result = place_doc_create($db, $object, '', GETPOST('model', 'alpha'), $outputlangs);
+        if ($result <= 0) {
+            dol_print_error($db, $result);
             exit;
         }
     }
 }
-
-
 
 /***************************************************
 * VIEW
 *
 * Put here all code to build page
 ****************************************************/
-$pagetitle=$langs->trans('FichePlace');
-llxHeader('',$pagetitle,'');
+$pagetitle = $langs->trans('FichePlace');
+llxHeader('', $pagetitle, '');
 
-$form=new Form($db);
+$form = new Form($db);
 $formfile = new FormFile($db);
 
-if($object->fetch($id) > 0)
-{
-	$head=placePrepareHead($object);
-	dol_fiche_head($head, 'place', $langs->trans("PlaceSingular"),0,'place@place');
+if ($object->fetch($id) > 0) {
+    $head = placePrepareHead($object);
+    dol_fiche_head($head, 'place', $langs->trans('PlaceSingular'), 0, 'place@place');
 
+    if ($action == 'edit') {
+        if (!$user->rights->place->write) {
+            accessforbidden('', 0);
+        }
 
-	if ($action == 'edit' )
-	{
+        /*---------------------------------------
+         * Edit object
+        */
+        echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+        echo '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+        echo '<input type="hidden" name="action" value="update">';
+        echo '<input type="hidden" name="id" value="'.$object->id.'">';
 
-		if(!$user->rights->place->write)
-			accessforbidden('',0);
+        echo '<table class="border" width="100%">';
 
-		/*---------------------------------------
-		 * Edit object
-		*/
-		print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<input type="hidden" name="action" value="update">';
-		print '<input type="hidden" name="id" value="'.$object->id.'">';
+        // Ref
+        echo '<tr><td width="20%">'.$langs->trans('Ref').'</td>';
+        echo '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object->ref).'"></td></tr>';
 
-		print '<table class="border" width="100%">';
+        // Description
+        echo '<tr><td valign="top">'.$langs->trans('Description').'</td>';
+        echo '<td>';
+        echo '<textarea name="description" cols="80" rows="'.ROWS_3.'">'.($_POST['description'] ? GETPOST('description', 'alpha') : $object->description).'</textarea>';
+        echo '</td></tr>';
 
-		// Ref
-		print '<tr><td width="20%">'.$langs->trans("Ref").'</td>';
-		print '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object->ref).'"></td></tr>';
+        // Lat
+        echo '<tr><td width="20%">'.$langs->trans('Latitude').'</td>';
+        echo '<td><input size="12" name="lat" value="'.(GETPOST('lat') ? GETPOST('lat') : $object->lat).'"></td></tr>';
 
+        // Long
+        echo '<tr><td width="20%">'.$langs->trans('Longitude').'</td>';
+        echo '<td><input size="12" name="lng" value="'.(GETPOST('lng') ? GETPOST('lng') : $object->lng).'"></td></tr>';
 
-		// Description
-		print '<tr><td valign="top">'.$langs->trans("Description").'</td>';
-		print '<td>';
-		print '<textarea name="description" cols="80" rows="'.ROWS_3.'">'.($_POST['description'] ? GETPOST('description','alpha') : $object->description).'</textarea>';
-		print '</td></tr>';
+        // Public note
+        echo '<tr><td valign="top">'.$langs->trans('NotePublic').'</td>';
+        echo '<td>';
+        echo '<textarea name="note_public" cols="80" rows="'.ROWS_3.'">'.($_POST['note_public'] ? GETPOST('note_public', 'alpha') : $object->note_public).'</textarea><br>';
+        echo '</td></tr>';
 
-		// Lat
-		print '<tr><td width="20%">'.$langs->trans("Latitude").'</td>';
-		print '<td><input size="12" name="lat" value="'.(GETPOST('lat') ? GETPOST('lat') : $object->lat).'"></td></tr>';
+        // Private note
+        if (!$user->societe_id) {
+            echo '<tr><td valign="top">'.$langs->trans('NotePrivate').'</td>';
+            echo '<td>';
+            echo '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object->note_private).'</textarea><br>';
+            echo '</td></tr>';
+        }
 
-		// Long
-		print '<tr><td width="20%">'.$langs->trans("Longitude").'</td>';
-		print '<td><input size="12" name="lng" value="'.(GETPOST('lng') ? GETPOST('lng') : $object->lng).'"></td></tr>';
+        echo '<tr><td align="center" colspan="2">';
+        echo '<input name="update" class="button" type="submit" value="'.$langs->trans('Modify').'"> &nbsp; ';
+        echo '<input type="submit" class="button" name="cancel" Value="'.$langs->trans('Cancel').'"></td></tr>';
+        echo '</table>';
+        echo '</form>';
+    } else {
 
-		// Public note
-		print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
-		print '<td>';
-		print '<textarea name="note_public" cols="80" rows="'.ROWS_3.'">'.($_POST['note_public'] ? GETPOST('note_public','alpha') : $object->note_public)."</textarea><br>";
-		print "</td></tr>";
+        /*---------------------------------------
+         * View object
+         */
 
-		// Private note
-		if (! $user->societe_id)
-		{
-			print '<tr><td valign="top">'.$langs->trans("NotePrivate").'</td>';
-			print '<td>';
-			print '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object->note_private)."</textarea><br>";
-			print "</td></tr>";
-		}
+        echo '<table width="100%" class="border">';
 
-		print '<tr><td align="center" colspan="2">';
-		print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'"> &nbsp; ';
-		print '<input type="submit" class="button" name="cancel" Value="'.$langs->trans("Cancel").'"></td></tr>';
-		print '</table>';
-		print '</form>';
-	}
-	else
-	{
+        // Ref
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('NameOfThePlace').'</td>';
+        echo '<td   width="30%">';
+        echo $object->ref;
+        echo '</td>';
+        echo '</tr>';
 
-		/*---------------------------------------
-		 * View object
-		 */
+        // socpeople
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('SocPeopleAssociated').'</td>';
+        echo '<td   width="30%">';
+        $contactstat = new Contact($db);
+        if ($contactstat->fetch($object->fk_socpeople)) {
+            print $contactstat->getNomUrl(1);
+        }
+        echo '</td>';
+        echo '</tr>';
 
-		print '<table width="100%" class="border">';
+        // Description
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('Description').'</td>';
+        echo '<td   width="30%">';
+        echo $object->description;
+        echo '</td>';
+        echo '</tr>';
 
-		// Ref
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("NameOfThePlace") . '</td>';
-		print '<td   width="30%">';
-		print $object->ref;
-		print '</td>';
-		print '</tr>';
+        // Latitude
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('Latitude').'</td>';
+        echo '<td   width="30%">';
+        echo $object->lat;
+        echo '</td>';
+        echo '</tr>';
 
-		// socpeople
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("SocPeopleAssociated") . '</td>';
-		print '<td   width="30%">';
-		$contactstat = new Contact($db);
-		if($contactstat->fetch($object->fk_socpeople))
-			print $contactstat->getNomUrl(1);
-		print '</td>';
-		print '</tr>';
+        // Longitude
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('Longitude').'</td>';
+        echo '<td   width="30%">';
+        echo $object->lng;
+        echo '</td>';
+        echo '</tr>';
 
-		// Description
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("Description") . '</td>';
-		print '<td   width="30%">';
-		print $object->description;
-		print '</td>';
-		print '</tr>';
+        // Link to OSM
+        echo '<tr>';
+        echo '<td  width="20%">'.$langs->trans('OSMLink').'</td>';
+        echo '<td   width="30%">';
+        echo '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
+        echo '</td>';
+        echo '</tr>';
 
-		// Latitude
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("Latitude") . '</td>';
-		print '<td   width="30%">';
-		print $object->lat;
-		print '</td>';
-		print '</tr>';
+        echo '</table>';
+    }
 
-		// Longitude
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("Longitude") . '</td>';
-		print '<td   width="30%">';
-		print $object->lng;
-		print '</td>';
-		print '</tr>';
+    echo '</div>';
 
-		// Link to OSM
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
-		print '<td   width="30%">';
-		print '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
-		print '</td>';
-		print '</tr>';
+    /*
+     * Boutons actions
+    */
+    echo '<div class="tabsAction">';
 
+    if ($action != 'edit') {
 
-		print '</table>';
+        // Edit place
+        if ($user->rights->place->write) {
+            echo '<div class="inline-block divButAction">';
+            echo '<a href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&amp;action=edit" class="butAction">'.$langs->trans('Edit').'</a>';
+            echo '</div>';
+        }
 
-	}
+        // Add building
+        if ($user->rights->place->write) {
+            echo '<div class="inline-block divButAction">';
+            echo '<a href="add.php?id='.$id.'&amp;action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
+            echo '</div>';
+        }
 
-	print '</div>';
+        /*
+         * Documents generes
+        */
+        $filename = dol_sanitizeFileName($object->ref);
+        $filedir = $conf->place->dir_output.'/'.dol_sanitizeFileName($object->ref);
+        $urlsource = $_SERVER['PHP_SELF'].'?id='.$object->id;
+        $genallowed = $user->rights->place->read;
+        $delallowed = $user->rights->place->write;
 
-	/*
-	 * Boutons actions
-	*/
-	print '<div class="tabsAction">';
+        $var = true;
 
-	if ($action != "edit" )
-	{
-
-		// Edit place
-		if($user->rights->place->write)
-		{
-			print '<div class="inline-block divButAction">';
-			print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&amp;action=edit" class="butAction">'.$langs->trans('Edit').'</a>';
-			print '</div>';
-		}
-
-		// Add building
-		if($user->rights->place->write)
-		{
-			print '<div class="inline-block divButAction">';
-			print '<a href="add.php?id='.$id.'&amp;action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
-			print '</div>';
-		}
-		
-		/*
-		 * Documents generes
-		*/
-		$filename=dol_sanitizeFileName($object->ref);
-		$filedir=$conf->place->dir_output . '/' . dol_sanitizeFileName($object->ref);
-		$urlsource=$_SERVER["PHP_SELF"]."?id=".$object->id;
-		$genallowed=$user->rights->place->read;
-		$delallowed=$user->rights->place->write;
-		
-		$var=true;
-		
-		$somethingshown=$formfile->show_documents('place',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf);
-		
-		
-	}
-
-
+        $somethingshown = $formfile->show_documents('place', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf);
+    }
+} else {
+    dol_print_error();
 }
-else {
-	dol_print_error();
-}
-
-
 
 // End of page
 llxFooter();
 $db->close();
-?>

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2013 Jean-François Ferry  <jfefe@aternatik.fr>
+/* Copyright (C) 2013-2016 Jean-François Ferry  <jfefe@aternatik.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,28 +17,35 @@
 
 /**
  *       \file       place/core/ajax/form_room_line.php
- *       \brief      File to load form floor line
+ *       \brief      File to load form floor line.
  */
-
-if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Disables token renewal
-if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1');
+if (!defined('NOTOKENRENEWAL')) {
+    define('NOTOKENRENEWAL', '1');
+} // Disables token renewal
+if (!defined('NOREQUIREMENU')) {
+    define('NOREQUIREMENU', '1');
+}
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
-if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
+if (!defined('NOREQUIREAJAX')) {
+    define('NOREQUIREAJAX', '1');
+}
 //if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-$res='';
+$res = '';
 $res = @include_once '../../main.inc.php';
-if (!$res)
-	$res = @include_once '../../../main.inc.php';
-if (!$res)
-	$res = @include_once '../../../../main.inc.php';
+if (!$res) {
+    $res = @include_once '../../../main.inc.php';
+}
+if (!$res) {
+    $res = @include_once '../../../../main.inc.php';
+}
 
-dol_include_once("/place/class/building.class.php");
+dol_include_once('/place/class/building.class.php');
 
-$id			= GETPOST('id','int');
-$element	= GETPOST('element','alpha');
-$ids		= GETPOST('ids','int');
+$id = GETPOST('id', 'int');
+$element = GETPOST('element', 'alpha');
+$ids = GETPOST('ids', 'int');
 
 $object = new Building($db);
 
@@ -54,28 +61,24 @@ top_httphead();
 
 // Load original field value
 
-	$form = new Form($db);
+    $form = new Form($db);
 
-	$return=array();
+    $return = array();
 
-	$out = '';
+    $out = '';
 
-	$out .= '		<ul class="edit_floor">';
+    $out .= '		<ul class="edit_floor">';
 
-	// Floor name
-	$out .= '		<li class="edit"><label>'.$langs->trans("FloorNumber").'</label> <input type="text" name="floor_ref[]" /></li>';
+    // Floor name
+    $out .= '		<li class="edit"><label>'.$langs->trans('FloorNumber').'</label> <input type="text" name="floor_ref[]" /></li>';
 
-	// Position
-	$out .= '		<li class="edit"><label>'.$langs->trans("FloorOrder").'</label> <input type="text" name="floor_pos[]" /></li>';
+    // Position
+    $out .= '		<li class="edit"><label>'.$langs->trans('FloorOrder').'</label> <input type="text" name="floor_pos[]" /></li>';
 
-	$out .= '		</ul>';
+    $out .= '		</ul>';
 
+    $return['value'] = $out;
+    $return['num'] = '1';
+    $return['error'] = '';
 
-	$return['value'] 	= $out;
-	$return['num']		= "1";
-	$return['error']	= "";
-
-	echo json_encode($return);
-
-
-?>
+    echo json_encode($return);

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2014 Jean-François FERRY  <jfefe@aternatik.fr>
+/* Copyright (C) 2014-2016 Jean-François FERRY  <jfefe@aternatik.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,26 @@
 
 /**
  *       \file       place/core/ajax/rooms.php
- *       \brief      File to load rooms combobox
+ *       \brief      File to load rooms combobox.
  */
-
-if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Disables token renewal
-if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1');
+if (!defined('NOTOKENRENEWAL')) {
+    define('NOTOKENRENEWAL', '1');
+} // Disables token renewal
+if (!defined('NOREQUIREMENU')) {
+    define('NOREQUIREMENU', '1');
+}
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
-if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
+if (!defined('NOREQUIREAJAX')) {
+    define('NOREQUIREAJAX', '1');
+}
 //if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-
 require_once '../../../../main.inc.php';
 
-$id			= GETPOST('id','int');
-$action		= GETPOST('action','alpha');
-$htmlname	= GETPOST('htmlname','alpha');
+$id = GETPOST('id', 'int');
+$action = GETPOST('action', 'alpha');
+$htmlname = GETPOST('htmlname', 'alpha');
 
 /*
  * View
@@ -43,20 +47,18 @@ top_httphead();
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
 // Load original field value
-if (! empty($id) && ! empty($action) && ! empty($htmlname))
-{
-	if(!class_exists('FormPlace'))
-		require_once '../../class/html.formplace.class.php';
+if (!empty($id) && !empty($action) && !empty($htmlname)) {
+    if (!class_exists('FormPlace')) {
+        require_once '../../class/html.formplace.class.php';
+    }
 
-	$form = new FormPlace($db);
+    $form = new FormPlace($db);
 
-	$return=array();
+    $return = array();
 
-	$return['value']	= $form->selectbuildings($id,'','fk_building',0,'','',0,'',true);
-	$return['num']		= $form->num;
-	$return['error']	= $form->error;
+    $return['value'] = $form->selectbuildings($id, '', 'fk_building', 0, '', '', 0, '', true);
+    $return['num'] = $form->num;
+    $return['error'] = $form->error;
 
-	echo json_encode($return);
+    echo json_encode($return);
 }
-
-?>
