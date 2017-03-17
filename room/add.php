@@ -182,7 +182,7 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
      * Add object
     */
 
-    print_fiche_titre($pagetitle, '', 'room_32.png@place');
+    print load_fiche_titre($pagetitle, '', 'room_32.png@place');
 
     echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
     echo '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';

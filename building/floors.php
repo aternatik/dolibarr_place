@@ -166,7 +166,7 @@ if($object->fetch($id) > 0 )
 	 */
 
 	print '</div><br />';
-	print_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
+	print load_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
 
 	if($action == 'show_floor_form')
 	{

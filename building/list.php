@@ -107,7 +107,7 @@ if($ret == -1) {
 	exit;
 }
 
-print_fiche_titre($pagetitle,'','building_32.png@place');
+print load_fiche_titre($pagetitle,'','building_32.png@place');
 
 
 if(!$ret) {

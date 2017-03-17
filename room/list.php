@@ -173,14 +173,12 @@ if ($fk_building && $obj_building->fetch($fk_building) > 0) {
     echo '</div><br />';
 }
 
-    /*
-     * Floors management
-     */
+/*
+ * Floors management
+ */
+print load_fiche_titre($langs->trans('RoomsManagment'), '', 'room_32.png@place');
 
-    print_fiche_titre($langs->trans('RoomsManagment'), '', 'room_32.png@place');
-
-    // Show room for fk_building
-
+// Show room for fk_building
 $sortorder = GETPOST('sortorder', 'alpha');
 $sortfield = GETPOST('sortfield', 'alpha');
 $page = GETPOST('page', 'int');

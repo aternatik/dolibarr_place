@@ -68,7 +68,7 @@ require DOL_DOCUMENT_ROOT.'/core/actions_extrafields.inc.php';
 
 llxHeader('', $langs->trans('PlaceSetup'));
 $linkback = '<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans('BackToModuleList').'</a>';
-print_fiche_titre($langs->trans('PlaceSetup'), $linkback, 'setup');
+print load_fiche_titre($langs->trans('PlaceSetup'), $linkback, 'setup');
 
 // Configuration header
 $head = placeAdminPrepareHead();

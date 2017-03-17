@@ -24,10 +24,10 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res = 0;
-if(file_exists('../main.inc.php') {
-	$res = include '../main.inc.php';                // For root directory
-} elseif (!$res && file_exists('../../main.inc.php') {
-    $res = include '../../main.inc.php';					 // For "custom" directory
+if(file_exists('../main.inc.php') {               // For root directory
+	$res = include '../main.inc.php';
+} elseif (!$res && file_exists('../../main.inc.php') { // For "custom" directory
+    $res = include '../../main.inc.php';
 }
 if (!$res) {
     die('Include of main fails');
@@ -84,7 +84,7 @@ llxHeader('', $pagetitle, '');
 $form = new Form($db);
 $object = new Place($db);
 
-print_fiche_titre($pagetitle, '', 'place_32.png@place');
+print load_fiche_titre($pagetitle, '', 'place_32.png@place');
 
 // Load object list
 $ret = $object->fetch_all($sortorder, $sortfield, $limit, $offset);

@@ -180,7 +180,7 @@ $object = new Place($db);
 if (!$action) {
     $pagetitle = $langs->trans('AddPlace');
     llxHeader('', $pagetitle, '');
-    print_fiche_titre($pagetitle, '', 'place_32.png@place');
+    print load_fiche_titre($pagetitle, '', 'place_32.png@place');
 
     echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_place">';
     echo '<input type="hidden" name="action" value="confirm_add_place" />';
@@ -277,7 +277,7 @@ if (!$action) {
         $link_back = '<a href="building/list.php?id='.$id.'">'.$langs->trans('BackToBuildingList').'</a>';
     }
 
-    print_fiche_titre($pagetitle, $link_back, 'building_32.png@place');
+    print load_fiche_titre($pagetitle, $link_back, 'building_32.png@place');
 
     echo '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
     echo '<input type="hidden" name="action" value="confirm_add_building" />';

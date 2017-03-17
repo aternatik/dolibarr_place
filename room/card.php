@@ -367,7 +367,7 @@ if ($object->fetch($id) > 0) {
 
     $events = $object->getActionsForResource('room@place', $id, $filter);
 
-    print_fiche_titre($langs->trans('EventsForThisRoom'));
+    print load_fiche_titre($langs->trans('EventsForThisRoom'));
     echo "<table class='noborder' width='100%'>\n";
     echo "<tr class='liste_titre'><td colspan=''>".$langs->trans('DateStart').'</td><td>'.$langs->trans('DateEnd').'</td><td>'.$langs->trans('Title').'</td><td>'.$langs->trans('Type').'</td><td>'.$langs->trans('Edit').'</td>';
     echo "</tr>\n";
