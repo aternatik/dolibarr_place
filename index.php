@@ -24,10 +24,12 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res = 0;
-if(file_exists('../main.inc.php') {               // For root directory
+if(file_exists('../main.inc.php')) {
 	$res = include '../main.inc.php';
-} elseif (!$res && file_exists('../../main.inc.php') { // For "custom" directory
+	// For root directory
+} elseif (!$res && file_exists('../../main.inc.php')) {
     $res = include '../../main.inc.php';
+    // For "custom" directory
 }
 if (!$res) {
     die('Include of main fails');
