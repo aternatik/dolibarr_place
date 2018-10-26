@@ -523,13 +523,16 @@ class Building extends Place
 		print '</td>';
 		print '</tr>';
 
-		// Link to OSM
-		print '<tr>';
-		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
-		print '<td   width="30%">';
-		print '<a href="http://openstreetmap.org/?mlat='.$this->lat.'&amp;mlon='.$this->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans("ShowInOSM").'</a>';
-		print '</td>';
-		print '</tr>';
+        if (strlen($this->lat) && strlen($this->lng)) {
+    		// Link to OSM
+    		print '<tr>';
+    		print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
+    		print '<td   width="30%">';
+            $link = Place::getPlaceOsmLink($this->lat, $this->lng);
+            print '<a href="'.$link.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
+    		print '</td>';
+    		print '</tr>';
+        }
 
 
 		print '</table>';

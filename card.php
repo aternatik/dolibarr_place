@@ -256,7 +256,8 @@ if ($object->fetch($id) > 0) {
         echo '<tr>';
         echo '<td  width="20%">'.$langs->trans('OSMLink').'</td>';
         echo '<td   width="30%">';
-        echo '<a href="http://openstreetmap.org/#map='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'/'.$object->lat.'/'.$object->lng.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
+        $link = Place::getPlaceOsmLink($object->lat, $object->lng);
+        echo '<a href="'.$link.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
         echo '</td>';
         echo '</tr>';
 

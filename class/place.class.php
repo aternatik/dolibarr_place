@@ -732,6 +732,14 @@ class Place extends Dolresource
         return $events;
     }
 
+    public static function getPlaceOsmLink($lat = '', $lng = '')
+    {
+        global $conf;
+
+        $out = 'http://openstreetmap.org/#map='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'/'.$lat.'/'.$lng;
+        return $out;
+    }
+
     /**
      *	Load an object from its id and create a new one in database.
      *
