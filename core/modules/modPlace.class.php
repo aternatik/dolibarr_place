@@ -138,20 +138,17 @@ class modPlace extends DolibarrModules
 
         );
         // Array to add new pages in new tabs
-        // Example:
-        $this->tabs = array(
-
-        );
-
         $this->tabs = array(
             //'actioncomm:+resouces:Resource:place@place:$user->rights->place->read:/place/actioncom_resources.php?id=__ID__'
         );
 
         // This is to avoid warnings
-        if (!isset($conf->place->enabled)) {
-            $conf->place->enabled = 0;
+        if (! isset($conf->place) || ! isset($conf->place->enabled))
+        {
+            $conf->place=new stdClass();
+            $conf->place->enabled=0;
         }
-
+       
         // Dictionnaries
         $this->dictionaries = array(
             'langs' => 'place@place',
