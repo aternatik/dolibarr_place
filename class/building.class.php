@@ -170,13 +170,14 @@ class Building extends Place
     }
 
 
-    /**
-     *  Load object in memory from the database
+   /**
+     *    Load object in memory from database
      *
-     *  @param	int		$id    Id object
-     *  @return int          	<0 if KO, >0 if OK
+     *    @param    int     $id     Id of object
+     *    @param    string  $ref    Ref of object
+     *    @return   int             <0 if KO, >0 if OK
      */
-    function fetch($id)
+    function fetch($id, $ref = '')
     {
     	global $langs;
         $sql = "SELECT";
@@ -196,7 +197,8 @@ class Building extends Place
 
 
         $sql.= " FROM ".MAIN_DB_PREFIX."place_building as t";
-        $sql.= " WHERE t.rowid = ".$id;
+        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
 
     	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
@@ -317,7 +319,7 @@ class Building extends Place
      *
      *		@return		int					<0 if KO, >0 if OK
      */
-    function fetch_place()
+    function fetch_place($fk_place = 0)
     {
     	global $conf;
 

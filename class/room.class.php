@@ -197,12 +197,13 @@ class Room extends Place
 
 
     /**
-     *  Load object in memory from the database
+     *    Load object in memory from database
      *
-     *  @param	int		$id    Id object
-     *  @return int          	<0 if KO, >0 if OK
+     *    @param    int     $id     Id of object
+     *    @param    string  $ref    Ref of object
+     *    @return   int             <0 if KO, >0 if OK
      */
-    function fetch($id)
+    function fetch($id, $ref = '')
     {
     	global $conf,$langs;
         $sql = "SELECT";
@@ -225,7 +226,8 @@ class Room extends Place
 
         $sql.= " FROM ".MAIN_DB_PREFIX."place_room as t";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
-        $sql.= " WHERE t.rowid = ".$id;
+        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
 
     	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
@@ -596,11 +598,11 @@ class Room extends Place
 	 *	@param      string	$get_params    	Parametres added to url
 	 *	@return     string          		String with URL
 	 */
-	function getNomUrl($withpicto=0,$option='', $get_params='')
+	function getNomUrl($withpicto=0, $option='', $notooltip=0, $morecss='', $save_lastsearch_value=-1)
 	{
 		global $langs;
 
-		return parent::getNomUrl($withpicto,'room@place');
+		return parent::getNomUrl($withpicto,'room@place', $notooltip, $morecss, $save_lastsearch_value);
 
 	}
 

@@ -172,13 +172,13 @@ class Place extends Dolresource
     }
 
     /**
-     *  Load object in memory from the database.
+     *    Load object in memory from database
      *
-     *  @param	int		$id    Id object
-     *
-     *  @return int          	<0 if KO, >0 if OK
+     *    @param    int     $id     Id of object
+     *    @param    string  $ref    Ref of object
+     *    @return   int             <0 if KO, >0 if OK
      */
-    public function fetch($id)
+    public function fetch($id, $ref = '')
     {
         global $langs;
         $sql = 'SELECT';
@@ -195,7 +195,8 @@ class Place extends Dolresource
         $sql .= ' t.tms';
 
         $sql .= ' FROM '.MAIN_DB_PREFIX.'place as t';
-        $sql .= ' WHERE t.rowid = '.$id;
+        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
 
         dol_syslog(get_class($this).'::fetch sql='.$sql, LOG_DEBUG);
         $resql = $this->db->query($sql);
@@ -459,48 +460,102 @@ class Place extends Dolresource
         }
     }
 
+
     /**
-     *	Return clicable link of object (with eventually picto).
+     *  Return a link to the object card (with optionaly the picto)
      *
-     *	@param      int		$withpicto		Add picto into link
-     *	@param      string	$option			Where point the link ('compta', 'expedition', 'document', ...)
-     *	@param      string	$get_params    	Parametres added to url
-     *
-     *	@return     string          		String with URL
+     *  @param  int     $withpicto                  Include picto in link (0=No picto, 1=Include picto into link, 2=Only picto)
+     *  @param  string  $option                     On what the link point to ('nolink', ...)
+     *  @param  int     $notooltip                  1=Disable tooltip
+     *  @param  string  $morecss                    Add more css on link
+     *  @param  int     $save_lastsearch_value      -1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
+     *  @return string                              String with URL
      */
-    public function getNomUrl($withpicto = 0, $option = '', $get_params = '')
+    function getNomUrl($withpicto=0, $option='', $notooltip=0, $morecss='', $save_lastsearch_value=-1)
     {
-        global $langs;
+        global $db, $conf, $langs, $hookmanager;
+        global $dolibarr_main_authentication, $dolibarr_main_demo;
+        global $menumanager;
+
+        if (! empty($conf->dol_no_mouse_hover)) $notooltip=1;   // Force disable tooltips
 
         $result = '';
+        $companylink = '';
 
-        switch ($option) {
-            case 'building@place':
-                $lien = '<a href="'.dol_buildpath('/place/building/fiche.php', 1).'?id='.$this->id.$get_params.'">';
-                $picto = 'building@place';
-                $label = $langs->trans('ShowBuilding').': '.$this->ref;
-                break;
-            case 'room@place':
-                $lien = '<a href="'.dol_buildpath('/place/room/card.php', 1).'?id='.$this->id.$get_params.'">';
-                $picto = 'room@place';
-                $label = $langs->trans('ShowRoom').': '.$this->ref;
-                break;
-            default:
-                $lien = '<a href="'.dol_buildpath('/place/fiche.php', 1).'?id='.$this->id.$get_params.'">';
-                $picto = 'place@place';
-                $label = $langs->trans('ShowPlace').': '.$this->ref;
-                break;
+        $label = '<u>' . $langs->trans("MyObject") . '</u>';
+        $label.= '<br>';
+        $label.= '<b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
+
+        $url = dol_buildpath('/mymodule/myobject_card.php',1).'?id='.$this->id;
+
+        if ($option != 'nolink')
+        {
+
+            switch ($option) {
+                case 'building@place':
+                    $$linkstart  = '<a href="'.dol_buildpath('/place/building/fiche.php', 1).'?id='.$this->id.$get_params.'">';
+                    $picto = 'building@place';
+                    $label = $langs->trans('ShowBuilding').': '.$this->ref;
+                    $linkend='</a>';
+                    break;
+                case 'room@place':
+                    $$linkstart  = '<a href="'.dol_buildpath('/place/room/card.php', 1).'?id='.$this->id.$get_params.'">';
+                    $picto = 'room@place';
+                    $label = $langs->trans('ShowRoom').': '.$this->ref;
+                    $linkend='</a>';
+                    break;
+                default:
+                    $$linkstart  = '<a href="'.dol_buildpath('/place/fiche.php', 1).'?id='.$this->id.$get_params.'">';
+                    $picto = 'place@place';
+                    $label = $langs->trans('ShowPlace').': '.$this->ref;
+                    $linkend='</a>';
+                    break;
+            }
+
+            // Add param to save lastsearch_values or not
+            $add_save_lastsearch_values=($save_lastsearch_value == 1 ? 1 : 0);
+            if ($save_lastsearch_value == -1 && preg_match('/list\.php/',$_SERVER["PHP_SELF"])) $add_save_lastsearch_values=1;
+            if ($add_save_lastsearch_values) $url.='&save_lastsearch_values=1';
+
+
         }
 
-        $lienfin = '</a>';
+        $linkclose='';
+        if (empty($notooltip))
+        {
+            if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+            {
+                $label=$langs->trans("ShowMyObject");
+                $linkclose.=' alt="'.dol_escape_htmltag($label, 1).'"';
+            }
+            $linkclose.=' title="'.dol_escape_htmltag($label, 1).'"';
+            $linkclose.=' class="classfortooltip'.($morecss?' '.$morecss:'').'"';
 
-        if ($withpicto) {
-            $result .= ($lien.img_object($label, $picto).$lienfin);
+            /*
+             $hookmanager->initHooks(array('myobjectdao'));
+             $parameters=array('id'=>$this->id);
+             $reshook=$hookmanager->executeHooks('getnomurltooltip',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+             if ($reshook > 0) $linkclose = $hookmanager->resPrint;
+             */
         }
-        if ($withpicto && $withpicto != 2) {
-            $result .= ' ';
-        }
-        $result .= $lien.$this->ref.$lienfin;
+        else $linkclose = ($morecss?' class="'.$morecss.'"':'');
+
+        $linkstart = '<a href="'.$url.'"';
+        $linkstart.=$linkclose.'>';
+        $linkend='</a>';
+
+        $result .= $linkstart;
+        if ($withpicto) $result.=img_object(($notooltip?'':$label), ($this->picto?$this->picto:'generic'), ($notooltip?(($withpicto != 2) ? 'class="paddingright"' : ''):'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip?0:1);
+        if ($withpicto != 2) $result.= $this->ref;
+        $result .= $linkend;
+        //if ($withpicto != 2) $result.=(($addlabel && $this->label) ? $sep . dol_trunc($this->label, ($addlabel > 1 ? $addlabel : 0)) : '');
+
+        global $action;
+        $hookmanager->initHooks(array('myobjectdao'));
+        $parameters=array('id'=>$this->id, 'getnomurl'=>$result);
+        $reshook=$hookmanager->executeHooks('getNomUrl',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+        if ($reshook > 0) $result = $hookmanager->resPrint;
+        else $result .= $hookmanager->resPrint;
 
         return $result;
     }
