@@ -288,7 +288,6 @@ class doc_generic_place_odt extends ModelePdfPlace
         $outputlangs->load('dict');
         $outputlangs->load('companies');
         $outputlangs->load('place@place');
-
         if ($conf->place->dir_output) {
             // If $object is id instead of object
             if (!is_object($object)) {
@@ -336,9 +335,9 @@ class doc_generic_place_odt extends ModelePdfPlace
                 //print "newdir=".$dir;
                 //print "newfile=".$newfile;
                 //print "file=".$file;
-                //print "conf->societe->dir_temp=".$conf->societe->dir_temp;
+                //print "conf->place->dir_temp=".$conf->place->dir_temp;
 
-                dol_mkdir($conf->projet->dir_temp);
+                dol_mkdir($conf->place->dir_temp);
 
                 $socobject = $object->thirdparty;
 
@@ -355,7 +354,7 @@ class doc_generic_place_odt extends ModelePdfPlace
                     $odfHandler = new odf(
                         $srctemplatepath,
                         array(
-                        'PATH_TO_TMP' => $conf->projet->dir_temp,
+                        'PATH_TO_TMP' => $conf->place->dir_temp,
                         'ZIP_PROXY' => 'PclZipProxy',    // PhpZipProxy or PclZipProxy. Got "bad compression method" error when using PhpZipProxy.
                         'DELIMITER_LEFT' => '{',
                         'DELIMITER_RIGHT' => '}',
