@@ -89,7 +89,7 @@ function buildingPrepareHead($object)
     $h = 0;
     $head = array();
 
-    $head[$h][0] = dol_buildpath('/place/building/fiche.php', 1).'?id='.$object->id;
+    $head[$h][0] = dol_buildpath('/place/building/card.php', 1).'?id='.$object->id;
     $head[$h][1] = $langs->trans('Card');
     $head[$h][2] = 'building';
     ++$h;

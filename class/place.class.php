@@ -493,7 +493,7 @@ class Place extends Dolresource
 
             switch ($option) {
                 case 'building@place':
-                    $url  = dol_buildpath('/place/building/fiche.php', 1).'?id='.$this->id;
+                    $url  = dol_buildpath('/place/building/card.php', 1).'?id='.$this->id;
                     $picto = 'building@place';
                     $label = $langs->trans('ShowBuilding').': '.$this->ref;
                     $linkend='</a>';
