@@ -41,7 +41,7 @@ dol_include_once('/place/core/modules/place/modules_place.php');
 /**
  *	Class to build documents using ODF templates generator.
  */
-class doc_generic_room_odt extends ModelePlace
+class doc_generic_room_odt extends ModelePdfPlace
 {
     public $emetteur;    // Objet societe qui emet
 

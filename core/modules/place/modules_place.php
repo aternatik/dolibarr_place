@@ -30,7 +30,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
  *	\class      ModelePlaceDoc
  *	\brief      Parent class for Place models of doc generators.
  */
-abstract class ModelePlace extends CommonDocGenerator
+abstract class ModelePdfPlace extends CommonDocGenerator
 {
     public $error = '';
 

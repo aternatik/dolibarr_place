@@ -286,18 +286,39 @@ if ($object->fetch($id) > 0) {
             echo '</div>';
         }
 
-        /*
-         * Documents generes
-        */
-        $filename = dol_sanitizeFileName($object->ref);
-        $filedir = $conf->place->dir_output.'/'.dol_sanitizeFileName($object->ref);
-        $urlsource = $_SERVER['PHP_SELF'].'?id='.$object->id;
-        $genallowed = $user->rights->place->read;
-        $delallowed = $user->rights->place->write;
+        print '<div class="fichecenter"><div class="fichehalfleft">';
+        print '<a name="builddoc"></a>'; // ancre
 
-        $var = true;
+        // Documents
+        $objref = dol_sanitizeFileName($object->ref);
+        $relativepath = $comref . '/' . $comref . '.pdf';
+        $filedir = $conf->place->dir_output . '/' . $objref;
+        $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
+        $genallowed = $user->rights->place->read;    // If you can read, you can build the PDF to read content
+        $delallowed = $user->rights->place->create;  // If you can create/edit, you can remove a file on card
+        print $formfile->showdocuments('place', $objref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang);
+        
 
-        $somethingshown = $formfile->show_documents('place', $filename, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf);
+        // Show links to link elements
+        $linktoelem = $form->showLinkToObjectBlock($object, null, array('myobject'));
+        $somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
+
+
+        print '</div><div class="fichehalfright"><div class="ficheaddleft">';
+
+        $MAXEVENT = 10;
+
+        $morehtmlright = '<a href="'.dol_buildpath('/mymodule/myobject_info.php', 1).'?id='.$object->id.'">';
+        $morehtmlright.= $langs->trans("SeeAll");
+        $morehtmlright.= '</a>';
+
+        // List of actions on element
+        include_once DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
+        $formactions = new FormActions($db);
+        $somethingshown = $formactions->showactions($object, 'myobject', $socid, 1, '', $MAXEVENT, '', $morehtmlright);
+
+        print '</div></div></div>';
+
     }
 } else {
     dol_print_error();

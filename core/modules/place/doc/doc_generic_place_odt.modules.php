@@ -70,7 +70,7 @@ dol_include_once('/place/core/modules/place/modules_place.php');
 /**
  *	Class to build documents using ODF templates generator.
  */
-class doc_generic_place_odt extends ModelePlace
+class doc_generic_place_odt extends ModelePdfPlace
 {
     public $emetteur;    // Objet societe qui emet
 
@@ -123,25 +123,25 @@ class doc_generic_place_odt extends ModelePlace
     }
 
     /**
-     * Define array with couple substitution key => substitution value.
+     * Define array with couple substitution key => substitution value
      *
-     * @param object    $object      Main object to use as data source
-     * @param Translate $outputlangs Lang object to use for output
-     *
-     * @return array Array of substitution
+     * @param   Object          $object             Main object to use as data source
+     * @param   Translate       $outputlangs        Lang object to use for output
+     * @param   string          $array_key          Name of the key for return array
+     * @return  array                               Array of substitution
      */
-    public function get_substitutionarray_object($object, $outputlangs)
+    function get_substitutionarray_object($object,$outputlangs,$array_key='object')
     {
         global $conf;
 
         return array(
-        'object_id' => $object->id,
-        'object_ref' => $object->ref,
-        'object_description' => $object->description,
-        'object_lat' => $object->lat,
-        'object_lng' => $object->lng,
-        'object_note_private' => $object->note_private,
-        'object_note_public' => $object->note_public,
+        $array_key.'_id' => $object->id,
+        $array_key.'_ref' => $object->ref,
+        $array_key.'_description' => $object->description,
+        $array_key.'_lat' => $object->lat,
+        $array_key.'_lng' => $object->lng,
+        $array_key.'_note_private' => $object->note_private,
+        $array_key.'_note_public' => $object->note_public,
         );
     }
 
