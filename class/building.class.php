@@ -371,8 +371,8 @@ class Building extends Place
 		$sql.= " label=".(isset($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
 		$sql.= " fk_place=".(isset($this->fk_place)?$this->fk_place:"null").",";
 		$sql.= " description=".(isset($this->description)?"'".$this->db->escape($this->description)."'":"null").",";
-		$sql.= " lat=".(isset($this->lat)?$this->lat:"null").",";
-		$sql.= " lng=".(isset($this->lng)?$this->lng:"null").",";
+		$sql.= " lat=".(isset($this->lat)?"'".$this->db->escape($this->lat)."'":"null").",";
+		$sql.= " lng=".(isset($this->lng)?"'".$this->db->escape($this->lng)."'":"null").",";
 		$sql.= " note_public=".(isset($this->note_public)?"'".$this->db->escape($this->note_public)."'":"null").",";
 		$sql.= " note_private=".(isset($this->note_private)?"'".$this->db->escape($this->note_private)."'":"null").",";
 		$sql.= " fk_user_creat=".(isset($this->fk_user_creat)?$this->fk_user_creat:"null").",";
