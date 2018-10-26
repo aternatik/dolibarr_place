@@ -493,13 +493,13 @@ class Place extends Dolresource
 
             switch ($option) {
                 case 'building@place':
-                    $$linkstart  = '<a href="'.dol_buildpath('/place/building/fiche.php', 1).'?id='.$this->id.$get_params.'">';
+                    $url  = dol_buildpath('/place/building/fiche.php', 1).'?id='.$this->id;
                     $picto = 'building@place';
                     $label = $langs->trans('ShowBuilding').': '.$this->ref;
                     $linkend='</a>';
                     break;
                 case 'room@place':
-                    $$linkstart  = '<a href="'.dol_buildpath('/place/room/card.php', 1).'?id='.$this->id.$get_params.'">';
+                    $url  = dol_buildpath('/place/room/card.php', 1).'?id='.$this->id.$get_params;
                     $picto = 'room@place';
                     $label = $langs->trans('ShowRoom').': '.$this->ref;
                     $linkend='</a>';
