@@ -1,6 +1,6 @@
 <?php
 /* Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
- * Copyright (C) 2013-2016	Jean-François Ferry	<jfefe@aternatik.fr>
+ * Copyright (C) 2013-2018	Jean-François Ferry	<hello+jf@librethic.io>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ class modPlace extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = 'Place managment with resource module';
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '4+1.0';
+        $this->version = '8+1.1-dev';
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);

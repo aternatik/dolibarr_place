@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2007-2010	Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2013		Jean-François Ferry	<jfefe@aternatik.fr>
+ * Copyright (C) 2013-2018	Jean-François Ferry	 <hello+jf@librethic.io>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

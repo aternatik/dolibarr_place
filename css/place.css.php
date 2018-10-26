@@ -1,6 +1,6 @@
 <?php
 /* Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
- * Copyright (C) 2013	Jean-François Ferry	<jfefe@aternatik.fr>
+ * Copyright (C) 2013-2018	Jean-François Ferry	<hello+jf@librethic.io>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
