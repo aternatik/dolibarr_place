@@ -49,7 +49,7 @@ class ActionsPlace
 
                 $resources = $resource->getElementResources($object->element, $object->id);
                 $num = count($resources);
-
+ 
                 $i = 0;
                 $var = false;
                 while ($i < $num) {
@@ -63,11 +63,14 @@ class ActionsPlace
                         $resource = $element = $subelement = $regs[1];
                         $module = $regs[2];
                     }
-                    //print '<br />1. element : '.$element.' - module : '.$module .' - resourec : '.$resource.'<br />';
+                    //print '<br />1. element : '.$element.' - module : '.$module .' - resourec : '.$resssource.'<br />';
 
-                    if (preg_match('/^([^_]+)_([^_]+)/i', $resource, $regs)) {
+                    if (preg_match('/^([^_]+)_([^_]+)/i', $module, $regs)) {
                         $module = $element = $regs[1];
                         $subelement = $regs[2];
+                    }
+                    if ($module == 'dolresource') {
+                        $module = 'resource';
                     }
                     $classfile = strtolower($subelement);
                     $classname = ucfirst($subelement);

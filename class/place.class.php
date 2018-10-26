@@ -680,6 +680,59 @@ class Place extends Dolresource
     }
 
     /**
+     *
+     * @param unknown $ressource_id
+     * @param unknown $resource_type
+     * @param array $filter
+     */
+    function getActionsForResource($resource_type, $ressource_id='',$filter=array())
+    {
+        global $conf;
+    
+        $events = array();
+    
+        $sql = "SELECT";
+        $sql.= " a.id, a.datep, a.datep2, a.durationp, a.label, a.fk_element, a.elementtype, type.code";
+        $sql.= ", er.resource_type, er.resource_id, er.busy, er.mandatory";
+        $sql.= " FROM ".MAIN_DB_PREFIX."actioncomm as a ";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."element_resources as er ON a.id=er.element_id";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_actioncomm as type ON type.id=a.fk_action";
+        $sql.= " WHERE a.entity IN (" . getEntity ( 'resource' ) . ")";
+        $sql.=" AND er.resource_type='".$resource_type."' AND er.element_type='action' AND er.resource_id=$ressource_id";
+        $sql.=" GROUP BY a.id";
+    
+        dol_syslog(get_class($this)."::getActionsForResource sql=".$sql);
+    
+        $resql = $this->db->query($sql);
+    
+        if ($resql)
+        {
+            $num = $this->db->num_rows($resql);
+            $i = 0;
+            while ($i < $num)
+            {
+                $obj = $this->db->fetch_object($resql);
+    
+                $events[$i] = array(
+                    'rowid' => $obj->id,
+                    'label' => $obj->label,
+                    'datep' => $this->db->jdate($obj->datep),
+                    'datef' => $this->db->jdate($obj->datep2),
+                    'duration'=> $obj->durationp,
+                    'resource_id' => $obj->resource_id,
+                    'resource_type' => $obj->resource_type,
+                    'busy'=>$obj->busy,
+                    'mandatory'=>$obj->mandatory,
+                    'code' => $obj->code,
+                    'type_code' => $obj->type_code
+                );
+                $i++;
+            }
+        }
+        return $events;
+    }
+
+    /**
      *	Load an object from its id and create a new one in database.
      *
      *	@param	int		$fromid     Id of object to clone
