@@ -203,6 +203,28 @@ if ($object->fetch($id) > 0) {
         echo '</form>';
     } else {
 
+        $contactstat = new Contact($db);
+        $objsoc = new Societe($db);
+
+        $linkback = '<a href="'.dol_buildpath('/place/index.php', 1).'?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+
+        if ($contactstat->fetch($object->fk_socpeople)) {
+            $morehtmlref='<div class="refidno">';
+            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
+            {
+                $objsoc->fetch($object->socid);
+                // Thirdparty
+                $morehtmlref.=$langs->trans('ThirdParty') . ' : ';
+                if ($objsoc->id > 0) $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
+                else $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+            }
+            $morehtmlref.='</div>';
+
+            dol_banner_tab($contactstat, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
+
+        }
+
+
         /*---------------------------------------
          * View object
          */
@@ -214,17 +236,6 @@ if ($object->fetch($id) > 0) {
         echo '<td  width="20%">'.$langs->trans('NameOfThePlace').'</td>';
         echo '<td   width="30%">';
         echo $object->ref;
-        echo '</td>';
-        echo '</tr>';
-
-        // socpeople
-        echo '<tr>';
-        echo '<td  width="20%">'.$langs->trans('SocPeopleAssociated').'</td>';
-        echo '<td   width="30%">';
-        $contactstat = new Contact($db);
-        if ($contactstat->fetch($object->fk_socpeople)) {
-            print $contactstat->getNomUrl(1);
-        }
         echo '</td>';
         echo '</tr>';
 

@@ -571,6 +571,31 @@ class Place extends Dolresource
     public function printInfoTable()
     {
         global $langs;
+
+        if (!class_exists('Contact')) {
+            require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+        }
+        $contactstat = new Contact($this->db);
+        $objsoc = new Societe($this->db);
+
+        $linkback = '<a href="'.dol_buildpath('/place/index.php', 1).'?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+
+        if ($contactstat->fetch($this->fk_socpeople)) {
+            $morehtmlref='<div class="refidno">';
+            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
+            {
+                $objsoc->fetch($this->socid);
+                // Thirdparty
+                $morehtmlref.=$langs->trans('ThirdParty') . ' : ';
+                if ($objsoc->id > 0) $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
+                else $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+            }
+            $morehtmlref.='</div>';
+
+            dol_banner_tab($contactstat, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
+
+        }
+
         echo '<table width="100%" class="border">';
 
         // Ref / label
@@ -580,6 +605,17 @@ class Place extends Dolresource
         echo $this->getNomUrl(1);
         echo '</td>';
         echo '</tr>';
+
+        if (strlen($this->lat) && strlen($this->lng)) {
+            // Link to OSM
+            print '<tr>';
+            print '<td  width="20%">' . $langs->trans("OSMLink") . '</td>';
+            print '<td   width="30%">';
+            $link = Place::getPlaceOsmLink($this->lat, $this->lng);
+            print '<a href="'.$link.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
+            print '</td>';
+            print '</tr>';
+        }
 
         echo '</table>';
     }
