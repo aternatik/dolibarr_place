@@ -1,9 +1,10 @@
 <?php
 
-
+$resource_type = 'room@place';
 $langs->load('place@place');
 
-print_titre($langs->trans('AddRoom'));
+$morehtmlright = '';
+$out = load_fiche_titre($langs->trans('AddRoom'), $morehtmlright, 'room@place');
 
 $form = new Form($db);
 if (!class_exists('FormPlace')) {

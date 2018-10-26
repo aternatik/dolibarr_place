@@ -120,14 +120,16 @@ class ActionsPlace
         if (in_array('element_resource', explode(':', $parameters['context']))) {
             $element_id = GETPOST('element_id', 'int');
             $element = GETPOST('element', 'alpha');
-            $resource_type = GETPOST('resource_type');
-
+            $resource_type = GETPOST('resource_type', 'alpha');
+            $fk_resource_place = GETPOST('fk_resource_place', 'int');
+            $fk_resource_room = GETPOST('fk_resource_room', 'int');
             $busy = GETPOST('busy', 'int');
             $mandatory = GETPOST('mandatory', 'int');
 
             if ($action == 'add_resource_place' && !GETPOST('cancel')) {
+            
                 $objstat = fetchObjectByElement($element_id, $element);
-                $res = $objstat->add_element_resource(GETPOST('fk_resource_place'), $resource_type, $busy, $mandatory);
+                $res = $objstat->add_element_resource($fk_resource_place, $resource_type, $busy, $mandatory);
                 if ($res > 0) {
                     setEventMessage($langs->trans('ResourceLinkedWithSuccess'), 'mesgs');
                     header('Location: '.$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
@@ -140,9 +142,10 @@ class ActionsPlace
             }
 
             if ($action == 'add_resource_room' && !GETPOST('cancel')) {
-                $objstat = fetchObjectByElement($element_id, $element);
-                $res = $objstat->add_element_resource(GETPOST('fk_resource_room'), $resource_type, $busy, $mandatory);
 
+
+                $objstat = fetchObjectByElement($element_id, $element);
+                $res = $objstat->add_element_resource($fk_resource_room, $resource_type, $busy, $mandatory);
                 if ($res > 0) {
                     setEventMessage($langs->trans('ResourceLinkedWithSuccess'), 'mesgs');
                     header('Location: '.$_SERVER['PHP_SELF'].'?element='.$element.'&element_id='.$element_id);
@@ -173,7 +176,8 @@ class ActionsPlace
             $object->available_resources[] = 'room@place';
         }
 
-        $this->results = array('available_resources' => $object->available_resources);
+        //$this->results = array('available_resources' => $object->available_resources);
+        $this->results = 0;
         $this->resprints = '';
     }
 }

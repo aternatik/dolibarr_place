@@ -1,8 +1,9 @@
 <?php
-
+$resource_type = 'place@place';
 
 //$langs->load($resource_type);
-
+$morehtmlright = '';
+$out = load_fiche_titre($langs->trans('AddPlace'), $morehtmlright, 'place@place');
 $form = new Form($db);
 if (!class_exists('FormPlace')) {
     dol_include_once('/place/class/html.formplace.class.php');

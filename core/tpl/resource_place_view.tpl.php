@@ -73,6 +73,6 @@ if ((array) $linked_resources && count($linked_resources) > 0) {
     }
     echo '</div>';
 } else {
-    echo '<div class="warning">'.$langs->trans('NoResourceLinked').'</div>';
+    echo '<div class="warning">'.$langs->trans('NoPlaceResourceLinked').'</div>';
 }
 // FIN DU TPL
