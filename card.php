@@ -39,9 +39,11 @@ require 'class/place.class.php';
 require 'lib/place.lib.php';
 
 // Load traductions files requiredby by page
-$langs->load('place@place');
-$langs->load('companies');
-$langs->load('other');
+$langs->loadLangs(array(
+    'place@place',
+    'companies',
+    'other')
+);
 
 // Get parameters
 $id = GETPOST('id', 'int');
@@ -254,7 +256,7 @@ if ($object->fetch($id) > 0) {
         echo '<tr>';
         echo '<td  width="20%">'.$langs->trans('OSMLink').'</td>';
         echo '<td   width="30%">';
-        echo '<a href="http://openstreetmap.org/?lat='.$object->lat.'&amp;lon='.$object->lng.'&amp;zoom='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
+        echo '<a href="http://openstreetmap.org/#map='.$conf->global->PLACE_DEFAULT_ZOOM_FOR_MAP.'/'.$object->lat.'/'.$object->lng.'" target="_blank">'.$langs->trans('ShowInOSM').'</a>';
         echo '</td>';
         echo '</tr>';
 
