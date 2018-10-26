@@ -64,7 +64,7 @@ function placePrepareHead($object)
     $h = 0;
     $head = array();
 
-    $head[$h][0] = dol_buildpath('/place/fiche.php', 1).'?id='.$object->id;
+    $head[$h][0] = dol_buildpath('/place/card.php', 1).'?id='.$object->id;
     $head[$h][1] = $langs->trans('PlaceSingular');
     $head[$h][2] = 'place';
     ++$h;

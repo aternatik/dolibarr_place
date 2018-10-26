@@ -486,7 +486,7 @@ class Place extends Dolresource
         $label.= '<br>';
         $label.= '<b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
 
-        $url = dol_buildpath('/mymodule/myobject_card.php',1).'?id='.$this->id;
+        $url = dol_buildpath('/place/card.php',1).'?id='.$this->id;
 
         if ($option != 'nolink')
         {
@@ -505,7 +505,7 @@ class Place extends Dolresource
                     $linkend='</a>';
                     break;
                 default:
-                    $$linkstart  = '<a href="'.dol_buildpath('/place/fiche.php', 1).'?id='.$this->id.$get_params.'">';
+                    $$linkstart  = '<a href="'.dol_buildpath('/place/card.php', 1).'?id='.$this->id.$get_params.'">';
                     $picto = 'place@place';
                     $label = $langs->trans('ShowPlace').': '.$this->ref;
                     $linkend='</a>';
