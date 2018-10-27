@@ -324,7 +324,6 @@ function place_doc_create($db, $object, $message, $modele, $outputlangs)
         // We save charset_output to restore it because write_file can change it if needed for
         // output format that does not support UTF8.
         $sav_charset_output = $outputlangs->charset_output;
-
         if ($obj->write_file($object, $outputlangs, $srctemplatepath) > 0) {
             $outputlangs->charset_output = $sav_charset_output;
 
@@ -340,6 +339,7 @@ function place_doc_create($db, $object, $message, $modele, $outputlangs)
 
             return 1;
         } else {
+
             $outputlangs->charset_output = $sav_charset_output;
             dol_print_error($db, 'place_doc_create Error: '.$obj->error);
 

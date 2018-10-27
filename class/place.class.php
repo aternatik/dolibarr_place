@@ -36,6 +36,8 @@ class Place extends Dolresource
     public $element = 'place';            //!< Id that identify managed objects
     public $table_element = 'place';        //!< Name of table without prefix where object is stored
 
+    public $entity = '1';
+
     public $id;
 
     public $ref;
@@ -48,6 +50,8 @@ class Place extends Dolresource
     public $note_private;
     public $fk_user_creat;
     public $tms = '';
+
+
 
     /**
      *  Constructor.

@@ -317,7 +317,8 @@ if ($object->fetch($id) > 0) {
 
     // Documents
     $objref = dol_sanitizeFileName($object->ref);
-    $filedir = $conf->place->dir_output . '/' . $objref;
+    $relativepathwithnofile = dol_sanitizeFileName($object->id.'-'.str_replace(' ', '-', $object->ref)).'/';
+    $filedir = $conf->place->multidir_output[$object->entity] . '/' . $relativepathwithnofile;
     $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
     $genallowed = $user->rights->place->read;    // If you can read, you can build the PDF to read content
     $delallowed = $user->rights->place->create;  // If you can create/edit, you can remove a file on card
@@ -325,7 +326,7 @@ if ($object->fetch($id) > 0) {
     
 
     // Show links to link elements
-    $linktoelem = $form->showLinkToObjectBlock($object, null, array('myobject'));
+    $linktoelem = $form->showLinkToObjectBlock($object, null, array('place@place'));
     $somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
 

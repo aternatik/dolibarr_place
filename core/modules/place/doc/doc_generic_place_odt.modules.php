@@ -288,7 +288,7 @@ class doc_generic_place_odt extends ModelePdfPlace
         $outputlangs->load('dict');
         $outputlangs->load('companies');
         $outputlangs->load('place@place');
-        if ($conf->place->dir_output) {
+        if ($conf->place->multidir_output[$object->entity]) {
             // If $object is id instead of object
             if (!is_object($object)) {
                 $id = $object;
@@ -301,13 +301,14 @@ class doc_generic_place_odt extends ModelePdfPlace
                 }
             }
 
-            $dir = $conf->place->dir_output;
             $objectref = dol_sanitizeFileName($object->ref);
+            $relativepathwithnofile = dol_sanitizeFileName($object->id.'-'.str_replace(' ', '-', $object->ref));
+            $dir = $conf->place->multidir_output[$object->entity];
             if (!preg_match('/specimen/i', $objectref)) {
-                $dir .= '/'.$objectref;
+                $dir .= '/'.$relativepathwithnofile;
             }
+            
             $file = $dir.'/'.$objectref.'.odt';
-
             if (!file_exists($dir)) {
                 if (dol_mkdir($dir) < 0) {
                     $this->error = $langs->transnoentities('ErrorCanNotCreateDir', $dir);
@@ -472,7 +473,7 @@ class doc_generic_place_odt extends ModelePdfPlace
 
                 return -1;
             }
-        }
+        } else print 'eroooooooooooooooooooooooooooooooor';
 
         return -1;
     }
