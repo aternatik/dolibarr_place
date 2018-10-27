@@ -291,7 +291,11 @@ class Building extends Place
     		foreach ($filter as $key => $value) {
     			if (strpos($key, 'date')) {
     				$sql.= ' AND '.$key.' = \''.$this->db->idate($value).'\'';
-    			} else {
+    			} 
+                elseif (strpos($key, 'id')) {
+                    $sql.= ' AND '.$key.' = \''.$value.'\'';
+                }
+                else {
     				$sql.= ' AND '.$key.' LIKE \'%'.$value.'%\'';
     			}
     		}
