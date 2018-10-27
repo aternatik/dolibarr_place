@@ -363,7 +363,7 @@ if ($object->fetch($id) > 0) {
     $genallowed = $user->rights->place->read;
     $delallowed = $user->rights->place->write;
     $var = true;
-    $somethingshown = $formfile->show_documents('place', $dirtoscan, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf);
+    print $formfile->showdocuments('place', $dirtoscan, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf);
 
     $events = $object->getActionsForResource('room@place', $id, $filter);
 

@@ -105,10 +105,26 @@ if ($action == 'update' && !$_POST['cancel'] && $user->rights->place->write) {
     }
 }
 
+// Remove file in doc form
+elseif ($action == 'remove_file') {
+    if ($object->fetch($id)) {
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+
+        $langs->load('other');
+        $upload_dir = $conf->place->multidir_output[$object->entity];
+        $file = $upload_dir.'/'.GETPOST('file');
+        $ret = dol_delete_file($file, 0, 0, 0, $object);
+        if ($ret) {
+            setEventMessage($langs->trans('FileWasRemoved', GETPOST('urlfile')));
+        } else {
+            setEventMessage($langs->trans('ErrorFailToDeleteFile', GETPOST('urlfile')), 'errors');
+        }
+    }
+}
 /*
  * Generate document
 */
-if ($action == 'builddoc') {  // En get ou en post
+elseif ($action == 'builddoc') {  // En get ou en post
     if (is_numeric(GETPOST('model'))) {
         $error = $langs->trans('ErrorFieldRequired', $langs->transnoentities('Model'));
     } else {
@@ -137,6 +153,10 @@ if ($action == 'builddoc') {  // En get ou en post
     }
 }
 
+
+include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
+
+
 /***************************************************
 * VIEW
 *
@@ -149,6 +169,8 @@ $form = new Form($db);
 $formfile = new FormFile($db);
 
 if ($object->fetch($id) > 0) {
+
+
     $head = placePrepareHead($object);
     dol_fiche_head($head, 'place', $langs->trans('PlaceSingular'), 0, 'place@place');
 
@@ -282,6 +304,11 @@ if ($object->fetch($id) > 0) {
         echo '</tr>';
 
         echo '</table>';
+
+
+
+
+
     }
 
     echo '</div>';
@@ -317,13 +344,13 @@ if ($object->fetch($id) > 0) {
 
     // Documents
     $objref = dol_sanitizeFileName($object->ref);
-    $relativepathwithnofile = dol_sanitizeFileName($object->id.'-'.str_replace(' ', '-', $object->ref)).'/';
-    $filedir = $conf->place->multidir_output[$object->entity] . '/' . $relativepathwithnofile;
+    $relativepathwithnofile = dol_sanitizeFileName($object->id.'-'.str_replace(' ', '-', $object->ref));
+    $filedir = $conf->place->multidir_output[$object->entity] .'/'.$relativepathwithnofile;
     $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
     $genallowed = $user->rights->place->read;    // If you can read, you can build the PDF to read content
-    $delallowed = $user->rights->place->create;  // If you can create/edit, you can remove a file on card
-    print $formfile->showdocuments('place', $objref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang);
-    
+    $delallowed = $user->rights->place->write;  // If you can create/edit, you can remove a file on card
+    print $formfile->showdocuments('place', $relativepathwithnofile, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang);
+
 
     // Show links to link elements
     $linktoelem = $form->showLinkToObjectBlock($object, null, array('place@place'));

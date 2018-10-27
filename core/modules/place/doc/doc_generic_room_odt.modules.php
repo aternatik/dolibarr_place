@@ -109,6 +109,7 @@ class doc_generic_room_odt extends ModelePdfPlace
             $key.'_id' => $object->id,
             $key.'_ref' => $object->ref,
             $key.'_label' => $object->label,
+            $key.'_label' => $object->description,
             $key.'_fk_building' => $object->fk_building,
             $key.'_fk_floor' => $object->fk_floor,
             $key.'_capacity' => $object->capacity,
