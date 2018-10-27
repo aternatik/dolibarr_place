@@ -123,8 +123,13 @@ print load_fiche_titre($langs->trans($page_name), $linkback);
 
 // Configuration header
 $head = placeAdminPrepareHead();
-dol_fiche_head($head, 'settings', $langs->trans('Module110110Name'), 0,
-    'place@place');
+dol_fiche_head(
+    $head,
+    'settings',
+    $langs->trans('Module110110Name'),
+    0,
+    'place@place'
+);
 
 $dirplace = array('/place/core/modules/place/');
 

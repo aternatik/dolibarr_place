@@ -123,9 +123,7 @@ if ($action == 'room_update' && !$_POST['cancel'] && $user->rights->place->write
     } else {
         $action = 'editroom';
     }
-}
-
-// Remove file in doc form
+} // Remove file in doc form
 elseif ($action == 'remove_file') {
     if ($object->fetch($id)) {
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -272,7 +270,6 @@ if ($object->fetch($id) > 0) {
         echo '</table>';
         echo '</form>';
     } else {
-
         /*---------------------------------------
          * View object
         */
@@ -336,7 +333,6 @@ if ($object->fetch($id) > 0) {
     echo '<div class="tabsAction">';
 
     if ($action != 'edit') {
-
         // Edit building
         if ($user->rights->place->write) {
             echo '<div class="inline-block divButAction">';
@@ -383,7 +379,6 @@ if ($object->fetch($id) > 0) {
             echo '<td with="50%">';
             if (!class_exists('ActionComm')) {
                 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
-
             }
             $eventStat = new ActionComm($db);
             $eventStat->fetch($event['rowid']);

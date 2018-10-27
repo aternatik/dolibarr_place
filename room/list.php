@@ -120,8 +120,7 @@ if ($action == 'updateroom' && !$_POST['cancel'] && $user->rights->place->write)
     } else {
         $action = 'editroom';
     }
-}
-// Remove line
+} // Remove line
 elseif ($action == 'confirm_deleteroom' && $confirm == 'yes' && $user->rights->place->write) {
     $ret = $obj_room->fetch($roomid);
     if ($ret) {
@@ -209,7 +208,6 @@ if ($fk_building > 0) {
 $list_room = $obj_room->fetch_all($sortorder, $sortfield, $limit, $offset, $filter);
 
 if (is_array($obj_room->lines) && sizeof($obj_room->lines) > 0) {
-
     // Confirm delete
     if ($action == 'ask_deleteroom') {
         $out .= $form->formconfirm($_SERVER['PHP_SELF'].'?building='.$fk_building.'&roomid='.$roomid, $langs->trans('DeleteRoom'), $langs->trans('ConfirmDeleteRoom'), 'confirm_deleteroom', '', 0, 1);
@@ -314,7 +312,6 @@ echo $out;
 echo '<div class="tabsAction">';
 
 if ($action != 'show_floor_form') {
-
     // Add room
     if ($user->rights->place->write) {
         if ($fk_building > 0) {

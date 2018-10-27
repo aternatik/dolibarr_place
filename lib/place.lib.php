@@ -75,10 +75,12 @@ function placePrepareHead($object)
     require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
     $relativepathwithnofile = dol_sanitizeFileName($object->id.'-'.str_replace(' ', '-', $object->ref)).'/';
     $upload_dir = $conf->place->multidir_output[$object->entity].'/'.$relativepathwithnofile;
-    $nbFiles = count(dol_dir_list($upload_dir,'files',0,'','(\.meta|_preview.*\.png)$'));
+    $nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
     $nbLinks=Link::count($object->db, $object->element, $object->id);
     $head[$h][1] = $langs->trans('Documents');
-    if (($nbFiles+$nbLinks) > 0) $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
+    if (($nbFiles+$nbLinks) > 0) {
+        $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
+    }
     $head[$h][2] = 'document';
     ++$h;
 
@@ -89,21 +91,20 @@ function placePrepareHead($object)
     $sql.= " FROM ".MAIN_DB_PREFIX."place_building as n";
     $sql.= " WHERE fk_place = '".$object->id."'";
     $resql=$object->db->query($sql);
-    if ($resql)
-    {
+    if ($resql) {
         $num = $object->db->num_rows($resql);
         $i = 0;
-        while ($i < $num)
-        {
+        while ($i < $num) {
             $obj = $object->db->fetch_object($resql);
             $nbBuildings=$obj->nb;
             $i++;
         }
-    }
-    else {
+    } else {
         dol_print_error($object->db);
     }
-    if ($nbBuildings > 0) $head[$h][1].= ' <span class="badge">'.$nbBuildings.'</span>';
+    if ($nbBuildings > 0) {
+        $head[$h][1].= ' <span class="badge">'.$nbBuildings.'</span>';
+    }
     $head[$h][2] = 'buildings';
     ++$h;
 
@@ -134,21 +135,20 @@ function buildingPrepareHead($object)
     $sql.= " FROM ".MAIN_DB_PREFIX."place_floor as n";
     $sql.= " WHERE fk_building = '".$object->id."'";
     $resql=$object->db->query($sql);
-    if ($resql)
-    {
+    if ($resql) {
         $num = $object->db->num_rows($resql);
         $i = 0;
-        while ($i < $num)
-        {
+        while ($i < $num) {
             $obj = $object->db->fetch_object($resql);
             $nbFloors=$obj->nb;
             $i++;
         }
-    }
-    else {
+    } else {
         dol_print_error($object->db);
     }
-    if ($nbFloors > 0) $head[$h][1].= ' <span class="badge">'.$nbFloors.'</span>';
+    if ($nbFloors > 0) {
+        $head[$h][1].= ' <span class="badge">'.$nbFloors.'</span>';
+    }
     $head[$h][2] = 'floors';
     ++$h;
 
@@ -159,21 +159,20 @@ function buildingPrepareHead($object)
     $sql.= " FROM ".MAIN_DB_PREFIX."place_room as n";
     $sql.= " WHERE fk_building = '".$object->id."'";
     $resql=$object->db->query($sql);
-    if ($resql)
-    {
+    if ($resql) {
         $num = $object->db->num_rows($resql);
         $i = 0;
-        while ($i < $num)
-        {
+        while ($i < $num) {
             $obj = $object->db->fetch_object($resql);
             $nbRooms=$obj->nb;
             $i++;
         }
-    }
-    else {
+    } else {
         dol_print_error($object->db);
     }
-    if ($nbRooms > 0) $head[$h][1].= ' <span class="badge">'.$nbRooms.'</span>';
+    if ($nbRooms > 0) {
+        $head[$h][1].= ' <span class="badge">'.$nbRooms.'</span>';
+    }
     $head[$h][2] = 'rooms';
     ++$h;
 
@@ -183,10 +182,12 @@ function buildingPrepareHead($object)
     require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
     $relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ', '-', $object->place->ref)).'/building/'.dol_sanitizeFileName($object->ref);
     $upload_dir = $conf->place->multidir_output[$object->entity].'/'.$relativepathwithnofile;
-    $nbFiles = count(dol_dir_list($upload_dir,'files',0,'','(\.meta|_preview.*\.png)$'));
+    $nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
     $nbLinks=Link::count($object->db, $object->element, $object->id);
     $head[$h][1] = $langs->trans('Documents');
-    if (($nbFiles+$nbLinks) > 0) $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
+    if (($nbFiles+$nbLinks) > 0) {
+        $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
+    }
     $head[$h][2] = 'document';
     ++$h;
 

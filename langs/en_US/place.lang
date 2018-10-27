@@ -80,6 +80,7 @@ SeeOrEdit=Edit/see
 NameOfThePlace=Location name
 SelectPlace=Select place
 NoPlaceResourceLinked = No place linked as a resource
+ShowPlace = Show place
 
 #
 # Resource

@@ -174,9 +174,9 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
     $object_place->fetch($object->fk_place);
 }
 
-    if (!$user->rights->place->write) {
-        accessforbidden('', 0);
-    }
+if (!$user->rights->place->write) {
+    accessforbidden('', 0);
+}
 
     /*---------------------------------------
      * Add object
@@ -189,9 +189,9 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
     echo '<input type="hidden" name="action" value="create">';
     echo '<input type="hidden" name="id" value="'.$object_room->id.'">';
 
-    if ($fk_building > 0) {
-        print '<input type="hidden" name="building" value="'.$fk_building.'">';
-    }
+if ($fk_building > 0) {
+    print '<input type="hidden" name="building" value="'.$fk_building.'">';
+}
 
     echo '<table class="border" width="100%">';
 
@@ -201,38 +201,38 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
 
     // Place
     echo '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans('RoomFormLabel_fk_place').'</span></td>';
-    if (!$fk_place) {
-        echo '<td>';
-        $events[] = array('method' => 'getBuildings', 'url' => dol_buildpath('/place/core/ajax/buildings.php', 1), 'htmlname' => 'fk_building', 'params' => array());
-        echo $formplace->select_place_list(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id, 'fk_place', '', 1, 1, 0, $events);
-        echo '</td>';
-    } else {
-        echo '<td>';
-        echo $object_place->getNomUrl(1);
-        echo '<input type="hidden" name="fk_place" value="'.(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id).'">';
-        echo '</td>';
-    }
+if (!$fk_place) {
+    echo '<td>';
+    $events[] = array('method' => 'getBuildings', 'url' => dol_buildpath('/place/core/ajax/buildings.php', 1), 'htmlname' => 'fk_building', 'params' => array());
+    echo $formplace->select_place_list(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id, 'fk_place', '', 1, 1, 0, $events);
+    echo '</td>';
+} else {
+    echo '<td>';
+    echo $object_place->getNomUrl(1);
+    echo '<input type="hidden" name="fk_place" value="'.(GETPOST('fk_place') ? GETPOST('fk_place') : $object_place->id).'">';
+    echo '</td>';
+}
     echo '</tr>';
 
     // Building
-    if (!$fk_building) {
-        echo '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans('RoomFormLabel_fk_building').'</span></td>';
-        //print '<td><input size="12" name="building" value="'.(GETPOST('building') ? GETPOST('building') : $object_room->fk_building).'"></td></tr>';
-        echo '<td>';
-        $event = array();
-        echo $formplace->selectbuildings($fk_place, GETPOST('building') ? GETPOST('building') : $object_room->fk_building, 'building', 0, '', '', 0, '', false, 0, 0, $event);
-        //print $formplace->show_select_building(,'fk_building',$fk_place,'','',0,$event);
-        echo '<td>';
-    }
+if (!$fk_building) {
+    echo '<tr><td width="20%"><span class="fieldrequired">'.$langs->trans('RoomFormLabel_fk_building').'</span></td>';
+    //print '<td><input size="12" name="building" value="'.(GETPOST('building') ? GETPOST('building') : $object_room->fk_building).'"></td></tr>';
+    echo '<td>';
+    $event = array();
+    echo $formplace->selectbuildings($fk_place, GETPOST('building') ? GETPOST('building') : $object_room->fk_building, 'building', 0, '', '', 0, '', false, 0, 0, $event);
+    //print $formplace->show_select_building(,'fk_building',$fk_place,'','',0,$event);
+    echo '<td>';
+}
 
     // Floor
 
     echo '<tr><td width="20%">'.$langs->trans('RoomFormLabel_floor').'</td>';
     echo '<td>';
     echo $object->show_select_floor($fk_building, 'fk_floor');
-    if ($fk_building > 0) {
-        echo ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagment').'</a>';
-    }
+if ($fk_building > 0) {
+    echo ' <a href="../building/floors.php?id='.$fk_building.'">'.$langs->trans('FloorManagment').'</a>';
+}
     echo '</td></tr>';
 
     // Room type
@@ -248,9 +248,9 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
 
     // Extrafields
     $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object_room, $action);    // Note that $action and $object may have been modified by hook
-    if (empty($reshook) && !empty($extrafields->attribute_label)) {
-        echo $object->showOptionals($extrafields, 'edit');
-    }
+if (empty($reshook) && !empty($extrafields->attribute_label)) {
+    echo $object->showOptionals($extrafields, 'edit');
+}
 
     // Public note
     echo '<tr><td valign="top">'.$langs->trans('NotePublic').'</td>';
@@ -259,12 +259,12 @@ if ($fk_building && $object->fetch($fk_building) > 0) {
     echo '</td></tr>';
 
     // Private note
-    if (!$user->societe_id) {
-        echo '<tr><td valign="top">'.$langs->trans('NotePrivate').'</td>';
-        echo '<td>';
-        echo '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object_room->note_private).'</textarea><br>';
-        echo '</td></tr>';
-    }
+if (!$user->societe_id) {
+    echo '<tr><td valign="top">'.$langs->trans('NotePrivate').'</td>';
+    echo '<td>';
+    echo '<textarea name="note_private" cols="80" rows="'.ROWS_3.'">'.($_POST['note_private'] ? GETPOST('note_private') : $object_room->note_private).'</textarea><br>';
+    echo '</td></tr>';
+}
 
     echo '<tr><td align="center" colspan="2">';
     echo '<input name="add" class="button" type="submit" value="'.$langs->trans('Add').'"> &nbsp; ';

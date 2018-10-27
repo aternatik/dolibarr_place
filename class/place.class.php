@@ -203,8 +203,11 @@ class Place extends Dolresource
         $sql .= ' t.tms';
 
         $sql .= ' FROM '.MAIN_DB_PREFIX.'place as t';
-        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
-        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        if ($id) {
+            $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        } else {
+            $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        }
 
         dol_syslog(get_class($this).'::fetch sql='.$sql, LOG_DEBUG);
         $resql = $this->db->query($sql);
@@ -479,13 +482,15 @@ class Place extends Dolresource
      *  @param  int     $save_lastsearch_value      -1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
      *  @return string                              String with URL
      */
-    function getNomUrl($withpicto=0, $option='', $notooltip=0, $morecss='', $save_lastsearch_value=-1)
+    function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
     {
         global $db, $conf, $langs, $hookmanager;
         global $dolibarr_main_authentication, $dolibarr_main_demo;
         global $menumanager;
 
-        if (! empty($conf->dol_no_mouse_hover)) $notooltip=1;   // Force disable tooltips
+        if (! empty($conf->dol_no_mouse_hover)) {
+            $notooltip=1;   // Force disable tooltips
+        }
 
         $result = '';
         $companylink = '';
@@ -494,11 +499,9 @@ class Place extends Dolresource
         $label.= '<br>';
         $label.= '<b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
 
-        $url = dol_buildpath('/place/card.php',1).'?id='.$this->id;
+        $url = dol_buildpath('/place/card.php', 1).'?id='.$this->id;
 
-        if ($option != 'nolink')
-        {
-
+        if ($option != 'nolink') {
             switch ($option) {
                 case 'building@place':
                     $url  = dol_buildpath('/place/building/card.php', 1).'?id='.$this->id;
@@ -522,17 +525,17 @@ class Place extends Dolresource
 
             // Add param to save lastsearch_values or not
             $add_save_lastsearch_values=($save_lastsearch_value == 1 ? 1 : 0);
-            if ($save_lastsearch_value == -1 && preg_match('/list\.php/',$_SERVER["PHP_SELF"])) $add_save_lastsearch_values=1;
-            if ($add_save_lastsearch_values) $url.='&save_lastsearch_values=1';
-
-
+            if ($save_lastsearch_value == -1 && preg_match('/list\.php/', $_SERVER["PHP_SELF"])) {
+                $add_save_lastsearch_values=1;
+            }
+            if ($add_save_lastsearch_values) {
+                $url.='&save_lastsearch_values=1';
+            }
         }
 
         $linkclose='';
-        if (empty($notooltip))
-        {
-            if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-            {
+        if (empty($notooltip)) {
+            if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
                 $label=$langs->trans("ShowMyObject");
                 $linkclose.=' alt="'.dol_escape_htmltag($label, 1).'"';
             }
@@ -545,25 +548,33 @@ class Place extends Dolresource
              $reshook=$hookmanager->executeHooks('getnomurltooltip',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
              if ($reshook > 0) $linkclose = $hookmanager->resPrint;
              */
+        } else {
+            $linkclose = ($morecss?' class="'.$morecss.'"':'');
         }
-        else $linkclose = ($morecss?' class="'.$morecss.'"':'');
 
         $linkstart = '<a href="'.$url.'"';
         $linkstart.=$linkclose.'>';
         $linkend='</a>';
 
         $result .= $linkstart;
-        if ($withpicto) $result.=img_object(($notooltip?'':$label), ($this->picto?$this->picto:'generic'), ($notooltip?(($withpicto != 2) ? 'class="paddingright"' : ''):'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip?0:1);
-        if ($withpicto != 2) $result.= $this->ref;
+        if ($withpicto) {
+            $result.=img_object(($notooltip?'':$label), ($this->picto?$this->picto:'generic'), ($notooltip?(($withpicto != 2) ? 'class="paddingright"' : ''):'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip?0:1);
+        }
+        if ($withpicto != 2) {
+            $result.= $this->ref;
+        }
         $result .= $linkend;
         //if ($withpicto != 2) $result.=(($addlabel && $this->label) ? $sep . dol_trunc($this->label, ($addlabel > 1 ? $addlabel : 0)) : '');
 
         global $action;
         $hookmanager->initHooks(array('myobjectdao'));
         $parameters=array('id'=>$this->id, 'getnomurl'=>$result);
-        $reshook=$hookmanager->executeHooks('getNomUrl',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-        if ($reshook > 0) $result = $hookmanager->resPrint;
-        else $result .= $hookmanager->resPrint;
+        $reshook=$hookmanager->executeHooks('getNomUrl', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
+        if ($reshook > 0) {
+            $result = $hookmanager->resPrint;
+        } else {
+            $result .= $hookmanager->resPrint;
+        }
 
         return $result;
     }
@@ -590,18 +601,19 @@ class Place extends Dolresource
 
         if ($contactstat->fetch($this->fk_socpeople)) {
             $morehtmlref='<div class="refidno">';
-            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
-            {
+            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
                 $objsoc->fetch($this->socid);
                 // Thirdparty
                 $morehtmlref.=$langs->trans('ThirdParty') . ' : ';
-                if ($objsoc->id > 0) $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
-                else $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+                if ($objsoc->id > 0) {
+                    $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
+                } else {
+                    $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+                }
             }
             $morehtmlref.='</div>';
 
             dol_banner_tab($contactstat, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
-
         }
 
         echo '<table width="100%" class="border">';
@@ -729,7 +741,7 @@ class Place extends Dolresource
      * @param unknown $resource_type
      * @param array $filter
      */
-    function getActionsForResource($resource_type, $ressource_id='',$filter=array())
+    function getActionsForResource($resource_type, $ressource_id = '', $filter = array())
     {
         global $conf;
     
@@ -741,7 +753,7 @@ class Place extends Dolresource
         $sql.= " FROM ".MAIN_DB_PREFIX."actioncomm as a ";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."element_resources as er ON a.id=er.element_id";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_actioncomm as type ON type.id=a.fk_action";
-        $sql.= " WHERE a.entity IN (" . getEntity ( 'resource' ) . ")";
+        $sql.= " WHERE a.entity IN (" . getEntity('resource') . ")";
         $sql.=" AND er.resource_type='".$resource_type."' AND er.element_type='action' AND er.resource_id=$ressource_id";
         $sql.=" GROUP BY a.id";
     
@@ -749,12 +761,10 @@ class Place extends Dolresource
     
         $resql = $this->db->query($sql);
     
-        if ($resql)
-        {
+        if ($resql) {
             $num = $this->db->num_rows($resql);
             $i = 0;
-            while ($i < $num)
-            {
+            while ($i < $num) {
                 $obj = $this->db->fetch_object($resql);
     
                 $events[$i] = array(

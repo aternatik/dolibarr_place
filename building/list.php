@@ -24,10 +24,18 @@
 
 
 $res=0;
-if (! $res && file_exists("../main.inc.php")) $res=@include '../main.inc.php';
-if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.php';
-if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
-if (! $res) die("Include of main fails");
+if (! $res && file_exists("../main.inc.php")) {
+    $res=@include '../main.inc.php';
+}
+if (! $res && file_exists("../../main.inc.php")) {
+    $res=@include '../../main.inc.php';
+}
+if (! $res && file_exists("../../../main.inc.php")) {
+    $res=@include '../../../main.inc.php';
+}
+if (! $res) {
+    die("Include of main fails");
+}
 
 require DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require '../class/place.class.php';
@@ -41,19 +49,25 @@ $langs->load("companies");
 $langs->load("other");
 
 // Get parameters
-$id			= GETPOST('id','int');
-$action		= GETPOST('action','alpha');
+$id			= GETPOST('id', 'int');
+$action		= GETPOST('action', 'alpha');
 
 $filter = array();
 $param='';
-$sortorder	= GETPOST('sortorder','alpha');
-$sortfield	= GETPOST('sortfield','alpha');
-$page		= GETPOST('page','int');
+$sortorder	= GETPOST('sortorder', 'alpha');
+$sortfield	= GETPOST('sortfield', 'alpha');
+$page		= GETPOST('page', 'int');
 
 
-if (empty($sortorder)) $sortorder="DESC";
-if (empty($sortfield)) $sortfield="t.rowid";
-if (empty($arch)) $arch = 0;
+if (empty($sortorder)) {
+    $sortorder="DESC";
+}
+if (empty($sortfield)) {
+    $sortfield="t.rowid";
+}
+if (empty($arch)) {
+    $arch = 0;
+}
 
 if ($page == -1) {
 	$page = 0 ;
@@ -64,8 +78,9 @@ $offset = $limit * $page ;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-if( ! $user->rights->place->read)
+if (! $user->rights->place->read) {
 	accessforbidden();
+}
 
 /***************************************************
  * VIEW
@@ -74,7 +89,7 @@ if( ! $user->rights->place->read)
 ****************************************************/
 
 $pagetitle=$langs->trans('BuildingList');
-llxHeader('',$pagetitle,'');
+llxHeader('', $pagetitle, '');
 
 
 
@@ -83,51 +98,44 @@ $object = new Building($db);
 
 
 
-if($id > 0)
-{
+if ($id > 0) {
 	$object->fk_place = $id;
-	if($object->fetch_place() > 0)
-	{
+	if ($object->fetch_place() > 0) {
 		$head=placePrepareHead($object->place);
-		dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+		dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"), 0, 'place@place');
 
 		$ret = $object->place->printInfoTable();
 		print '</div>';
 		$filter = array('t.fk_place' => $id);
-
 	}
 
 	$param.='&amp;id='.$id;
-
 }
 // Load object list
-$ret = $object->fetch_all($sortorder, $sortfield, $limit, $offset,$filter);
-if($ret == -1) {
-	dol_print_error($db,$object->error);
+$ret = $object->fetch_all($sortorder, $sortfield, $limit, $offset, $filter);
+if ($ret == -1) {
+	dol_print_error($db, $object->error);
 	exit;
 }
 
-print load_fiche_titre($pagetitle,'','building_32.png@place');
+print load_fiche_titre($pagetitle, '', 'building_32.png@place');
 
 
-if(!$ret) {
+if (!$ret) {
 	print '<div class="warning">'.$langs->trans('NoBuildingForThisPlace').'</div>';
-}
-else
-{
+} else {
 	print '<table class="noborder" width="100%">'."\n";
 	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans('BuildingFormLabel_ref'),$_SERVER['PHP_SELF'],'t.ref','',$param,'',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('Description'),$_SERVER['PHP_SELF'],'t.description','',$param,'',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans('BuildingFormLabel_ref'), $_SERVER['PHP_SELF'], 't.ref', '', $param, '', $sortfield, $sortorder);
+	print_liste_field_titre($langs->trans('Description'), $_SERVER['PHP_SELF'], 't.description', '', $param, '', $sortfield, $sortorder);
 	print_liste_field_titre($langs->trans('Edit'));
 	print '</tr>';
 
-	foreach ($object->lines as $building)
-	{
+	foreach ($object->lines as $building) {
 		print '<tr><td>';
 		$object->ref = $building->ref;
 		$object->id = $building->id;
-		print $object->getNomUrl(1,'building@place');
+		print $object->getNomUrl(1, 'building@place');
 		print '</td>';
 
 		print '<td>';
@@ -140,7 +148,6 @@ else
 	}
 
 	print '</table>';
-
 }
 
 

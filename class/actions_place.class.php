@@ -127,7 +127,6 @@ class ActionsPlace
             $mandatory = GETPOST('mandatory', 'int');
 
             if ($action == 'add_resource_place' && !GETPOST('cancel')) {
-            
                 $objstat = fetchObjectByElement($element_id, $element);
                 $objstat->element = $element;
                 $res = $objstat->add_element_resource($fk_resource_place, $resource_type, $busy, $mandatory);
@@ -143,8 +142,6 @@ class ActionsPlace
             }
 
             if ($action == 'add_resource_room' && !GETPOST('cancel')) {
-
-
                 $objstat = fetchObjectByElement($element_id, $element);
                 $objstat->element = $element;
                 $res = $objstat->add_element_resource($fk_resource_room, $resource_type, $busy, $mandatory);

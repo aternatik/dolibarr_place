@@ -42,8 +42,7 @@ require 'lib/place.lib.php';
 $langs->loadLangs(array(
     'place@place',
     'companies',
-    'other')
-);
+    'other'));
 
 // Get parameters
 $id = GETPOST('id', 'int');
@@ -103,9 +102,7 @@ if ($action == 'update' && !$_POST['cancel'] && $user->rights->place->write) {
     } else {
         $action = 'edit';
     }
-}
-
-// Remove file in doc form
+} // Remove file in doc form
 elseif ($action == 'remove_file') {
     if ($object->fetch($id)) {
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -120,8 +117,7 @@ elseif ($action == 'remove_file') {
             setEventMessage($langs->trans('ErrorFailToDeleteFile', GETPOST('urlfile')), 'errors');
         }
     }
-}
-/*
+} /*
  * Generate document
 */
 elseif ($action == 'builddoc') {  // En get ou en post
@@ -169,8 +165,6 @@ $form = new Form($db);
 $formfile = new FormFile($db);
 
 if ($object->fetch($id) > 0) {
-
-
     $head = placePrepareHead($object);
     dol_fiche_head($head, 'place', $langs->trans('PlaceSingular'), 0, 'place@place');
 
@@ -233,7 +227,6 @@ if ($object->fetch($id) > 0) {
         echo '</table>';
         echo '</form>';
     } else {
-
         $contactstat = new Contact($db);
         $objsoc = new Societe($db);
 
@@ -241,18 +234,19 @@ if ($object->fetch($id) > 0) {
 
         if ($contactstat->fetch($object->fk_socpeople)) {
             $morehtmlref='<div class="refidno">';
-            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
-            {
+            if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
                 $objsoc->fetch($object->socid);
                 // Thirdparty
                 $morehtmlref.=$langs->trans('ThirdParty') . ' : ';
-                if ($objsoc->id > 0) $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
-                else $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+                if ($objsoc->id > 0) {
+                    $morehtmlref.=$objsoc->getNomUrl(1, 'contact');
+                } else {
+                    $morehtmlref.=$langs->trans("ContactNotLinkedToCompany");
+                }
             }
             $morehtmlref.='</div>';
 
             dol_banner_tab($contactstat, 'id', $linkback, 1, 'rowid', 'ref', $morehtmlref);
-
         }
 
 
@@ -304,11 +298,6 @@ if ($object->fetch($id) > 0) {
         echo '</tr>';
 
         echo '</table>';
-
-
-
-
-
     }
 
     echo '</div>';
@@ -319,7 +308,6 @@ if ($object->fetch($id) > 0) {
     echo '<div class="tabsAction">';
 
     if ($action != 'edit') {
-
         // Edit place
         if ($user->rights->place->write) {
             echo '<div class="inline-block divButAction">';
@@ -333,8 +321,6 @@ if ($object->fetch($id) > 0) {
             echo '<a href="add.php?id='.$id.'&amp;action=add_building" class="butAction">'.$langs->trans('AddBuilding').'</a>';
             echo '</div>';
         }
-        
-
     }
 
     echo '</div>';
@@ -371,7 +357,6 @@ if ($object->fetch($id) > 0) {
     //$somethingshown = $formactions->showactions($object, 'myobject', $socid, 1, '', $MAXEVENT, '', $morehtmlright);
 
     print '</div></div></div>';
-
 } else {
     dol_print_error();
 }

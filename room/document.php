@@ -50,7 +50,7 @@ require_once '../lib/place.lib.php';
 $langs->load('place@place');
 $langs->load('other');
 
-$action = GETPOST('action','aZ09');
+$action = GETPOST('action', 'aZ09');
 $confirm = GETPOST('confirm');
 $id = (GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
@@ -104,7 +104,6 @@ $form = new Form($db);
 llxHeader('', $langs->trans('Room').' - '.$langs->trans('Files'), $help_url);
 
 if ($object->id) {
-
     /*
      * Affichage onglets
      */

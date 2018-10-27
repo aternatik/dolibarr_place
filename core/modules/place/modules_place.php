@@ -339,7 +339,6 @@ function place_doc_create($db, $object, $message, $modele, $outputlangs)
 
             return 1;
         } else {
-
             $outputlangs->charset_output = $sav_charset_output;
             dol_print_error($db, 'place_doc_create Error: '.$obj->error);
 

@@ -24,7 +24,7 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res = 0;
-if(file_exists('../main.inc.php')) {
+if (file_exists('../main.inc.php')) {
 	$res = include '../main.inc.php';
 	// For root directory
 } elseif (!$res && file_exists('../../main.inc.php')) {

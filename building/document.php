@@ -26,10 +26,18 @@
  */
 
 $res=0;
-if (! $res && file_exists("../main.inc.php")) $res=@include '../main.inc.php';
-if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.php';
-if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
-if (! $res) die("Include of main fails");
+if (! $res && file_exists("../main.inc.php")) {
+    $res=@include '../main.inc.php';
+}
+if (! $res && file_exists("../../main.inc.php")) {
+    $res=@include '../../main.inc.php';
+}
+if (! $res && file_exists("../../../main.inc.php")) {
+    $res=@include '../../../main.inc.php';
+}
+if (! $res) {
+    die("Include of main fails");
+}
 
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -43,33 +51,37 @@ require_once '../lib/place.lib.php';
 $langs->load("place@place");
 $langs->load('other');
 
-$action=GETPOST('action','aZ09');
+$action=GETPOST('action', 'aZ09');
 $confirm=GETPOST('confirm');
-$id=(GETPOST('socid','int') ? GETPOST('socid','int') : GETPOST('id','int'));
+$id=(GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
 
 // Security check
-if ($user->societe_id > 0)
-{
+if ($user->societe_id > 0) {
 	unset($action);
 	$socid = $user->societe_id;
 }
 $result = restrictedArea($user, 'societe', $id, '&societe');
 
 // Get parameters
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
+$sortfield = GETPOST("sortfield", 'alpha');
+$sortorder = GETPOST("sortorder", 'alpha');
+$page = GETPOST("page", 'int');
+if ($page == -1) {
+    $page = 0;
+}
 $offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
-if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="name";
+if (! $sortorder) {
+    $sortorder="ASC";
+}
+if (! $sortfield) {
+    $sortfield="name";
+}
 
 $object = new Building($db);
-if ($id > 0 || ! empty($ref))
-{
+if ($id > 0 || ! empty($ref)) {
 	$result = $object->fetch($id, $ref);
 
 	$relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ', '-', $object->place->ref)).'/building/'.dol_sanitizeFileName($object->ref).'/';
@@ -91,17 +103,15 @@ include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
 $form = new Form($db);
 
 //$help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-llxHeader('',$langs->trans("Building").' - '.$langs->trans("Files"),$help_url);
+llxHeader('', $langs->trans("Building").' - '.$langs->trans("Files"), $help_url);
 
-if ($object->id)
-{
+if ($object->id) {
 	/*
 	 * Affichage onglets
 	 */
-    if($object->place)
-    {
+    if ($object->place) {
         $head=placePrepareHead($object->place);
-        dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+        dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"), 0, 'place@place');
     
         $ret = $object->place->printInfoTable();
         print '</div>';
@@ -111,17 +121,16 @@ if ($object->id)
 
 	$form=new Form($db);
 
-	dol_fiche_head($head, 'document', $langs->trans("BuildingSingular"),0,'building@place');
+	dol_fiche_head($head, 'document', $langs->trans("BuildingSingular"), 0, 'building@place');
 
 	// Construit liste des fichiers
-	$filearray=dol_dir_list($upload_dir,"files",0,'','(\.meta|_preview\.png)$',$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
+	$filearray=dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview\.png)$', $sortfield, (strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC), 1);
 	$totalsize=0;
-	foreach($filearray as $key => $file)
-	{
+	foreach ($filearray as $key => $file) {
 		$totalsize+=$file['size'];
 	}
 
-	$linkback = '<a href="' .dol_buildpath('/place/building/list.php',1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
+	$linkback = '<a href="' .dol_buildpath('/place/building/list.php', 1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
 
 	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
 	print '<div class="fichecenter">';
@@ -147,13 +156,10 @@ if ($object->id)
 	$param = '&id=' . $object->id;
 	
 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
-}
-else
-{
-	accessforbidden('',0,0);
+} else {
+	accessforbidden('', 0, 0);
 }
 
 
 llxFooter();
 $db->close();
-?>

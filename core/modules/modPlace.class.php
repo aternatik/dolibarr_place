@@ -143,8 +143,7 @@ class modPlace extends DolibarrModules
         );
 
         // This is to avoid warnings
-        if (! isset($conf->place) || ! isset($conf->place->enabled))
-        {
+        if (! isset($conf->place) || ! isset($conf->place->enabled)) {
             $conf->place=new stdClass();
             $conf->place->enabled=0;
         }

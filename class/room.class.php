@@ -78,24 +78,46 @@ class Room extends Place
      *  @param  int		$notrigger   0=launch triggers after, 1=disable triggers
      *  @return int      		   	 <0 if KO, Id of created object if OK
      */
-    function create($user, $notrigger=0)
+    function create($user, $notrigger = 0)
     {
     	global $conf, $langs, $hookmanager;
 		$error=0;
 
 		// Clean parameters
 
-		if (isset($this->entity)) $this->entity=trim($this->entity);
-		if (isset($this->ref)) $this->ref=trim($this->ref);
-		if (isset($this->label)) $this->label=trim($this->label);
-		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
-		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
-		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
-		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
-		if (isset($this->capacity)) $this->capacity=trim($this->capacity);
-		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
-		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
-		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
+		if (isset($this->entity)) {
+            $this->entity=trim($this->entity);
+        }
+		if (isset($this->ref)) {
+            $this->ref=trim($this->ref);
+        }
+		if (isset($this->label)) {
+            $this->label=trim($this->label);
+        }
+		if (isset($this->fk_place)) {
+            $this->fk_place=trim($this->fk_place);
+        }
+		if (isset($this->fk_building)) {
+            $this->fk_building=trim($this->fk_building);
+        }
+		if (isset($this->fk_floor)) {
+            $this->fk_floor=trim($this->fk_floor);
+        }
+		if (isset($this->type_code)) {
+            $this->type_code=trim($this->type_code);
+        }
+		if (isset($this->capacity)) {
+            $this->capacity=trim($this->capacity);
+        }
+		if (isset($this->note_public)) {
+            $this->note_public=trim($this->note_public);
+        }
+		if (isset($this->note_private)) {
+            $this->note_private=trim($this->note_private);
+        }
+		if (isset($this->fk_user_creat)) {
+            $this->fk_user_creat=trim($this->fk_user_creat);
+        }
 
 
 
@@ -139,32 +161,31 @@ class Room extends Place
 
 		dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
-    	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+    	if (! $resql) {
+            $error++;
+            $this->errors[]="Error ".$this->db->lasterror();
+        }
 
-		if (! $error)
-        {
+		if (! $error) {
             $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."place_room");
 
             // Actions on extra fields (by external module or standard code)
             // FIXME le hook fait double emploi avec le trigger !!
             $hookmanager->initHooks(array('HookPlacedao'));
             $parameters=array('id'=>$this->id);
-            $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this);    // Note that $action and $object may have been modified by some hooks
-            if (empty($reshook))
-            {
-            	if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-            	{
-            		$result=$this->insertExtraFields();
-            		if ($result < 0)
-            		{
+            $reshook=$hookmanager->executeHooks('insertExtraFields', $parameters, $this);    // Note that $action and $object may have been modified by some hooks
+            if (empty($reshook)) {
+            	if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) { // For avoid conflicts if trigger used
+                    $result=$this->insertExtraFields();
+            		if ($result < 0) {
             			$error++;
             		}
             	}
+            } elseif ($reshook < 0) {
+                $error++;
             }
-            else if ($reshook < 0) $error++;
 
-			if (! $notrigger)
-			{
+			if (! $notrigger) {
 	            // Uncomment this and change MYOBJECT to your own tag if you
 	            // want this action calls a trigger.
 
@@ -178,18 +199,14 @@ class Room extends Place
         }
 
         // Commit or rollback
-        if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+        if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::create ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
             return $this->id;
 		}
@@ -231,15 +248,16 @@ class Room extends Place
 
         $sql.= " FROM ".MAIN_DB_PREFIX."place_room as t";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_placeroom_type as ty ON t.type_code=ty.code";
-        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
-        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        if ($id) {
+            $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        } else {
+            $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        }
 
     	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
-        if ($resql)
-        {
-            if ($this->db->num_rows($resql))
-            {
+        if ($resql) {
+            if ($this->db->num_rows($resql)) {
                 $obj = $this->db->fetch_object($resql);
 
                 $this->id    = $obj->rowid;
@@ -257,27 +275,25 @@ class Room extends Place
 				$this->note_private = $obj->note_private;
 				$this->fk_user_creat = $obj->fk_user_creat;
 				$this->tms = $this->db->jdate($obj->tms);
-
             }
 
             parent::fetch_building($this->fk_building);
             parent::fetch_place($this->fk_place);
             parent::fetch_floor($this->fk_floor);
 
-            if (!class_exists('ExtraFields'))
+            if (!class_exists('ExtraFields')) {
             	require_once(DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php');
+            }
 			$extrafields=new ExtraFields($this->db);
-			$extralabels=$extrafields->fetch_name_optionals_label($this->table_element,true);
+			$extralabels=$extrafields->fetch_name_optionals_label($this->table_element, true);
 			if (count($extralabels)>0) {
-				$this->fetch_optionals($id,$extralabels);
+				$this->fetch_optionals($id, $extralabels);
 			}
 
             $this->db->free($resql);
 
             return 1;
-        }
-        else
-        {
+        } else {
       	    $this->error="Error ".$this->db->lasterror();
             dol_syslog(get_class($this)."::fetch ".$this->error, LOG_ERR);
             return -1;
@@ -294,7 +310,7 @@ class Room extends Place
      *  @param	array		$filter    	  filter output
      *  @return int          	<0 if KO, >0 if OK
      */
-    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter='')
+    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
     {
     	global $conf;
     	$sql="SELECT ";
@@ -318,28 +334,24 @@ class Room extends Place
     	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
-    	if (!empty($filter)){
-    		foreach($filter as $key => $value) {
-    			if (strpos($key,'date')) {
+    	if (!empty($filter)) {
+    		foreach ($filter as $key => $value) {
+    			if (strpos($key, 'date')) {
     				$sql.= ' AND '.$key.' = \''.$this->db->idate($value).'\'';
-    			}
-    			else {
+    			} else {
     				$sql.= " AND ".$key." = '".$value."'";
     			}
     		}
     	}
     	$sql.= " GROUP BY t.rowid, t.ref";
-    	$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit( $limit + 1 ,$offset);
+    	$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit($limit + 1, $offset);
     	dol_syslog(get_class($this)."::fetch_all sql=".$sql, LOG_DEBUG);
     	$resql=$this->db->query($sql);
-    	if ($resql)
-    	{
+    	if ($resql) {
     		$num = $this->db->num_rows($resql);
-    		if ($num)
-    		{
+    		if ($num) {
     			$i = 0;
-    			while ($i < $num)
-    			{
+    			while ($i < $num) {
     				$obj = $this->db->fetch_object($resql);
     				$line = new stdClass($this->db);
     				$line->id				=	$obj->rowid;
@@ -363,9 +375,7 @@ class Room extends Place
     			$this->db->free($resql);
     		}
     		return $num;
-    	}
-    	else
-    	{
+    	} else {
     		$this->error = $this->db->lasterror();
     		return -1;
     	}
@@ -379,24 +389,46 @@ class Room extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
      *  @return int     		   	 <0 if KO, >0 if OK
      */
-    function update($user=0, $notrigger=0)
+    function update($user = 0, $notrigger = 0)
     {
     	global $conf, $langs, $hookmanager;
 		$error=0;
 
 		// Clean parameters
 
-		if (isset($this->entity)) $this->entity=trim($this->entity);
-		if (isset($this->ref)) $this->ref=trim($this->ref);
-		if (isset($this->label)) $this->label=trim($this->label);
-		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
-		if (isset($this->fk_building)) $this->fk_building=trim($this->fk_building);
-		if (isset($this->fk_floor)) $this->fk_floor=trim($this->fk_floor);
-		if (isset($this->type_code)) $this->type_code=trim($this->type_code);
-		if (isset($this->capacity)) $this->capacity=trim($this->capacity);
-		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
-		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
-		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
+		if (isset($this->entity)) {
+            $this->entity=trim($this->entity);
+        }
+		if (isset($this->ref)) {
+            $this->ref=trim($this->ref);
+        }
+		if (isset($this->label)) {
+            $this->label=trim($this->label);
+        }
+		if (isset($this->fk_place)) {
+            $this->fk_place=trim($this->fk_place);
+        }
+		if (isset($this->fk_building)) {
+            $this->fk_building=trim($this->fk_building);
+        }
+		if (isset($this->fk_floor)) {
+            $this->fk_floor=trim($this->fk_floor);
+        }
+		if (isset($this->type_code)) {
+            $this->type_code=trim($this->type_code);
+        }
+		if (isset($this->capacity)) {
+            $this->capacity=trim($this->capacity);
+        }
+		if (isset($this->note_public)) {
+            $this->note_public=trim($this->note_public);
+        }
+		if (isset($this->note_private)) {
+            $this->note_private=trim($this->note_private);
+        }
+		if (isset($this->fk_user_creat)) {
+            $this->fk_user_creat=trim($this->fk_user_creat);
+        }
 
 
 
@@ -425,31 +457,29 @@ class Room extends Place
 
 		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
         $resql = $this->db->query($sql);
-    	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+    	if (! $resql) {
+            $error++;
+            $this->errors[]="Error ".$this->db->lasterror();
+        }
 
-		if (! $error)
-		{
-
+		if (! $error) {
 			// Actions on extra fields (by external module or standard code)
 			// FIXME le hook fait double emploi avec le trigger !!
 			$hookmanager->initHooks(array('HookPlacedao'));
 			$parameters=array('socid'=>$this->id);
-			$reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this);    // Note that $action and $object may have been modified by some hooks
-			if (empty($reshook))
-			{
-				if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-				{
-					$result=$this->insertExtraFields();
-					if ($result < 0)
-					{
+			$reshook=$hookmanager->executeHooks('insertExtraFields', $parameters, $this);    // Note that $action and $object may have been modified by some hooks
+			if (empty($reshook)) {
+				if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) { // For avoid conflicts if trigger used
+                    $result=$this->insertExtraFields();
+					if ($result < 0) {
 						$error++;
 					}
 				}
-			}
-			else if ($reshook < 0) $error++;
+			} elseif ($reshook < 0) {
+                $error++;
+            }
 
-			if (! $notrigger)
-			{
+			if (! $notrigger) {
 	            // Uncomment this and change MYOBJECT to your own tag if you
 	            // want this action calls a trigger.
 
@@ -463,18 +493,14 @@ class Room extends Place
 		}
 
         // Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::update ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -488,17 +514,15 @@ class Room extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
-	function delete($user, $notrigger=0)
+	function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
 		$error=0;
 
 		$this->db->begin();
 
-		if (! $error)
-		{
-			if (! $notrigger)
-			{
+		if (! $error) {
+			if (! $notrigger) {
 				// Uncomment this and change MYOBJECT to your own tag if you
 		        // want this action calls a trigger.
 
@@ -511,23 +535,22 @@ class Room extends Place
 			}
 		}
 
-		if (! $error)
-		{
+		if (! $error) {
     		$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_room";
     		$sql.= " WHERE rowid=".$this->id;
 
     		dol_syslog(get_class($this)."::delete sql=".$sql);
     		$resql = $this->db->query($sql);
-        	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+        	if (! $resql) {
+                $error++;
+                $this->errors[]="Error ".$this->db->lasterror();
+            }
 
         	// Removed extrafields
-        	if (! $error)
-        	{
-        		if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-        		{
-        			$result=$this->deleteExtraFields();
-        			if ($result < 0)
-        			{
+        	if (! $error) {
+        		if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) { // For avoid conflicts if trigger used
+                    $result=$this->deleteExtraFields();
+        			if ($result < 0) {
         				$error++;
         				dol_syslog(get_class($this)."::delete error ".$this->error, LOG_ERR);
         			}
@@ -536,18 +559,14 @@ class Room extends Place
 		}
 
         // Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::delete ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -563,20 +582,20 @@ class Room extends Place
 	{
 		global $langs;
 
-		if (count($this->cache_types_rooms)) return 0;    // Cache deja charge
+		if (count($this->cache_types_rooms)) {
+            return 0;    // Cache deja charge
+        }
 
 		$sql = "SELECT rowid, code, label, use_default, pos, description";
 		$sql.= " FROM ".MAIN_DB_PREFIX."c_placeroom_type";
 		$sql.= " WHERE active > 0";
 		$sql.= " ORDER BY pos";
-		dol_syslog(get_class($this)."::load_cache_type_rooms sql=".$sql,LOG_DEBUG);
+		dol_syslog(get_class($this)."::load_cache_type_rooms sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
-		if ($resql)
-		{
+		if ($resql) {
 			$num = $this->db->num_rows($resql);
 			$i = 0;
-			while ($i < $num)
-			{
+			while ($i < $num) {
 				$obj = $this->db->fetch_object($resql);
 				// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
 				$label=($langs->trans("RoomTypeShort".$obj->code)!=("RoomTypeShort".$obj->code)?$langs->trans("RoomTypeShort".$obj->code):($obj->label!='-'?$obj->label:''));
@@ -587,9 +606,7 @@ class Room extends Place
 				$i++;
 			}
 			return $num;
-		}
-		else
-		{
+		} else {
 			dol_print_error($this->db);
 			return -1;
 		}
@@ -603,12 +620,11 @@ class Room extends Place
 	 *	@param      string	$get_params    	Parametres added to url
 	 *	@return     string          		String with URL
 	 */
-	function getNomUrl($withpicto=0, $option='', $notooltip=0, $morecss='', $save_lastsearch_value=-1)
+	function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
 	{
 		global $langs;
 
-		return parent::getNomUrl($withpicto,'room@place', $notooltip, $morecss, $save_lastsearch_value);
-
+		return parent::getNomUrl($withpicto, 'room@place', $notooltip, $morecss, $save_lastsearch_value);
 	}
 
 	/**
@@ -639,26 +655,19 @@ class Room extends Place
 		$result=$object->create($user);
 
 		// Other options
-		if ($result < 0)
-		{
+		if ($result < 0) {
 			$this->error=$object->error;
 			$error++;
 		}
 
-		if (! $error)
-		{
-
-
+		if (! $error) {
 		}
 
 		// End
-		if (! $error)
-		{
+		if (! $error) {
 			$this->db->commit();
 			return $object->id;
-		}
-		else
-		{
+		} else {
 			$this->db->rollback();
 			return -1;
 		}
@@ -687,9 +696,5 @@ class Room extends Place
 		$this->note_private='';
 		$this->fk_user_creat='';
 		$this->tms='';
-
-
 	}
-
 }
-?>

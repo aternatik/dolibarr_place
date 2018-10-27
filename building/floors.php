@@ -35,10 +35,18 @@
 
 // Change this following line to use the correct relative path (../, ../../, etc)
 $res=0;
-if (! $res && file_exists("../main.inc.php")) $res=@include '../main.inc.php';
-if (! $res && file_exists("../../main.inc.php")) $res=@include '../../main.inc.php';
-if (! $res && file_exists("../../../main.inc.php")) $res=@include '../../../main.inc.php';
-if (! $res) die("Include of main fails");
+if (! $res && file_exists("../main.inc.php")) {
+    $res=@include '../main.inc.php';
+}
+if (! $res && file_exists("../../main.inc.php")) {
+    $res=@include '../../main.inc.php';
+}
+if (! $res && file_exists("../../../main.inc.php")) {
+    $res=@include '../../../main.inc.php';
+}
+if (! $res) {
+    die("Include of main fails");
+}
 
 // Change this following line to use the correct relative path from htdocs
 require_once '../class/building.class.php';
@@ -50,17 +58,18 @@ $langs->load("companies");
 $langs->load("other");
 
 // Get parameters
-$id			= GETPOST('id','int');
-$action		= GETPOST('action','alpha');
-$fk_place	= GETPOST('fk_place','int');
-$ref		= GETPOST('ref','alpha');
-$lat		= GETPOST('lat','alpha');
-$lng		= GETPOST('lng','alpha');
+$id			= GETPOST('id', 'int');
+$action		= GETPOST('action', 'alpha');
+$fk_place	= GETPOST('fk_place', 'int');
+$ref		= GETPOST('ref', 'alpha');
+$lat		= GETPOST('lat', 'alpha');
+$lng		= GETPOST('lng', 'alpha');
 
-$mode		= GETPOST('mode','alpha');
+$mode		= GETPOST('mode', 'alpha');
 
-if( ! $user->rights->place->read)
+if (! $user->rights->place->read) {
 	accessforbidden();
+}
 
 $object=new Building($db);
 
@@ -71,9 +80,7 @@ $object=new Building($db);
 *
 * Put here all code to do according to value of "action" parameter
 ********************************************************************/
-if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->write )
-{
-
+if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->write) {
 	$res = $object->fetch($id);
 
 	$floor_ref	= GETPOST('floor_ref');
@@ -82,8 +89,7 @@ if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->w
 
 	// Assemblage du tableau des enfants
 	$i=0;
-	while(isset($floor_ref[$i]) && !empty($floor_ref[$i]))
-	{
+	while (isset($floor_ref[$i]) && !empty($floor_ref[$i])) {
 		$floors[$i]['ref'] 			= $db->escape($floor_ref[$i]);
 		$floors[$i]['pos'] 			= $db->escape($floor_pos[$i]);
 		$floors[$i]['fk_building'] 	= $db->escape($id);
@@ -94,34 +100,27 @@ if ($action == 'update_floors' && ! $_POST["cancel"]  && $user->rights->place->w
 	$object->floors = $floors;
 
 	$result = $object->insertFloors($user);
-	if ( $result > 0)
-	{
+	if ($result > 0) {
 		setEventMessage($langs->trans('FloorsUpdated'));
-	}
-	else
-	{
+	} else {
 		$action="add_floors";
 		$mode='edit';
 	}
-}
-/*
+} /*
  * Delete child
 */
-else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->place->delete)
-{
+elseif ($action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->place->delete) {
 	$id = GETPOST('id');
 	$id_floor = GETPOST('id_floor');
 
 	$result = $object->deleteFloor($id_floor);
-	if ($result > 0)
-	{
+	if ($result > 0) {
 		setEventMessage($langs->trans('FloorDeletedWithSuccess'));
 		Header("Location: floors.php?action=show_floor_form&id=".$id);
 		exit();
-	}
-	else
-		dol_print_error($db);
-
+	} else {
+        dol_print_error($db);
+    }
 }
 
 
@@ -133,16 +132,14 @@ else if ( $action == 'delete_floor' && ! $_POST["cancel"]  && $user->rights->pla
 * Put here all code to build page
 ****************************************************/
 
-llxHeader('',$langs->trans('FloorManagment'),'','','','',array('/place/js/place.js.php'));
+llxHeader('', $langs->trans('FloorManagment'), '', '', '', '', array('/place/js/place.js.php'));
 
 $form=new Form($db);
 
 
-if($object->fetch($id) > 0 )
-{
-
+if ($object->fetch($id) > 0) {
 	$head=placePrepareHead($object->place);
-	dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"),0,'place@place');
+	dol_fiche_head($head, 'buildings', $langs->trans("PlaceSingular"), 0, 'place@place');
 
 	$ret = $object->place->printInfoTable();
 
@@ -150,7 +147,7 @@ if($object->fetch($id) > 0 )
 
 	//Second tabs list for building
 	$head=buildingPrepareHead($object);
-	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"),0,'building@place');
+	dol_fiche_head($head, 'floors', $langs->trans("BuildingSingular"), 0, 'building@place');
 
 
 
@@ -166,15 +163,13 @@ if($object->fetch($id) > 0 )
 	 */
 
 	print '</div><br />';
-	print load_fiche_titre($langs->trans('FloorManagment'),'','floor_32.png@place');
+	print load_fiche_titre($langs->trans('FloorManagment'), '', 'floor_32.png@place');
 
-	if($action == 'show_floor_form')
-	{
-
+	if ($action == 'show_floor_form') {
 		$out .= '<form method="post" action="'.$_SERVER['PHP_SELF'].'" name="add_building">';
 		$out .='<input type="hidden" name="action" value="update_floors" />';
 		$out .='<input type="hidden" name="id" value="'.$id.'" />';
-		$out .= $object->show_floor_form($id,$user->rights->place->delete);
+		$out .= $object->show_floor_form($id, $user->rights->place->delete);
 
 		$out .='<div style="text-align: center" >
 				<input type="submit"  class="button" name="" value="'.$langs->trans('Save').'" />
@@ -182,12 +177,8 @@ if($object->fetch($id) > 0 )
 		</div>';
 
 		$out .= '</form>';
-
-	}
-	else {
-
+	} else {
 		$out .= $object->show_floor_list($id);
-
 	}
 
 	print $out;
@@ -198,12 +189,9 @@ if($object->fetch($id) > 0 )
 	*/
 	print '<div class="tabsAction">';
 
-	if ($action != "show_floor_form" )
-	{
-
+	if ($action != "show_floor_form") {
 		// Add floor
-		if($user->rights->place->write)
-		{
+		if ($user->rights->place->write) {
 			print '<div class="inline-block divButAction">';
 			print '<a href="floors.php?id='.$id.'&amp;action=show_floor_form" class="butAction">'.$langs->trans('FloorEdition').'</a>';
 			print '</div>';
@@ -214,7 +202,6 @@ if($object->fetch($id) > 0 )
 		}
 	}
 	print '</div>';
-
 }
 
 
@@ -226,8 +213,7 @@ if($object->fetch($id) > 0 )
 
 
 // Example 3 : List of data
-if ($action == 'list')
-{
+if ($action == 'list') {
     $sql = "SELECT";
     $sql.= " t.rowid,";
 
@@ -250,23 +236,19 @@ if ($action == 'list')
 
     print '<table class="noborder">'."\n";
     print '<tr class="liste_titre">';
-    print_liste_field_titre($langs->trans('field1'),$_SERVER['PHP_SELF'],'t.field1','',$param,'',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans('field2'),$_SERVER['PHP_SELF'],'t.field2','',$param,'',$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans('field1'), $_SERVER['PHP_SELF'], 't.field1', '', $param, '', $sortfield, $sortorder);
+    print_liste_field_titre($langs->trans('field2'), $_SERVER['PHP_SELF'], 't.field2', '', $param, '', $sortfield, $sortorder);
     print '</tr>';
 
     dol_syslog($script_file." sql=".$sql, LOG_DEBUG);
     $resql=$db->query($sql);
-    if ($resql)
-    {
+    if ($resql) {
         $num = $db->num_rows($resql);
         $i = 0;
-        if ($num)
-        {
-            while ($i < $num)
-            {
+        if ($num) {
+            while ($i < $num) {
                 $obj = $db->fetch_object($resql);
-                if ($obj)
-                {
+                if ($obj) {
                     // You can use here results
                     print '<tr><td>';
                     print $obj->field1;
@@ -276,9 +258,7 @@ if ($action == 'list')
                 $i++;
             }
         }
-    }
-    else
-    {
+    } else {
         $error++;
         dol_print_error($db);
     }
@@ -291,4 +271,3 @@ if ($action == 'list')
 // End of page
 llxFooter();
 $db->close();
-?>

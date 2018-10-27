@@ -130,7 +130,7 @@ class doc_generic_place_odt extends ModelePdfPlace
      * @param   string          $array_key          Name of the key for return array
      * @return  array                               Array of substitution
      */
-    function get_substitutionarray_object($object,$outputlangs,$array_key='object')
+    function get_substitutionarray_object($object, $outputlangs, $array_key = 'object')
     {
         global $conf;
 
@@ -473,7 +473,9 @@ class doc_generic_place_odt extends ModelePdfPlace
 
                 return -1;
             }
-        } else print 'eroooooooooooooooooooooooooooooooor';
+        } else {
+            print 'eroooooooooooooooooooooooooooooooor';
+        }
 
         return -1;
     }

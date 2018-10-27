@@ -73,23 +73,43 @@ class Building extends Place
      *  @param  int		$notrigger   0=launch triggers after, 1=disable triggers
      *  @return int      		   	 <0 if KO, Id of created object if OK
      */
-    function create($user, $notrigger=0)
+    function create($user, $notrigger = 0)
     {
     	global $conf, $langs;
 		$error=0;
 
 		// Clean parameters
 
-		if (isset($this->entity)) $this->entity=trim($this->entity);
-		if (isset($this->ref)) $this->ref=trim($this->ref);
-		if (isset($this->label)) $this->label=trim($this->label);
-		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
-		if (isset($this->description)) $this->description=trim($this->description);
-		if (isset($this->lat)) $this->lat=trim($this->lat);
-		if (isset($this->lng)) $this->lng=trim($this->lng);
-		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
-		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
-		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
+		if (isset($this->entity)) {
+            $this->entity=trim($this->entity);
+        }
+		if (isset($this->ref)) {
+            $this->ref=trim($this->ref);
+        }
+		if (isset($this->label)) {
+            $this->label=trim($this->label);
+        }
+		if (isset($this->fk_place)) {
+            $this->fk_place=trim($this->fk_place);
+        }
+		if (isset($this->description)) {
+            $this->description=trim($this->description);
+        }
+		if (isset($this->lat)) {
+            $this->lat=trim($this->lat);
+        }
+		if (isset($this->lng)) {
+            $this->lng=trim($this->lng);
+        }
+		if (isset($this->note_public)) {
+            $this->note_public=trim($this->note_public);
+        }
+		if (isset($this->note_private)) {
+            $this->note_private=trim($this->note_private);
+        }
+		if (isset($this->fk_user_creat)) {
+            $this->fk_user_creat=trim($this->fk_user_creat);
+        }
 
 
 
@@ -131,14 +151,15 @@ class Building extends Place
 
 	   	dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
-    	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+    	if (! $resql) {
+            $error++;
+            $this->errors[]="Error ".$this->db->lasterror();
+        }
 
-		if (! $error)
-        {
+		if (! $error) {
             $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."place_building");
 
-			if (! $notrigger)
-			{
+			if (! $notrigger) {
 	            // Uncomment this and change MYOBJECT to your own tag if you
 	            // want this action calls a trigger.
 
@@ -152,18 +173,14 @@ class Building extends Place
         }
 
         // Commit or rollback
-        if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+        if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::create ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
             return $this->id;
 		}
@@ -202,15 +219,16 @@ class Building extends Place
 
 
         $sql.= " FROM ".MAIN_DB_PREFIX."place_building as t";
-        if ($id) $sql.= " WHERE t.rowid = ".$this->db->escape($id);
-        else $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        if ($id) {
+            $sql.= " WHERE t.rowid = ".$this->db->escape($id);
+        } else {
+            $sql.= " WHERE t.ref = '".$this->db->escape($ref)."'";
+        }
 
     	dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
-        if ($resql)
-        {
-            if ($this->db->num_rows($resql))
-            {
+        if ($resql) {
+            if ($this->db->num_rows($resql)) {
                 $obj = $this->db->fetch_object($resql);
 
                 $this->id    = $obj->rowid;
@@ -229,14 +247,11 @@ class Building extends Place
 
 				// Retrieve place info
 				$this->fetch_place();
-
             }
             $this->db->free($resql);
 
             return 1;
-        }
-        else
-        {
+        } else {
       	    $this->error="Error ".$this->db->lasterror();
             dol_syslog(get_class($this)."::fetch ".$this->error, LOG_ERR);
             return -1;
@@ -253,7 +268,7 @@ class Building extends Place
      *  @param	array		$filter    	  filter output
      *  @return int          	<0 if KO, >0 if OK
      */
-    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter='')
+    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
     {
     	global $conf;
     	$sql="SELECT ";
@@ -272,28 +287,24 @@ class Building extends Place
     	$sql.= " WHERE t.entity IN (".getEntity('resource', true).")";
 
     	//Manage filter
-    	if (!empty($filter)){
-    		foreach($filter as $key => $value) {
-    			if (strpos($key,'date')) {
+    	if (!empty($filter)) {
+    		foreach ($filter as $key => $value) {
+    			if (strpos($key, 'date')) {
     				$sql.= ' AND '.$key.' = \''.$this->db->idate($value).'\'';
-    			}
-    			else {
+    			} else {
     				$sql.= ' AND '.$key.' LIKE \'%'.$value.'%\'';
     			}
     		}
     	}
     	$sql.= " GROUP BY t.rowid, t.ref";
-    	$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit( $limit + 1 ,$offset);
+    	$sql.= " ORDER BY $sortfield $sortorder " . $this->db->plimit($limit + 1, $offset);
     	dol_syslog(get_class($this)."::fetch_all sql=".$sql, LOG_DEBUG);
     	$resql=$this->db->query($sql);
-    	if ($resql)
-    	{
+    	if ($resql) {
     		$num = $this->db->num_rows($resql);
-    		if ($num)
-    		{
+    		if ($num) {
     			$i = 0;
-    			while ($i < $num)
-    			{
+    			while ($i < $num) {
     				$obj = $this->db->fetch_object($resql);
     				$line = new Place($this->db);
     				$line->id			=	$obj->rowid;
@@ -311,9 +322,7 @@ class Building extends Place
     			$this->db->free($resql);
     		}
     		return $num;
-    	}
-    	else
-    	{
+    	} else {
     		$this->error = $this->db->lasterror();
     		return -1;
     	}
@@ -328,7 +337,9 @@ class Building extends Place
     {
     	global $conf;
 
-    	if (empty($this->fk_place)) return 0;
+    	if (empty($this->fk_place)) {
+            return 0;
+        }
 
     	$place = new Place($this->db);
     	$result=$place->fetch($this->fk_place);
@@ -345,23 +356,43 @@ class Building extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
      *  @return int     		   	 <0 if KO, >0 if OK
      */
-    function update($user=0, $notrigger=0)
+    function update($user = 0, $notrigger = 0)
     {
     	global $conf, $langs;
 		$error=0;
 
 		// Clean parameters
 
-		if (isset($this->entity)) $this->entity=trim($this->entity);
-		if (isset($this->ref)) $this->ref=trim($this->ref);
-		if (isset($this->label)) $this->label=trim($this->label);
-		if (isset($this->fk_place)) $this->fk_place=trim($this->fk_place);
-		if (isset($this->description)) $this->description=trim($this->description);
-		if (isset($this->lat)) $this->lat=trim($this->lat);
-		if (isset($this->lng)) $this->lng=trim($this->lng);
-		if (isset($this->note_public)) $this->note_public=trim($this->note_public);
-		if (isset($this->note_private)) $this->note_private=trim($this->note_private);
-		if (isset($this->fk_user_creat)) $this->fk_user_creat=trim($this->fk_user_creat);
+		if (isset($this->entity)) {
+            $this->entity=trim($this->entity);
+        }
+		if (isset($this->ref)) {
+            $this->ref=trim($this->ref);
+        }
+		if (isset($this->label)) {
+            $this->label=trim($this->label);
+        }
+		if (isset($this->fk_place)) {
+            $this->fk_place=trim($this->fk_place);
+        }
+		if (isset($this->description)) {
+            $this->description=trim($this->description);
+        }
+		if (isset($this->lat)) {
+            $this->lat=trim($this->lat);
+        }
+		if (isset($this->lng)) {
+            $this->lng=trim($this->lng);
+        }
+		if (isset($this->note_public)) {
+            $this->note_public=trim($this->note_public);
+        }
+		if (isset($this->note_private)) {
+            $this->note_private=trim($this->note_private);
+        }
+		if (isset($this->fk_user_creat)) {
+            $this->fk_user_creat=trim($this->fk_user_creat);
+        }
 
 
 
@@ -390,12 +421,13 @@ class Building extends Place
 
 		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
         $resql = $this->db->query($sql);
-    	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+    	if (! $resql) {
+            $error++;
+            $this->errors[]="Error ".$this->db->lasterror();
+        }
 
-		if (! $error)
-		{
-			if (! $notrigger)
-			{
+		if (! $error) {
+			if (! $notrigger) {
 	            // Uncomment this and change MYOBJECT to your own tag if you
 	            // want this action calls a trigger.
 
@@ -409,18 +441,14 @@ class Building extends Place
 		}
 
         // Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::update ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -434,17 +462,15 @@ class Building extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
-	function delete($user, $notrigger=0)
+	function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
 		$error=0;
 
 		$this->db->begin();
 
-		if (! $error)
-		{
-			if (! $notrigger)
-			{
+		if (! $error) {
+			if (! $notrigger) {
 				// Uncomment this and change MYOBJECT to your own tag if you
 		        // want this action calls a trigger.
 
@@ -457,29 +483,27 @@ class Building extends Place
 			}
 		}
 
-		if (! $error)
-		{
+		if (! $error) {
     		$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_building";
     		$sql.= " WHERE rowid=".$this->id;
 
     		dol_syslog(get_class($this)."::delete sql=".$sql);
     		$resql = $this->db->query($sql);
-        	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+        	if (! $resql) {
+                $error++;
+                $this->errors[]="Error ".$this->db->lasterror();
+            }
 		}
 
         // Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 	            dol_syslog(get_class($this)."::delete ".$errmsg, LOG_ERR);
 	            $this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -579,16 +603,14 @@ class Building extends Place
 	{
 		global $langs;
 
-		if ( ! $fk_building > 0)
-		{
+		if (! $fk_building > 0) {
 			return '';
 		}
 		$out = '';
 		$langs->load('place@place');
 
 		$list_floor = $this->getFloorList($fk_building);
-		if( is_array($list_floor) && sizeof($list_floor) > 0)
-		{
+		if (is_array($list_floor) && sizeof($list_floor) > 0) {
 			$out .= '<table width="100%;" class="noborder">';
 			//$out .=  '<table class="noborder">'."\n";
 		    $out .=  '<tr class="liste_titre">';
@@ -596,8 +618,7 @@ class Building extends Place
 		    $out .= '<th class="liste_titre">'.$langs->trans('FloorOrder').'</th>';
 		    $out .=  '</tr>';
 
-			foreach ($list_floor as $key => $floor)
-			{
+			foreach ($list_floor as $key => $floor) {
 			    $out .= '<tr>';
 			    $out .= '<td>';
 			    $out .= $floor->ref;
@@ -610,27 +631,23 @@ class Building extends Place
 			}
 
 			$out .= '</table>';
-
-		}
-		else if($list_floor < 0)
+		} elseif ($list_floor < 0) {
 			setEventMessage($this->error);
-		else {
+		} else {
 			$out.='<div class="info">'.$langs->trans('NoFloorFoundForThisBuilding').'</div>';
 		}
 
 		return $out;
-
 	}
 
 	/**
 	 * Function to show floor select list from database read
 	 */
-	function show_select_floor($fk_building,$htmlname,$id_floor='')
+	function show_select_floor($fk_building, $htmlname, $id_floor = '')
 	{
 		global $langs;
 
-		if ( ! $fk_building > 0)
-		{
+		if (! $fk_building > 0) {
 			return '';
 		}
 		$out = '';
@@ -638,16 +655,15 @@ class Building extends Place
 
 		$list_floor = $this->getFloorList($fk_building);
 
-		if( is_array($list_floor) && sizeof($list_floor) > 0)
-		{
+		if (is_array($list_floor) && sizeof($list_floor) > 0) {
 			$out .= '<select name="'.$htmlname.'">';
 
 
-			foreach ($list_floor as $key => $floor)
-			{
+			foreach ($list_floor as $key => $floor) {
 				$out .= '<option value="'.$floor->id.'"';
-				if($id_floor == $floor->id)
+				if ($id_floor == $floor->id) {
 					$out .= ' selected="selected"';
+                }
 				$out .= '>';
 
 
@@ -657,16 +673,13 @@ class Building extends Place
 			}
 
 			$out .= '</select>';
-
-		}
-		else if($list_floor < 0)
+		} elseif ($list_floor < 0) {
 			setEventMessage($this->error);
-		else {
+		} else {
 			$out.='<div class="info">'.$langs->trans('NoFloorFoundForThisBuilding').'</div>';
 		}
 
 		return $out;
-
 	}
 
 	/**
@@ -680,14 +693,12 @@ class Building extends Place
 		global $conf;
 	
 		$error='';
-		if(! $fk_place>0)
-		{
+		if (! $fk_place>0) {
 			$error++;
 			$this->error = '$fk_place must be provided';
 		}
 	
-		if(!$error)
-		{
+		if (!$error) {
 			$buildings = array();
 	
 			$sql = 'SELECT rowid, ref, label';
@@ -697,14 +708,11 @@ class Building extends Place
 			$sql.= " ORDER BY ref ASC";
 			dol_syslog(get_class($this)."::getBuildingList sql=".$sql, LOG_DEBUG);
 			$resql=$this->db->query($sql);
-			if ($resql)
-			{
+			if ($resql) {
 				$num = $this->db->num_rows($resql);
-				if ($num)
-				{
+				if ($num) {
 					$i = 0;
-					while ($i < $num)
-					{
+					while ($i < $num) {
 						$obj = $this->db->fetch_object($resql);
 	
 						$buildingstatic = new Building($this->db);
@@ -717,19 +725,13 @@ class Building extends Place
 					}
 				}
 				return $buildings;
-			}
-			else
-			{
+			} else {
 				$this->error = $this->db->lasterror();
 				return -1;
 			}
-	
-		}
-		else
-		{
+		} else {
 			return -1;
 		}
-	
 	}
 
 	/**
@@ -743,14 +745,12 @@ class Building extends Place
 		global $conf;
 
 		$error='';
-		if(! $fk_building>0)
-		{
+		if (! $fk_building>0) {
 			$error++;
 			$this->error = '$fk_building must be provided';
 		}
 
-		if(!$error)
-		{
+		if (!$error) {
 			$floor = array();
 
 			$sql = 'SELECT rowid, ref, pos, fk_building';
@@ -760,14 +760,11 @@ class Building extends Place
 			$sql.= " ORDER BY pos ASC";
 			dol_syslog(get_class($this)."::getFloorList sql=".$sql, LOG_DEBUG);
 			$resql=$this->db->query($sql);
-			if ($resql)
-			{
+			if ($resql) {
 				$num = $this->db->num_rows($resql);
-				if ($num)
-				{
+				if ($num) {
 					$i = 0;
-					while ($i < $num)
-					{
+					while ($i < $num) {
 						$obj = $this->db->fetch_object($resql);
 
 						$floorstatic = new stdClass($this->db);
@@ -781,25 +778,19 @@ class Building extends Place
 					}
 				}
 				return $floor;
-			}
-			else
-			{
+			} else {
 				$this->error = $this->db->lasterror();
 				return -1;
 			}
-
-		}
-		else
-		{
+		} else {
 			return -1;
 		}
-
 	}
 
 	/**
 	 * Function to show floors form to add/edit database
 	 */
-	function show_floor_form($fk_building,$show_link_delete=0)
+	function show_floor_form($fk_building, $show_link_delete = 0)
 	{
 		global $langs;
 
@@ -809,17 +800,13 @@ class Building extends Place
 
 		$list_floor = $this->getFloorList($fk_building);
 
-		if( is_array($list_floor) && count($list_floor) > 0)
-		{
-			foreach ($list_floor as $key => $floor)
-			{
+		if (is_array($list_floor) && count($list_floor) > 0) {
+			foreach ($list_floor as $key => $floor) {
 				$floor_id[]			= $floor->id;
 				$floor_ref[] 		= $floor->ref;
 				$floor_pos[] 		= $floor->pos;
 			}
-		}
-		else
-		{
+		} else {
 			$floor_ref		= GETPOST('floor_ref');
 			$floor_pos		= GETPOST('floor_pos');
 		}
@@ -829,15 +816,15 @@ class Building extends Place
 
 		// Show existent
 		$i=0;
-		while(isset($floor_ref[$i]))
-		{
+		while (isset($floor_ref[$i])) {
 			$out .= '<ul class="edit_floor">';
 			$out .= '<li class="edit">';
 			$out .= '<label>'.$langs->trans("FloorNumber");
 			$out .= '</label>';
 			$out .= '<input type="text" name="floor_ref[]" value="'.$floor_ref[$i].'"/>';
-			if($show_link_delete)
-				$out .= '<a href="'.$_SERVER['PHP_SELF'].'?action=delete_floor&amp;id='.$fk_building.'&amp;id_floor='. $floor_id[$i].'">'.img_picto($langs->trans('Delete'),'delete').'</a> ';
+			if ($show_link_delete) {
+				$out .= '<a href="'.$_SERVER['PHP_SELF'].'?action=delete_floor&amp;id='.$fk_building.'&amp;id_floor='. $floor_id[$i].'">'.img_picto($langs->trans('Delete'), 'delete').'</a> ';
+            }
 			$out .= '</li>';
 
 
@@ -852,11 +839,10 @@ class Building extends Place
 		}
 
 		$out .= '</div>';
-		$out .= '<p><a href="#" id="addfloor">'.img_picto('','edit_add').' '.$langs->trans('AddFloor').'</a></p>';
+		$out .= '<p><a href="#" id="addfloor">'.img_picto('', 'edit_add').' '.$langs->trans('AddFloor').'</a></p>';
 		//$out .= '</form>';
 
 		return $out;
-
 	}
 
 	/**
@@ -868,23 +854,20 @@ class Building extends Place
 	{
 		global $conf, $langs;
 
-		if (sizeof($this->floors) > 0)
-		{
+		if (sizeof($this->floors) > 0) {
 			dol_syslog(get_class($this)."::insertFloors id=".$this->id, LOG_DEBUG);
 
 			$error=0;
 			$created=array();
 
 			$result=$this->deleteFloorsForBuilding();
-			if(!result)
-			{
+			if (!result) {
 				$error++;
 			}
 
 			$this->db->begin();
 
-			foreach($this->floors as $key => $floor)
-			{
+			foreach ($this->floors as $key => $floor) {
 				// Insert request
 				$sql = "INSERT INTO ".MAIN_DB_PREFIX."place_floor (";
 				$sql.= " ref,";
@@ -903,27 +886,25 @@ class Building extends Place
 
 				dol_syslog(get_class($this)."::insertFloors sql=".$sql, LOG_DEBUG);
 				$resql=$this->db->query($sql);
-				if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+				if (! $resql) {
+                    $error++;
+                    $this->errors[]="Error ".$this->db->lasterror();
+                }
 
-				if (! $error)
-				{
+				if (! $error) {
 					$created[] = $this->db->last_insert_id(MAIN_DB_PREFIX."place_floor");
 				}
 			}
 
 			// Commit or rollback
-			if ($error)
-			{
-				foreach($this->errors as $errmsg)
-				{
+			if ($error) {
+				foreach ($this->errors as $errmsg) {
 					dol_syslog(get_class($this)."::insertFloors ".$errmsg, LOG_ERR);
 					$this->error.=($this->error?', '.$errmsg:$errmsg);
 				}
 				$this->db->rollback();
 				return -1*$error;
-			}
-			else
-			{
+			} else {
 				$this->db->commit();
 				$result = sizeof($created);
 			}
@@ -944,29 +925,27 @@ class Building extends Place
 
 		$this->db->begin();
 
-		if (! $error)
-		{
+		if (! $error) {
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_floor";
 			$sql.= " WHERE fk_building=".$this->id;
 
 			dol_syslog(get_class($this)."::deleteFloorsForBuilding sql=".$sql);
 			$resql = $this->db->query($sql);
-			if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+			if (! $resql) {
+                $error++;
+                $this->errors[]="Error ".$this->db->lasterror();
+            }
 		}
 
 		// Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 				dol_syslog(get_class($this)."::deleteFloorsForBuilding ".$errmsg, LOG_ERR);
 				$this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -985,29 +964,27 @@ class Building extends Place
 
 		$this->db->begin();
 
-		if (! $error)
-		{
+		if (! $error) {
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."place_floor";
 			$sql.= " WHERE rowid=".$id;
 
 			dol_syslog(get_class($this)."::deleteFloor sql=".$sql);
 			$resql = $this->db->query($sql);
-			if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
+			if (! $resql) {
+                $error++;
+                $this->errors[]="Error ".$this->db->lasterror();
+            }
 		}
 
 		// Commit or rollback
-		if ($error)
-		{
-			foreach($this->errors as $errmsg)
-			{
+		if ($error) {
+			foreach ($this->errors as $errmsg) {
 				dol_syslog(get_class($this)."::deleteFloor ".$errmsg, LOG_ERR);
 				$this->error.=($this->error?', '.$errmsg:$errmsg);
 			}
 			$this->db->rollback();
 			return -1*$error;
-		}
-		else
-		{
+		} else {
 			$this->db->commit();
 			return 1;
 		}
@@ -1042,26 +1019,19 @@ class Building extends Place
 		$result=$object->create($user);
 
 		// Other options
-		if ($result < 0)
-		{
+		if ($result < 0) {
 			$this->error=$object->error;
 			$error++;
 		}
 
-		if (! $error)
-		{
-
-
+		if (! $error) {
 		}
 
 		// End
-		if (! $error)
-		{
+		if (! $error) {
 			$this->db->commit();
 			return $object->id;
-		}
-		else
-		{
+		} else {
 			$this->db->rollback();
 			return -1;
 		}
@@ -1089,9 +1059,5 @@ class Building extends Place
 		$this->note_private='';
 		$this->fk_user_creat='';
 		$this->tms='';
-
-
 	}
-
 }
-?>
