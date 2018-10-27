@@ -43,8 +43,7 @@ require_once '../lib/place.lib.php';
 $langs->load("place@place");
 $langs->load('other');
 
-
-$action=GETPOST('action');
+$action=GETPOST('action','aZ09');
 $confirm=GETPOST('confirm');
 $id=(GETPOST('socid','int') ? GETPOST('socid','int') : GETPOST('id','int'));
 $ref = GETPOST('ref', 'alpha');
@@ -73,16 +72,16 @@ if ($id > 0 || ! empty($ref))
 {
 	$result = $object->fetch($id, $ref);
 
-	$relativepathwithnofile = 'building/' . dol_sanitizeFileName($object->ref).'/'; // for sub-directory
-	$upload_dir = $conf->place->dir_output . "/building/" . dol_sanitizeFileName($object->ref) ;
+	$relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ', '-', $object->place->ref)).'/building/'.dol_sanitizeFileName($object->ref).'/';
+	$upload_dir = $conf->place->multidir_output[$object->entity].'/'.$relativepathwithnofile;
 }
-
 
 /*
  * Actions
  */
 
-include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_pre_headers.tpl.php';
+include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
+
 
 
 /*
@@ -122,28 +121,31 @@ if ($object->id)
 		$totalsize+=$file['size'];
 	}
 
+	$linkback = '<a href="' .dol_buildpath('/place/building/list.php',1) . '?restore_lastsearch_values=1' . (! empty($socid) ? '&socid=' . $socid : '') . '">' . $langs->trans("BackToList") . '</a>';
 
-	print '<table class="border"width="100%">';
+	dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', $morehtmlref);
+	print '<div class="fichecenter">';
 
-	// Ref
-	print '<tr><td width="25%">'.$langs->trans("BuildingFormLabel_ref").'</td>';
-	print '<td colspan="3">';
-	print $form->showrefnav($object,'id','',($user->societe_id?0:1),'rowid','ref');
-	print '</td></tr>';
+    print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
 
-	// Nbre fichiers
-	print '<tr><td>'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
+	// Number of files
+	print '<tr><td class="titlefield">'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
-	//Total taille
+	// Total size
 	print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.$totalsize.' '.$langs->trans("bytes").'</td></tr>';
 
 	print '</table>';
 
-	print '</div><br />';
+	print '</div>';
+	dol_fiche_end();
+
 
 	$modulepart = 'place';
 	$permission = $user->rights->place->write;
+	$permtoedit = 1;
 	$param = '&id=' . $object->id;
+	
 	include_once DOL_DOCUMENT_ROOT . '/core/tpl/document_actions_post_headers.tpl.php';
 }
 else

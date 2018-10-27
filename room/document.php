@@ -50,7 +50,7 @@ require_once '../lib/place.lib.php';
 $langs->load('place@place');
 $langs->load('other');
 
-$action = GETPOST('action');
+$action = GETPOST('action','aZ09');
 $confirm = GETPOST('confirm');
 $id = (GETPOST('socid', 'int') ? GETPOST('socid', 'int') : GETPOST('id', 'int'));
 $ref = GETPOST('ref', 'alpha');
@@ -84,14 +84,15 @@ if ($id > 0 || !empty($ref)) {
     $result = $object->fetch($id, $ref);
 
     $relativepathwithnofile = dol_sanitizeFileName($object->place->id.'-'.str_replace(' ', '-', $object->place->ref)).'/building/'.dol_sanitizeFileName($object->building->ref).'/rooms/'.dol_sanitizeFileName($object->ref).'/'; // for sub-directory
-    $upload_dir = $conf->place->dir_output.'/'.$relativepathwithnofile;
+    $upload_dir = $conf->place->multidir_output[$object->entity].'/'.$relativepathwithnofile;
 }
 
 /*
  * Actions
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_pre_headers.tpl.php';
+include_once DOL_DOCUMENT_ROOT . '/core/actions_linkedfiles.inc.php';
+
 
 /*
  * View
@@ -155,7 +156,9 @@ if ($object->id) {
 
     $modulepart = 'place';
     $permission = $user->rights->place->write;
+    $permtoedit = $user->rights->place->write;
     $param = '&id='.$object->id;
+    
     include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
     accessforbidden('', 0, 0);
