@@ -31,25 +31,25 @@ require_once "place.class.php";
  */
 class Building extends Place
 {
-	var $db;							//!< To store db handler
-	var $error;							//!< To return error code (or message)
-	var $errors=array();				//!< To return several error codes (or messages)
-	var $element='building';			//!< Id that identify managed objects
-	var $table_element='place_building';		//!< Name of table without prefix where object is stored
+	public $db;							//!< To store db handler
+	public $error;							//!< To return error code (or message)
+	public $errors=array();				//!< To return several error codes (or messages)
+	public $element='building';			//!< Id that identify managed objects
+	public $table_element='place_building';		//!< Name of table without prefix where object is stored
 
-    var $id;
+    public $id;
 
-	var $entity;
-	var $ref;
-	var $label;
-	var $fk_place;
-	var $description;
-	var $lat;
-	var $lng;
-	var $note_public;
-	var $note_private;
-	var $fk_user_creat;
-	var $tms='';
+	public $entity;
+	public $ref;
+	public $label;
+	public $fk_place;
+	public $description;
+	public $lat;
+	public $lng;
+	public $note_public;
+	public $note_private;
+	public $fk_user_creat;
+	public $tms='';
 
 
 
@@ -59,7 +59,7 @@ class Building extends Place
      *
      *  @param	DoliDb		$db      Database handler
      */
-    function __construct($db)
+    public function __construct($db)
     {
         $this->db = $db;
         return 1;
@@ -73,7 +73,7 @@ class Building extends Place
      *  @param  int		$notrigger   0=launch triggers after, 1=disable triggers
      *  @return int      		   	 <0 if KO, Id of created object if OK
      */
-    function create($user, $notrigger = 0)
+    public function create($user, $notrigger = 0)
     {
     	global $conf, $langs;
 		$error=0;
@@ -194,7 +194,7 @@ class Building extends Place
      *    @param    string  $ref    Ref of object
      *    @return   int             <0 if KO, >0 if OK
      */
-    function fetch($id, $ref = '')
+    public function fetch($id, $ref = '')
     {
     	global $langs;
 
@@ -268,7 +268,7 @@ class Building extends Place
      *  @param	array		$filter    	  filter output
      *  @return int          	<0 if KO, >0 if OK
      */
-    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
+    public function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
     {
     	global $conf;
     	$sql="SELECT ";
@@ -333,7 +333,7 @@ class Building extends Place
      *
      *		@return		int					<0 if KO, >0 if OK
      */
-    function fetch_place($fk_place = 0)
+    public function fetch_place($fk_place = 0)
     {
     	global $conf;
 
@@ -356,7 +356,7 @@ class Building extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
      *  @return int     		   	 <0 if KO, >0 if OK
      */
-    function update($user = 0, $notrigger = 0)
+    public function update($user = 0, $notrigger = 0)
     {
     	global $conf, $langs;
 		$error=0;
@@ -462,7 +462,7 @@ class Building extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
-	function delete($user, $notrigger = 0)
+	public function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
 		$error=0;
@@ -515,7 +515,7 @@ class Building extends Place
 	 *
 	 *  @return	void
 	 */
-	function printInfoTable()
+	public function printInfoTable()
 	{
 		global $conf,$langs;
 		print '<table width="100%" class="border">';
@@ -572,7 +572,7 @@ class Building extends Place
 	 *
 	 *  @return	void
 	 */
-	function printShortInfoTable()
+	public function printShortInfoTable()
 	{
 		global $conf,$langs;
 		print '<table width="100%" class="border">';
@@ -599,7 +599,7 @@ class Building extends Place
 	/**
 	 * Function to show floor list from database read
 	 */
-	function show_floor_list($fk_building)
+	public function show_floor_list($fk_building)
 	{
 		global $langs;
 
@@ -643,7 +643,7 @@ class Building extends Place
 	/**
 	 * Function to show floor select list from database read
 	 */
-	function show_select_floor($fk_building, $htmlname, $id_floor = '')
+	public function show_select_floor($fk_building, $htmlname, $id_floor = '')
 	{
 		global $langs;
 
@@ -688,7 +688,7 @@ class Building extends Place
 	 *	@param		int		$socid		To filter on a particular third party
 	 * 	@return		array				Business list array
 	 */
-	function getBuildingList($fk_place)
+	public function getBuildingList($fk_place)
 	{
 		global $conf;
 	
@@ -740,7 +740,7 @@ class Building extends Place
 	 *	@param		int		$socid		To filter on a particular third party
 	 * 	@return		array				Business list array
 	 */
-	function getFloorList($fk_building)
+	public function getFloorList($fk_building)
 	{
 		global $conf;
 
@@ -790,7 +790,7 @@ class Building extends Place
 	/**
 	 * Function to show floors form to add/edit database
 	 */
-	function show_floor_form($fk_building, $show_link_delete = 0)
+	public function show_floor_form($fk_building, $show_link_delete = 0)
 	{
 		global $langs;
 
@@ -850,7 +850,7 @@ class Building extends Place
 	 *
 	 *	@return int <0 if KO, >0 if OK
 	 */
-	function insertFloors($user)
+	public function insertFloors($user)
 	{
 		global $conf, $langs;
 
@@ -918,7 +918,7 @@ class Building extends Place
 	 *
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
-	function deleteFloorsForBuilding()
+	public function deleteFloorsForBuilding()
 	{
 		global $conf, $langs;
 		$error=0;
@@ -957,7 +957,7 @@ class Building extends Place
 	 *  @param  int		$id	 		id of floor to delete
 	 *  @return	int					<0 if KO, >0 if OK
 	 */
-	function deleteFloor($id)
+	public function deleteFloor($id)
 	{
 		global $conf, $langs;
 		$error=0;
@@ -997,7 +997,7 @@ class Building extends Place
 	 *	@param	int		$fromid     Id of object to clone
 	 * 	@return	int					New id of clone
 	 */
-	function createFromClone($fromid)
+	public function createFromClone($fromid)
 	{
 		global $user,$langs;
 
@@ -1044,7 +1044,7 @@ class Building extends Place
 	 *
 	 *	@return	void
 	 */
-	function initAsSpecimen()
+	public function initAsSpecimen()
 	{
 		$this->id=0;
 

@@ -33,28 +33,28 @@ require_once 'place.class.php';
  */
 class Room extends Place
 {
-	var $db;							//!< To store db handler
-	var $error;							//!< To return error code (or message)
-	var $errors=array();				//!< To return several error codes (or messages)
-	var $element='room';			//!< Id that identify managed objects
-	var $table_element='place_room';		//!< Name of table without prefix where object is stored
+	public $db;							//!< To store db handler
+	public $error;							//!< To return error code (or message)
+	public $errors=array();				//!< To return several error codes (or messages)
+	public $element='room';			//!< Id that identify managed objects
+	public $table_element='place_room';		//!< Name of table without prefix where object is stored
 
-    var $id;
+    public $id;
 
-	var $entity;
-	var $ref;
-	var $label;
-	var $fk_place;
-	var $fk_building;
-	var $fk_floor;
-	var $type_code;
-	var $capacity;
-	var $note_public;
-	var $note_private;
-	var $fk_user_creat;
-	var $tms='';
+	public $entity;
+	public $ref;
+	public $label;
+	public $fk_place;
+	public $fk_building;
+	public $fk_floor;
+	public $type_code;
+	public $capacity;
+	public $note_public;
+	public $note_private;
+	public $fk_user_creat;
+	public $tms='';
 
-	var $lines = array();
+	public $lines = array();
 
 
 
@@ -64,7 +64,7 @@ class Room extends Place
      *
      *  @param	DoliDb		$db      Database handler
      */
-    function __construct($db)
+    public function __construct($db)
     {
         $this->db = $db;
         return 1;
@@ -78,7 +78,7 @@ class Room extends Place
      *  @param  int		$notrigger   0=launch triggers after, 1=disable triggers
      *  @return int      		   	 <0 if KO, Id of created object if OK
      */
-    function create($user, $notrigger = 0)
+    public function create($user, $notrigger = 0)
     {
     	global $conf, $langs, $hookmanager;
 		$error=0;
@@ -220,7 +220,7 @@ class Room extends Place
      *    @param    string  $ref    Ref of object
      *    @return   int             <0 if KO, >0 if OK
      */
-    function fetch($id, $ref = '')
+    public function fetch($id, $ref = '')
     {
     	global $conf,$langs;
 
@@ -310,7 +310,7 @@ class Room extends Place
      *  @param	array		$filter    	  filter output
      *  @return int          	<0 if KO, >0 if OK
      */
-    function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
+    public function fetch_all($sortorder, $sortfield, $limit, $offset, $filter = '')
     {
     	global $conf;
     	$sql="SELECT ";
@@ -389,7 +389,7 @@ class Room extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
      *  @return int     		   	 <0 if KO, >0 if OK
      */
-    function update($user = 0, $notrigger = 0)
+    public function update($user = 0, $notrigger = 0)
     {
     	global $conf, $langs, $hookmanager;
 		$error=0;
@@ -514,7 +514,7 @@ class Room extends Place
      *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
-	function delete($user, $notrigger = 0)
+	public function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
 		$error=0;
@@ -578,7 +578,7 @@ class Room extends Place
 	 *
 	 *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
 	 */
-	function load_cache_types_rooms()
+	public function load_cache_types_rooms()
 	{
 		global $langs;
 
@@ -620,7 +620,7 @@ class Room extends Place
 	 *	@param      string	$get_params    	Parametres added to url
 	 *	@return     string          		String with URL
 	 */
-	function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
+	public function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
 	{
 		global $langs;
 
@@ -633,7 +633,7 @@ class Room extends Place
 	 *	@param	int		$fromid     Id of object to clone
 	 * 	@return	int					New id of clone
 	 */
-	function createFromClone($fromid)
+	public function createFromClone($fromid)
 	{
 		global $user,$langs;
 
@@ -680,7 +680,7 @@ class Room extends Place
 	 *
 	 *	@return	void
 	 */
-	function initAsSpecimen()
+	public function initAsSpecimen()
 	{
 		$this->id=0;
 

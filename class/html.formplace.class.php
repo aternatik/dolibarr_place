@@ -34,12 +34,12 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/html.form.class.php");
 */
 class FormPlace
 {
-    var $db;
+    public $db;
 
-    var $substit=array();
-    var $param=array();
+    public $substit=array();
+    public $param=array();
 
-    var $error;
+    public $error;
 
 	public $num;
 
@@ -49,7 +49,7 @@ class FormPlace
 	*
 	* @param DoliDB $DB Database handler
 	*/
-    function __construct($db)
+    public function __construct($db)
     {
         $this->db = $db;
 
@@ -68,7 +68,7 @@ class FormPlace
      *      @param  int		$maxlength      Max length of label
      * 		@return	string  HTML select element
      */
-    function select_types_rooms($selected = '', $htmlname = 'roomtype', $filtertype = '', $format = 0, $empty = 0, $noadmininfo = 0, $maxlength = 0)
+    public function select_types_rooms($selected = '', $htmlname = 'roomtype', $filtertype = '', $format = 0, $empty = 0, $noadmininfo = 0, $maxlength = 0)
     {
     	global $langs,$user;
 
@@ -158,7 +158,7 @@ class FormPlace
      *  @param	int		$limit			Limit number of answers
      * 	@return	string					HTML string with
      */
-    function select_place_list($selected = '', $htmlname = 'fk_place', $filter = '', $showempty = 0, $showtype = 0, $forcecombo = 0, $event = array(), $filterkey = '', $outputmode = 0, $limit = 20)
+    public function select_place_list($selected = '', $htmlname = 'fk_place', $filter = '', $showempty = 0, $showtype = 0, $forcecombo = 0, $event = array(), $filterkey = '', $outputmode = 0, $limit = 20)
     {
     	global $conf,$user,$langs;
 
@@ -252,7 +252,7 @@ class FormPlace
      *  @param	array	$event			Event options. Example: array(array('method'=>'getContacts', 'url'=>dol_buildpath('/core/ajax/contacts.php',1), 'htmlname'=>'contactid', 'params'=>array('add-customer-contact'=>'disabled')))
      *	@return	 int						<0 if KO, Nb of contact in list if OK
      */
-    function selectrooms($fk_place, $selected = '', $htmlname = 'fk_resource_room', $showempty = 0, $exclude = '', $limitto = '', $showfunction = 0, $moreclass = '', $options_only = false, $showbuilding = 0, $forcecombo = 0, $event = array())
+    public function selectrooms($fk_place, $selected = '', $htmlname = 'fk_resource_room', $showempty = 0, $exclude = '', $limitto = '', $showfunction = 0, $moreclass = '', $options_only = false, $showbuilding = 0, $forcecombo = 0, $event = array())
     {
     	global $conf,$langs;
 
@@ -385,7 +385,7 @@ class FormPlace
      *  @param	array	$event			Event options. Example: array(array('method'=>'getContacts', 'url'=>dol_buildpath('/core/ajax/contacts.php',1), 'htmlname'=>'contactid', 'params'=>array('add-customer-contact'=>'disabled')))
      *	@return	 int						<0 if KO, Nb of contact in list if OK
      */
-    function selectbuildings($fk_place, $selected = '', $htmlname = 'fk_building', $showempty = 0, $exclude = '', $limitto = '', $showfunction = 0, $moreclass = '', $options_only = false, $showplace = 0, $forcecombo = 0, $event = array())
+    public function selectbuildings($fk_place, $selected = '', $htmlname = 'fk_building', $showempty = 0, $exclude = '', $limitto = '', $showfunction = 0, $moreclass = '', $options_only = false, $showplace = 0, $forcecombo = 0, $event = array())
     {
     	global $conf,$langs;
     
