@@ -381,7 +381,13 @@ if ($object->fetch($id) > 0) {
             echo '<td>'.dol_print_date($event['datef'], 'dayhour').'</td>';
 
             echo '<td with="50%">';
-            echo "<a href='".DOL_URL_ROOT.'/comm/action/fiche.php?action=view&amp;id='.$event['rowid']."'>".$event['label'].'</a>';
+            if (!class_exists('ActionComm')) {
+                require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
+
+            }
+            $eventStat = new ActionComm($db);
+            $eventStat->fetch($event['rowid']);
+            echo $eventStat->getNomUrl(1);
             echo "</td>\n";
             echo '<td>'.$event['code'].'</td>';
             //print "<td>".dolGetFirstLastname($event->author->firstname,$event->author->lastname)."</td>";
