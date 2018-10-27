@@ -206,6 +206,11 @@ class Room extends Place
     function fetch($id, $ref = '')
     {
     	global $conf,$langs;
+
+        if (!$id && !$ref) {
+            return 0;
+        }
+
         $sql = "SELECT";
 		$sql.= " t.rowid,";
 

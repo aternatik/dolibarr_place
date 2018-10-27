@@ -181,6 +181,10 @@ class Place extends Dolresource
     public function fetch($id, $ref = '')
     {
         global $langs;
+
+        if (!$id && !$ref) {
+            return 0;
+        }
         $sql = 'SELECT';
         $sql .= ' t.rowid,';
         $sql .= ' t.ref,';
