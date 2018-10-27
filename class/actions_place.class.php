@@ -146,6 +146,7 @@ class ActionsPlace
 
 
                 $objstat = fetchObjectByElement($element_id, $element);
+                $objstat->element = $element;
                 $res = $objstat->add_element_resource($fk_resource_room, $resource_type, $busy, $mandatory);
                 if ($res > 0) {
                     setEventMessage($langs->trans('ResourceLinkedWithSuccess'), 'mesgs');
