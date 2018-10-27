@@ -110,7 +110,7 @@ if ($action == 'confirm_add_place') {
             // Creation OK
             $db->commit();
             setEventMessage($langs->trans('PlaceCreatedWithSuccess'));
-            header('Location: fiche.php?id='.$object->id);
+            header('Location: card.php?id='.$object->id);
 
             return;
         } else {
@@ -155,7 +155,7 @@ if ($action == 'confirm_add_place') {
             // Creation OK
             $db->commit();
             setEventMessage($langs->trans('BuildingCreatedWithSuccess'));
-            header('Location: building/fiche.php?id='.$object->id);
+            header('Location: building/card.php?id='.$object->id);
 
             return;
         } else {

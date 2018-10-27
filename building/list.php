@@ -135,7 +135,7 @@ else
 		print '</td>';
 
 		print '<td>';
-		//print '<a href="fiche.php?id='.$building->id.'">'.$langs->trans('SeeOrEdit').'</a>';
+		//print '<a href="card.php?id='.$building->id.'">'.$langs->trans('SeeOrEdit').'</a>';
 		print '</td></tr>';
 	}
 
