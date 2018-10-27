@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# Générique
+# Generic
 #
 # Module label 'ModuleXXXName'
 Module110110Name = Gestion de lieux
@@ -30,7 +30,7 @@ Permission1101102=Modifier les lieux
 Permission1101103=Effacer les lieux
 
 #
-# Page d'administration
+# Admin page
 #
 PlaceSetup = Configuration du module Lieux
 Settings = Réglages
@@ -38,14 +38,14 @@ PlaceSetupPage = Page de réglage du modules Lieux
 PlaceNothingToSet=Pas de réglages spécifiques pour ce module
 
 #
-# Page À propos
+# About page
 #
 About = À propos
 PlaceAbout = À propos du module Lieux
 PlaceAboutPage = Page à propos du module Lieux
 
 #
-# Divers
+# miscellaneous
 #
 BackToBuildingList=Retour à la liste des bâtiments
 PleaseSelectPlaceFirst=Veuillez d'abord choisir un lieu
@@ -79,9 +79,11 @@ ShowInOSM=Afficher le point sur OSM
 SeeOrEdit=Voir/éditer
 NameOfThePlace=Nom du lieu
 SelectPlace=Selection du lieu
+NoPlaceResourceLinked = Aucun lieu associé comme ressource.
+ShowPlace = Voir le lieu
 
 #
-# Ressource
+# Resource
 #
 Place=Lieu
 Building=Bâtiment
@@ -89,7 +91,7 @@ Floor=Étage
 Room=Salle
 
 #
-# Bâtiments
+# Buildings
 #
 Buildings=Bâtiments
 BuildingSingular=Bâtiment
@@ -102,9 +104,11 @@ BuildingFormLabel_lng=Longitude
 BuildingCreatedWithSuccess=Bâtiment ajouté
 BuildingPlaceName=Nom du lieu
 BuildingList=Liste des bâtiments
+NoBuildingForThisPlace=Pas de bâtiment pour ce lieu.
+PlaceErrorNoBuildingId=Erreur : un ID bâtiment doit être fourni
 
 #
-# Étages
+# Floors
 #
 Floors=Étages
 FloorManagment=Gestion des étages
@@ -115,11 +119,9 @@ FloorsUpdated=Étages mis à jour
 FloorEdition=Éditer les étages
 FloorDeletedWithSuccess=Étage supprimé avec succès
 NoFloorFoundForThisBuilding=Aucun étage pour ce bâtiment.
-FloorManagmentForBuilding=Gestion des étages du bâtiment
-PlaceErrorNoBuildingId=Erreur : un ID bâtiment doit être fourni
 
 #
-# Salles
+# Rooms
 #
 RoomSingular=Salle
 Rooms=Salles
@@ -135,14 +137,15 @@ RoomCreatedWithSuccess=Salle ajoutée avec succès
 RoomNumber=Numéro/repère de salle
 RoomOrder=Ordre/position
 DeleteRoom=Effacer la salle
-ConfirmDeleteRoom=Confirmer la suppression de cette salle ?
+DeleteRoom=Effacer la salle
 RoomDeleted=Salle supprimée
 NoRoomDefined=Pas de salle défini
 EventsForThisRoom=Évènements pour cette salle
 RoomFormLabel_fk_place=Lieu de la salle
+NoRoomResourceLinked = Aucune salle liée comme ressource.
 
 #
-# Types de ressources
+# Resources types
 #
 Place=Lieu
 Room=Salle

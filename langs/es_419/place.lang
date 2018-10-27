@@ -1,0 +1,152 @@
+# Module to manage locations, buildings, floors and rooms into Dolibarr ERP/CRM
+# Copyright (C) 2013-2018	Jean-François Ferry	<hello+jf@librethic.io>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+# Module label 'ModuleXXXName'
+Module110110Name = Place managment
+# Module description 'ModuleXXXDesc'
+Module110110Desc = manage locations, buildings, floors and rooms
+Menu110110PlaceIndex=Place management
+Menu110110PlaceAdd=Add new place
+Menu110110BuildingsList=Buildings list
+Menu110110RoomsList=Rooms list
+Permission1101101=See places
+Permission1101102=Modify places
+Permission1101103=Delete places
+
+#
+# Admin page
+#
+PlaceSetup = Place module setup
+Settings = Settings
+PlaceSetupPage = Place module setup page
+PlaceNothingToSet=Nothing to setup
+
+#
+# About page
+#
+About = About
+PlaceAbout = About Place module
+PlaceAboutPage = Place module about page
+
+#
+# miscellaneous
+#
+BackToBuildingList=Back to building list
+PleaseSelectPlaceFirst=Please first select a place
+ActionIntoPlace=Event location
+ActionIntoRoom=Room
+
+# Dictionary
+PlaceRoomDictType=Type of rooms
+
+#
+# Page Place
+#
+PlacePageName=Place management
+PlacePageIndex=Place management
+NoPlaceInDatabase=No place in database
+AddPlace=Add place
+PlaceFormLabel_ref=Reference / label
+RoomFormLabel_capacity=Room capacity
+RoomCapacityShort=Capacity
+RoomFloor=Floor
+PlaceFormLabel_description=Description
+PlaceFormLabel_fk_socpeople=People to use for address
+PlaceFormLabel_lat=Latitude
+PlaceFormLabel_lng=Longitude
+PlaceCreatedWithSuccess=Place added successfully
+FichePlace=Place card
+PlaceSingular=Place
+SocPeopleAssociated=Contact/address associated
+OSMLink=Link to Open Street Map
+ShowInOSM=See location into OSM
+SeeOrEdit=Edit/see
+NameOfThePlace=Location name
+SelectPlace=Select place
+NoPlaceResourceLinked = No place linked as a resource
+ShowPlace = Show place
+
+#
+# Resource
+#
+Place=Place
+Building=Building
+Floor=Floor
+Room=Room
+
+#
+# Buildings
+#
+Buildings=Buildings
+BuildingSingular=Building
+AddBuilding=Add building
+BuildingFormLabel_ref=Landmark / label
+BuildingFormLabel_fk_place=Place
+BuildingFormLabel_description=Building description
+BuildingFormLabel_lat=Latitude
+BuildingFormLabel_lng=Longitude
+BuildingCreatedWithSuccess=Building sucessfully added
+BuildingPlaceName=Location
+BuildingList=Buildings list
+NoBuildingForThisPlace=No building for that place
+PlaceErrorNoBuildingId=Error : building ID required
+
+#
+# Floors
+#
+Floors=Floors
+FloorManagment=Floor management
+AddFloor=Add floor
+FloorNumber=Landmark / name
+FloorOrder=Floor number / position
+FloorsUpdated=Floors updated
+FloorEdition=Edit floors
+FloorDeletedWithSuccess=Floor successfully deleted
+NoFloorFoundForThisBuilding=No floor for this building
+
+#
+# Rooms
+#
+RoomSingular=Room
+Rooms=Rooms
+AddRoom=Add room
+RoomsManagment=Room management
+NoRoomFoundForThisBuilding=No room fo this building
+NoRoomFound=No room found
+AddNewRoomToThisBuilding=Add room to this building
+RoomFormLabel_ref=Room landmark
+RoomFormLabel_fk_building=Building
+RoomFormLabel_floor=Floor of the room
+RoomCreatedWithSuccess=Room successfully added
+RoomNumber=Room number/landmark
+RoomOrder=Position/Order
+DeleteRoom=Delete room
+DeleteRoom=Delete room
+RoomDeleted=Room deleted
+NoRoomDefined=No room defined
+EventsForThisRoom=Events for this room
+RoomFormLabel_fk_place=Related place
+NoRoomResourceLinked = No Room Linked as a resource
+
+#
+# Resources types
+#
+Place=Place
+Room=Room
+Building=Building
