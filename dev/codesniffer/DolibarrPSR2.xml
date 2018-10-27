@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruleset name="Dolibarr (PSR2)">
+ <description>The PSR2 standard with Dolibarr quirks.</description>
+
+ <!-- Include the whole PSR2 standard -->
+ <rule ref="PSR2">
+     <!-- Code can be indented with tabs -->
+     <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
+     <!-- Dolibarr don't support namespacing (yet) -->
+     <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
+     
+     <exclude name="PEAR.NamingConventions.ValidClassName.Invalid" />
+     <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+     <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+     
+     <exclude name="PEAR.NamingConventions.ValidClassName.StartWithCapital" />
+     
+     <exclude name="PEAR.NamingConventions.ValidFunctionName.NotCamelCaps" />
+     
+     <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses" />
+ </rule>
+ 
+</ruleset>
