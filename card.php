@@ -51,6 +51,8 @@ $action = GETPOST('action', 'alpha');
 $ref = GETPOST('ref', 'alpha');
 $lat = GETPOST('lat', 'alpha');
 $lng = GETPOST('lng', 'alpha');
+$fk_socpeople = GETPOST('fk_socpeople', 'int');
+$description = GETPOST('description', 'alpha');
 
 // Protection if external user
 //if ($user->societe_id > 0)
@@ -84,7 +86,8 @@ if ($action == 'update' && !$_POST['cancel'] && $user->rights->place->write) {
         $object->ref = $ref;
         $object->lat = $lat;
         $object->lng = $lng;
-        $object->description = $_POST['description'];
+        $object->fk_socpeople = $fk_socpeople;
+        $object->description = $description;
         $object->note_public = $_POST['note_public'];
         $object->note_private = $_POST['note_private'];
 
@@ -167,6 +170,12 @@ if ($object->fetch($id) > 0) {
         // Ref
         echo '<tr><td width="20%">'.$langs->trans('Ref').'</td>';
         echo '<td><input size="12" name="ref" value="'.(GETPOST('ref') ? GETPOST('ref') : $object->ref).'"></td></tr>';
+
+        // Linked contact
+        echo '<tr><td width="20%">'.$langs->trans('SocPeopleAssociated').'</td>';
+        echo '<td>';
+        $ret = $form->select_contacts($socid, $object->fk_socpeople, 'fk_socpeople', 1, '', '', '', '', 1);
+        echo '</td></tr>';
 
         // Description
         echo '<tr><td valign="top">'.$langs->trans('Description').'</td>';

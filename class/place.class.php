@@ -355,8 +355,8 @@ class Place extends Dolresource
         $sql .= ' fk_soc='.(isset($this->fk_soc) ? $this->fk_soc : 'null').',';
         $sql .= ' fk_socpeople='.(isset($this->fk_socpeople) ? $this->fk_socpeople : 'null').',';
         $sql .= ' description='.(isset($this->description) ? "'".$this->db->escape($this->description)."'" : 'null').',';
-        $sql .= ' lat='.(isset($this->lat) ? $this->lat : 'null').',';
-        $sql .= ' lng='.(isset($this->lng) ? $this->lng : 'null').',';
+        $sql .= ' lat='.(isset($this->lat) ? "'". $this->lat ."'": 'null').',';
+        $sql .= ' lng='.(isset($this->lng) ? "'". $this->lng ."'": 'null').',';
         $sql .= ' note_public='.(isset($this->note_public) ? "'".$this->db->escape($this->note_public)."'" : 'null').',';
         $sql .= ' note_private='.(isset($this->note_private) ? "'".$this->db->escape($this->note_private)."'" : 'null').',';
         $sql .= ' fk_user_creat='.(isset($this->fk_user_creat) ? $this->fk_user_creat : 'null').',';
