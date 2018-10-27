@@ -79,6 +79,7 @@ ShowInOSM=See location into OSM
 SeeOrEdit=Edit/see
 NameOfThePlace=Location name
 SelectPlace=Select place
+NoPlaceResourceLinked = No place linked as a resource
 
 #
 # Resource
@@ -140,6 +141,7 @@ RoomDeleted=Room deleted
 NoRoomDefined=No room defined
 EventsForThisRoom=Events for this room
 RoomFormLabel_fk_place=Related place
+NoRoomResourceLinked = No Room Linked as a resource
 
 #
 # Resources types
